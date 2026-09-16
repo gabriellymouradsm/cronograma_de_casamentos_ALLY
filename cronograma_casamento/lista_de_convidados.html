@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ally - Gerenciamento de Convidados</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-cream: #fbf8f3;
+            --card-brown: #382a24;
+            --input-bg: #f7f4ef;
+            --input-border-focus: #a87b51;
+            --text-gold: #d4af37;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #2c221e;
+        }
+
+        .font-serif-title {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .custom-input {
+            background-color: var(--input-bg);
+            color: #382a24;
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: #8b6b55;
+            box-shadow: 0 0 0 3px rgba(139, 107, 85, 0.25);
+            background-color: #ffffff;
+        }
+
+        .custom-input::placeholder {
+            color: #a0958e;
+            font-weight: 500;
+        }
+
+        .card-container {
+            background-color: var(--card-brown);
+            box-shadow: 0 20px 40px rgba(56, 42, 36, 0.18);
+            border-radius: 28px;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-animate {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .brand-logo-img {
+            width: 50px;
+            height: auto;
+            display: block;
+            margin: 0 auto 8px;
+        }
+
+        .brand-title {
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-10 selection:bg-amber-100 selection:text-amber-900">
+
+    <!-- LOGO CENTRALIZADA NO TOPO -->
+    <header class="brand-header">
+        <img src="imagens/Logotipo Monograma Elegante Preto.png" class="brand-logo-img" alt="Logo Ally">
+        <h1 class="brand-title">Ally</h1>
+        <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="w-full max-w-md md:max-w-xl flex-1 flex flex-col justify-center">
+
+        <!-- VIEW 1: FORMULÁRIO DE CONVIDADOS -->
+        <div id="view-form" class="card-container text-white p-6 sm:p-8 transition-all duration-300">
+            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
+                Formulário de Convidados
+            </h2>
+
+            <form id="guest-form" class="space-y-4" onsubmit="handleAddGuest(event)">
+                <!-- Nome Completo -->
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">
+                        Nome Completo
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                required 
+                                placeholder="Primeiro Nome" 
+                                class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"
+                            />
+                        </div>
+                        <div>
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                required 
+                                placeholder="Último Nome" 
+                                class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conexão com o Casal -->
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">
+                        Conexão com o Casal
+                    </label>
+                    <input 
+                        type="text" 
+                        id="connection" 
+                        required 
+                        placeholder="Digite aqui!" 
+                        class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"
+                    />
+                </div>
+
+                <!-- Número de Telefone -->
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">
+                        Número de Telefone
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        required 
+                        placeholder="Digite aqui!" 
+                        class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"
+                    />
+                </div>
+
+                <!-- Número da Mesa -->
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">
+                        Número da Mesa
+                    </label>
+                    <input 
+                        type="number" 
+                        id="tableNumber" 
+                        required 
+                        placeholder="Digite aqui!" 
+                        min="1"
+                        max="99"
+                        class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"
+                    />
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button 
+                        type="submit" 
+                        class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition duration-200 transform active:scale-95 shadow-md uppercase tracking-wider text-xs sm:text-sm"
+                    >
+                        CRIAR
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        onclick="switchView('list')"
+                        class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition duration-200 transform active:scale-95 shadow-md uppercase tracking-wider text-xs sm:text-sm"
+                    >
+                        ACESSAR A LISTA
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <a href="proxima_pagina.html" class="text-xs text-[#d1c4bc] underline hover:text-white">
+                    ← Voltar ao Painel
+                </a>
+            </div>
+        </div>
+
+        <!-- VIEW 2: LISTA DE CONVIDADOS -->
+        <div id="view-list" class="card-container text-white p-6 sm:p-8 hidden transition-all duration-300">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
+                <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center sm:text-left text-[#faf7f2]">
+                    Lista de Convidados
+                </h2>
+                <span id="guest-count-badge" class="bg-[#523d34] text-[#f7f4ef] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246]">
+                    0 convidados
+                </span>
+            </div>
+
+            <!-- Search Filter Input -->
+            <div class="mb-4 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a0958e]"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    oninput="renderGuests()" 
+                    placeholder="Buscar por nome, conexão ou mesa..." 
+                    class="w-full custom-input pl-10 pr-4 py-2.5 rounded-xl text-sm"
+                />
+            </div>
+
+            <!-- Guest List Container -->
+            <div class="max-h-[360px] overflow-y-auto pr-1 space-y-3 custom-scrollbar" id="guests-container">
+            </div>
+
+            <!-- Empty State Message -->
+            <div id="empty-state" class="hidden text-center py-8 text-[#caa28b]">
+                <i class="fa-regular fa-address-book text-4xl mb-2 opacity-60"></i>
+                <p class="text-sm">Nenhum convidado encontrado.</p>
+            </div>
+
+            <!-- Back to Form Button -->
+            <div class="mt-6 pt-4 border-t border-[#523d34]/60 flex flex-col gap-2">
+                <button 
+                    type="button" 
+                    onclick="switchView('form')"
+                    class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3 px-4 rounded-xl transition duration-200 transform active:scale-95 shadow-md uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2"
+                >
+                    <i class="fa-solid fa-plus text-xs"></i> Adicionar Novo Convidado
+                </button>
+                <a href="proxima_pagina.html" class="text-center text-xs text-[#d1c4bc] underline hover:text-white mt-2">
+                    ← Voltar ao Painel
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 hidden z-50 bg-[#382a24] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-[#6d5246] flex items-center gap-3 toast-animate">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">Convidado adicionado com sucesso!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-4 text-xs text-[#8c7468]">
+        Ally &copy; 2026 - O seu casamento começa aqui.
+    </footer>
+
+    <script>
+        // Carrega a lista original
+        let guests = JSON.parse(localStorage.getItem('ally_guests')) || [
+            { id: 1, firstName: 'Maria', lastName: 'Silva', connection: 'Madrinha da Noiva', phone: '(11) 98765-4321', tableNumber: '02' },
+            { id: 2, firstName: 'Lucas', lastName: 'Oliveira', connection: 'Amigo do Noivo', phone: '(11) 91234-5678', tableNumber: '05' }
+        ];
+
+        // Sincroniza com o LocalStorage (Chave local da tela + Chave unificada para o PDF)
+        function saveGuests() {
+            localStorage.setItem('ally_guests', JSON.stringify(guests));
+            
+            // Mapeia para o formato lido na geração do PDF em proxima_pagina.html
+            const dadosParaPDF = guests.map(g => ({
+                nome: `${g.firstName} ${g.lastName}`,
+                categoria: `${g.connection} (Mesa ${g.tableNumber})`,
+                confirmado: "Sim"
+            }));
+            
+            localStorage.setItem('convidados_dados', JSON.stringify(dadosParaPDF));
+        }
+
+        // Garante a primeira sincronização ao carregar
+        saveGuests();
+
+        function switchView(viewName) {
+            const formView = document.getElementById('view-form');
+            const listView = document.getElementById('view-list');
+
+            if (viewName === 'list') {
+                formView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                renderGuests();
+            } else {
+                listView.classList.add('hidden');
+                formView.classList.remove('hidden');
+            }
+        }
+
+        function handleAddGuest(e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const connection = document.getElementById('connection').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const tableNumber = document.getElementById('tableNumber').value.trim();
+
+            if (!firstName || !lastName || !connection || !phone || !tableNumber) {
+                showToast('Por favor, preencha todos os campos.', 'error');
+                return;
+            }
+
+            const newGuest = {
+                id: Date.now(),
+                firstName,
+                lastName,
+                connection,
+                phone,
+                tableNumber
+            };
+
+            guests.unshift(newGuest);
+            saveGuests();
+
+            document.getElementById('guest-form').reset();
+            showToast(`Convidado ${firstName} cadastrado!`);
+        }
+
+        function renderGuests() {
+            const container = document.getElementById('guests-container');
+            const emptyState = document.getElementById('empty-state');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const countBadge = document.getElementById('guest-count-badge');
+
+            container.innerHTML = '';
+
+            const filteredGuests = guests.filter(g => {
+                const fullName = `${g.firstName} ${g.lastName}`.toLowerCase();
+                const connection = g.connection.toLowerCase();
+                const table = g.tableNumber.toString();
+                return fullName.includes(searchVal) || connection.includes(searchVal) || table.includes(searchVal);
+            });
+
+            countBadge.innerText = `${guests.length} ${guests.length === 1 ? 'convidado' : 'convidados'}`;
+
+            if (filteredGuests.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filteredGuests.forEach(guest => {
+                const card = document.createElement('div');
+                card.className = "bg-[#47362e] border border-[#5d463b] rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition hover:border-[#8b6b55]";
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-serif-title font-bold text-lg text-[#faf7f2]">${guest.firstName} ${guest.lastName}</h3>
+                            <span class="bg-[#382a24] text-[#d4af37] text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-[#6d5246]">
+                                Mesa ${guest.tableNumber}
+                            </span>
+                        </div>
+                        <p class="text-xs text-[#d1c4bc] mt-1">
+                            <i class="fa-solid fa-heart text-[10px] mr-1 text-[#caa28b]"></i> ${guest.connection}
+                        </p>
+                        <p class="text-xs text-[#a0958e] mt-0.5">
+                            <i class="fa-solid fa-phone text-[10px] mr-1"></i> ${guest.phone}
+                        </p>
+                    </div>
+                    <button 
+                        onclick="deleteGuest(${guest.id})" 
+                        title="Remover Convidado" 
+                        class="text-[#c28d88] hover:text-red-400 p-2 rounded-lg hover:bg-[#382a24] transition self-end sm:self-center"
+                    >
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function deleteGuest(id) {
+            guests = guests.filter(g => g.id !== id);
+            saveGuests();
+            renderGuests();
+            showToast('Convidado removido.', 'info');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.innerText = message;
+            toast.classList.remove('hidden');
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

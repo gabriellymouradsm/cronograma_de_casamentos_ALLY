@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <title>Ally - Cronograma do Dia</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background-color: #f7f5f2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .brand-logo-img {
+            width: 50px;
+            height: auto;
+            display: block;
+            margin: 0 auto 8px;
+        }
+
+        .brand-title {
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 6px;
+        }
+
+        .schedule-container {
+            width: 100%;
+            max-width: 500px;
+            min-height: 540px;
+            background-color: #3b2a24;
+            border-radius: 28px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        #time-input {
+            width: 100px;
+            padding: 12px 10px;
+            background-color: #fcfaf7;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #3b2a24;
+            text-align: center;
+            outline: none;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        #task-input {
+            flex: 1;
+            padding: 12px 16px;
+            background-color: #fcfaf7;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #3b2a24;
+            outline: none;
+        }
+
+        #task-input::placeholder, #time-input::placeholder {
+            color: #b5ada5;
+            font-style: italic;
+            font-family: 'Georgia', serif;
+        }
+
+        #add-btn {
+            width: 100%;
+            background-color: #fcfaf7;
+            color: #3b2a24;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+            text-transform: uppercase;
+        }
+
+        #add-btn:hover {
+            background-color: #f2eee9;
+        }
+
+        #schedule-list {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .schedule-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .schedule-main-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .check-btn {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .schedule-item.completed .check-btn {
+            background-color: #ffffff;
+        }
+
+        .schedule-item.completed .check-btn::after {
+            content: '✓';
+            color: #3b2a24;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .schedule-time {
+            background-color: #fcfaf7;
+            color: #3b2a24;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            min-width: 65px;
+            text-align: center;
+        }
+
+        .schedule-text {
+            flex: 1;
+            color: #ffffff;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+            word-break: break-word;
+        }
+
+        .schedule-item.completed .schedule-text {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 2px;
+            transition: transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .notes-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: #eadecc;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            outline: none;
+        }
+
+        .notes-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-style: italic;
+        }
+
+        .footer-navigation {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .clear-all-btn {
+            width: 100%;
+            max-width: 200px;
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clear-all-btn:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
+        .back-link {
+            color: #eadecc;
+            font-size: 12px;
+            text-decoration: underline;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="brand-header">
+        <img src="imagens/Logotipo Monograma Elegante Preto.png" class="brand-logo-img" alt="Logo Ally">
+        <h1 class="brand-title">Ally</h1>
+        <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
+    </header>
+
+    <div class="schedule-container">
+        <h2>Cronograma do Dia</h2>
+        
+        <div class="input-row">
+            <input type="text" id="time-input" placeholder="00:00" maxlength="5">
+            <input type="text" id="task-input" placeholder="Digite o evento do dia">
+        </div>
+        
+        <button id="add-btn">Adicionar Evento</button>
+        
+        <div id="schedule-list"></div>
+        
+        <div class="footer-navigation">
+            <button class="clear-all-btn" onclick="clearAll()">Limpar Tudo</button>
+            <a href="proxima_pagina.html" class="back-link">← Voltar ao Painel</a>
+        </div>
+    </div>
+
+<script>
+    const timeInput = document.getElementById('time-input');
+    const taskInput = document.getElementById('task-input');
+    const addBtn = document.getElementById('add-btn');
+    const scheduleList = document.getElementById('schedule-list');
+
+    document.addEventListener('DOMContentLoaded', loadSchedule);
+
+    timeInput.addEventListener('input', function(e) {
+        let valor = e.target.value.replace(/\D/g, "").slice(0, 4);
+        if (valor.length >= 3) {
+            valor = valor.slice(0, 2) + ":" + valor.slice(2);
+        }
+        e.target.value = valor;
+    });
+
+    function addEvent() {
+        const time = timeInput.value.trim();
+        const text = taskInput.value.trim();
+
+        if (!time || time.length < 5) {
+            alert("Por favor, digite um horário válido no formato HH:MM.");
+            return;
+        }
+
+        if (!text) {
+            alert("Por favor, digite a descrição do evento.");
+            return;
+        }
+
+        createScheduleItem(time, text, "", false);
+        saveScheduleToStorage();
+
+        timeInput.value = "";
+        taskInput.value = "";
+        timeInput.focus();
+    }
+
+    function createScheduleItem(time, text, note = "", completed = false) {
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('schedule-item');
+        if (completed) itemDiv.classList.add('completed');
+
+        const mainRow = document.createElement('div');
+        mainRow.classList.add('schedule-main-row');
+
+        const checkBtn = document.createElement('div');
+        checkBtn.classList.add('check-btn');
+        checkBtn.addEventListener('click', () => {
+            itemDiv.classList.toggle('completed');
+            saveScheduleToStorage();
+        });
+
+        const timeSpan = document.createElement('span');
+        timeSpan.classList.add('schedule-time');
+        timeSpan.textContent = time;
+
+        const textSpan = document.createElement('span');
+        textSpan.classList.add('schedule-text');
+        textSpan.textContent = text;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.innerHTML = '🗑️';
+        deleteBtn.addEventListener('click', () => {
+            itemDiv.remove();
+            saveScheduleToStorage();
+        });
+
+        mainRow.appendChild(checkBtn);
+        mainRow.appendChild(timeSpan);
+        mainRow.appendChild(textSpan);
+        mainRow.appendChild(deleteBtn);
+
+        const notesInput = document.createElement('input');
+        notesInput.type = 'text';
+        notesInput.classList.add('notes-input');
+        notesInput.placeholder = 'Obs: No horário / Atrasou...';
+        notesInput.value = note;
+        notesInput.addEventListener('input', saveScheduleToStorage);
+
+        itemDiv.appendChild(mainRow);
+        itemDiv.appendChild(notesInput);
+
+        scheduleList.appendChild(itemDiv);
+        sortList();
+    }
+
+    function sortList() {
+        const items = Array.from(scheduleList.children);
+        items.sort((a, b) => {
+            const timeA = a.querySelector('.schedule-time').textContent;
+            const timeB = b.querySelector('.schedule-time').textContent;
+            return timeA.localeCompare(timeB);
+        });
+        items.forEach(item => scheduleList.appendChild(item));
+    }
+
+    function saveScheduleToStorage() {
+        const scheduleData = [];
+        const pdfScheduleData = [];
+
+        document.querySelectorAll('.schedule-item').forEach(item => {
+            const time = item.querySelector('.schedule-time').textContent;
+            const text = item.querySelector('.schedule-text').textContent;
+            const note = item.querySelector('.notes-input').value;
+            const completed = item.classList.contains('completed');
+
+            scheduleData.push({ time, text, note, completed });
+
+            pdfScheduleData.push({
+                horario: time,
+                atividade: note ? `${text} (Obs: ${note})` : text
+            });
+        });
+
+        localStorage.setItem('ally_cronograma_dia', JSON.stringify(scheduleData));
+        localStorage.setItem('cronograma_dados', JSON.stringify(pdfScheduleData));
+    }
+
+    function loadSchedule() {
+        const savedData = JSON.parse(localStorage.getItem('ally_cronograma_dia')) || [
+            { time: "08:00", text: "Dia de noiva / Cabelo e Maquiagem", note: "No horário", completed: false },
+            { time: "15:00", text: "Chegada dos fotógrafos", note: "", completed: false },
+            { time: "17:00", text: "Início da Cerimônia", note: "", completed: false }
+        ];
+
+        savedData.forEach(item => {
+            createScheduleItem(item.time, item.text, item.note, item.completed);
+        });
+
+        saveScheduleToStorage();
+    }
+
+    function clearAll() {
+        if (confirm("Deseja apagar todo o cronograma do dia?")) {
+            localStorage.removeItem('ally_cronograma_dia');
+            localStorage.removeItem('cronograma_dados');
+            scheduleList.innerHTML = '';
+        }
+    }
+
+    addBtn.addEventListener('click', addEvent);
+    taskInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') addEvent();
+    });
+</script>
+
+</body>
+</html>

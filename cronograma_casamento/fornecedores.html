@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <title>Ally - Fornecedores</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background-color: #f7f5f2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
+            display: block;
+        }
+
+        .brand-title {
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 6px;
+        }
+
+        .suppliers-container {
+            width: 100%;
+            max-width: 520px;
+            min-height: 560px;
+            background-color: #3b2a24;
+            border-radius: 28px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .input-field {
+            padding: 12px 14px;
+            background-color: #fcfaf7;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #3b2a24;
+            outline: none;
+            font-family: Arial, sans-serif;
+        }
+
+        .input-field::placeholder {
+            color: #b5ada5;
+            font-style: italic;
+            font-family: 'Georgia', serif;
+        }
+
+        .input-half {
+            flex: 1;
+        }
+
+        select.input-field {
+            cursor: pointer;
+            color: #3b2a24;
+            font-weight: 500;
+        }
+
+        #add-btn {
+            width: 100%;
+            background-color: #fcfaf7;
+            color: #3b2a24;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+            text-transform: uppercase;
+        }
+
+        #add-btn:hover {
+            background-color: #f2eee9;
+        }
+
+        #suppliers-list {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .supplier-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .supplier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .supplier-category {
+            background-color: #fcfaf7;
+            color: #3b2a24;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-family: Arial, sans-serif;
+        }
+
+        .supplier-name {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+        }
+
+        .supplier-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #eadecc;
+            font-family: Arial, sans-serif;
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .status-confirmado {
+            background-color: #d9fdd3;
+            color: #128c7e;
+        }
+
+        .status-pendente {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 2px;
+            transition: transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .footer-navigation {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .clear-all-btn {
+            width: 100%;
+            max-width: 200px;
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clear-all-btn:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
+        .back-link {
+            color: #eadecc;
+            font-size: 12px;
+            text-decoration: underline;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="brand-header">
+        <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
+        <h1 class="brand-title">Ally</h1>
+        <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
+    </header>
+
+    <div class="suppliers-container">
+        <h2>Fornecedores</h2>
+        
+        <div class="form-grid">
+            <div class="input-row">
+                <input type="text" id="category-input" class="input-field input-half" placeholder="Serviço (ex: Buffet)">
+                <input type="text" id="name-input" class="input-field input-half" placeholder="Nome do Fornecedor">
+            </div>
+            
+            <div class="input-row">
+                <input type="text" id="phone-input" class="input-field input-half" placeholder="Telefone / Whats">
+                <select id="status-select" class="input-field input-half">
+                    <option value="Pendente">Status: Pendente</option>
+                    <option value="Confirmado">Status: Confirmado</option>
+                </select>
+            </div>
+        </div>
+        
+        <button id="add-btn">Adicionar Fornecedor</button>
+        
+        <div id="suppliers-list"></div>
+        
+        <div class="footer-navigation">
+            <button class="clear-all-btn" onclick="clearAll()">Limpar Todos</button>
+            <a href="proxima_pagina.html" class="back-link">← Voltar ao Painel</a>
+        </div>
+    </div>
+
+<script>
+    const categoryInput = document.getElementById('category-input');
+    const nameInput = document.getElementById('name-input');
+    const phoneInput = document.getElementById('phone-input');
+    const statusSelect = document.getElementById('status-select');
+    const addBtn = document.getElementById('add-btn');
+    const suppliersList = document.getElementById('suppliers-list');
+
+    document.addEventListener('DOMContentLoaded', loadSuppliers);
+
+    function addSupplier() {
+        const category = categoryInput.value.trim();
+        const name = nameInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const status = statusSelect.value;
+
+        if (!category || !name) {
+            alert("Por favor, preencha pelo menos o tipo de serviço e o nome do fornecedor.");
+            return;
+        }
+
+        createSupplierItem(category, name, phone, status);
+        saveSuppliersToStorage();
+
+        categoryInput.value = "";
+        nameInput.value = "";
+        phoneInput.value = "";
+        statusSelect.value = "Pendente";
+        categoryInput.focus();
+    }
+
+    function createSupplierItem(category, name, phone, status) {
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('supplier-item');
+
+        const headerDiv = document.createElement('div');
+        headerDiv.classList.add('supplier-header');
+
+        const categorySpan = document.createElement('span');
+        categorySpan.classList.add('supplier-category');
+        categorySpan.textContent = category;
+
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('supplier-name');
+        nameSpan.textContent = name;
+
+        headerDiv.appendChild(categorySpan);
+        headerDiv.appendChild(nameSpan);
+
+        const detailsDiv = document.createElement('div');
+        detailsDiv.classList.add('supplier-details');
+
+        const infoSpan = document.createElement('span');
+        infoSpan.textContent = phone ? `📞 ${phone}` : '';
+
+        const actionRow = document.createElement('div');
+        actionRow.classList.add('action-row');
+
+        const statusSpan = document.createElement('span');
+        statusSpan.classList.add('status-badge');
+        updateStatusBadge(statusSpan, status);
+
+        statusSpan.addEventListener('click', () => {
+            const currentStatus = statusSpan.textContent;
+            const newStatus = currentStatus === 'Confirmado' ? 'Pendente' : 'Confirmado';
+            updateStatusBadge(statusSpan, newStatus);
+            saveSuppliersToStorage();
+        });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.innerHTML = '🗑️';
+        deleteBtn.addEventListener('click', () => {
+            itemDiv.remove();
+            saveSuppliersToStorage();
+        });
+
+        actionRow.appendChild(statusSpan);
+        actionRow.appendChild(deleteBtn);
+
+        detailsDiv.appendChild(infoSpan);
+        detailsDiv.appendChild(actionRow);
+
+        itemDiv.appendChild(headerDiv);
+        itemDiv.appendChild(detailsDiv);
+
+        suppliersList.appendChild(itemDiv);
+    }
+
+    function updateStatusBadge(element, status) {
+        element.textContent = status;
+        if (status === 'Confirmado') {
+            element.className = 'status-badge status-confirmado';
+        } else {
+            element.className = 'status-badge status-pendente';
+        }
+    }
+
+    function saveSuppliersToStorage() {
+        const suppliersData = [];
+        const pdfSuppliersData = [];
+
+        document.querySelectorAll('.supplier-item').forEach(item => {
+            const category = item.querySelector('.supplier-category').textContent;
+            const name = item.querySelector('.supplier-name').textContent;
+            const detailsText = item.querySelector('.supplier-details span').textContent;
+            const status = item.querySelector('.status-badge').textContent;
+
+            let phone = detailsText.includes('📞') ? detailsText.replace('📞', '').trim() : '';
+
+            suppliersData.push({ category, name, phone, status });
+
+            // Formatação para a geração do PDF unificado em proxima_pagina.html
+            pdfSuppliersData.push({
+                categoria: category,
+                nome: name,
+                contato: phone ? `${phone} (${status})` : `Status: ${status}`
+            });
+        });
+
+        // Salva na chave local da tela e na chave unificada do PDF
+        localStorage.setItem('ally_fornecedores', JSON.stringify(suppliersData));
+        localStorage.setItem('fornecedores_dados', JSON.stringify(pdfSuppliersData));
+    }
+
+    function loadSuppliers() {
+        const savedData = JSON.parse(localStorage.getItem('ally_fornecedores')) || [
+            { category: "Buffet", name: "Gourmet Festas", phone: "(11) 98888-7777", status: "Confirmado" },
+            { category: "Fotografia", name: "Luz & Arte", phone: "(11) 97777-6666", status: "Pendente" }
+        ];
+
+        savedData.forEach(item => {
+            createSupplierItem(item.category, item.name, item.phone, item.status);
+        });
+
+        // Garante a sincronização inicial
+        saveSuppliersToStorage();
+    }
+
+    function clearAll() {
+        if (confirm("Deseja apagar todos os fornecedores?")) {
+            localStorage.removeItem('ally_fornecedores');
+            localStorage.removeItem('fornecedores_dados');
+            suppliersList.innerHTML = '';
+        }
+    }
+
+    addBtn.addEventListener('click', addSupplier);
+</script>
+
+</body>
+</html>
