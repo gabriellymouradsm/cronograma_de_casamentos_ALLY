@@ -379,6 +379,14 @@
         }
 
     </script>
-
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/cronograma_de_casamentos_ALLY/sw.js')
+        .then((reg) => console.log('Service Worker registrado com sucesso:', reg.scope))
+        .err((err) => console.log('Falha ao registrar o Service Worker:', err));
+    });
+  }
+</script>
 </body>
 </html>
