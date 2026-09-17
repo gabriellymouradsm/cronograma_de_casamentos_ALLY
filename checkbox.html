@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <title>Ally - Check List</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background-color: #f7f5f2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .brand-logo-img {
+            width: 50px;
+            height: auto;
+            display: block;
+            margin: 0 auto 8px;
+        }
+
+        .brand-title {
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 6px;
+        }
+
+        .todo-container {
+            width: 100%;
+            max-width: 450px;
+            min-height: 520px;
+            background-color: #3b2a24;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #task-input {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #fcfaf7;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #3b2a24;
+            text-align: center;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        #task-input::placeholder {
+            color: #b5ada5;
+            font-style: italic;
+        }
+
+        #add-btn {
+            background-color: #fcfaf7;
+            color: #3b2a24;
+            border: none;
+            padding: 8px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: background 0.2s;
+        }
+
+        #add-btn:hover {
+            background-color: #f2eee9;
+        }
+
+        #list-container {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 25px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .task-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-item input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ffffff;
+            border-radius: 2px;
+            background-color: transparent;
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .task-item input[type="checkbox"]:checked {
+            background-color: #ffffff;
+        }
+
+        .task-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #3b2a24;
+            font-size: 14px;
+            font-weight: bold;
+            top: -3px;
+            left: 2px;
+        }
+
+        .task-item.completed span {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            padding: 0 5px;
+        }
+
+        .editing .delete-btn {
+            display: block;
+        }
+
+        .editing input[type="checkbox"] {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .footer-navigation {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        #edit-btn {
+            width: 100%;
+            max-width: 200px;
+            background-color: #fcfaf7;
+            color: #3b2a24;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        #edit-btn:hover {
+            background-color: #f2eee9;
+        }
+
+        #edit-btn.save-mode {
+            background-color: #d9fdd3;
+            color: #128c7e;
+        }
+
+        .back-link {
+            color: #eadecc;
+            font-size: 12px;
+            text-decoration: underline;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="brand-header">
+        <img src="imagens/Logotipo Monograma Elegante Preto.png" class="brand-logo-img" alt="Logo Ally">
+        <h1 class="brand-title">Ally</h1>
+        <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
+    </header>
+
+    <div class="todo-container">
+        <h2>Check List</h2>
+        
+        <input type="text" id="task-input" placeholder="Digite a nova tarefa">
+        <button id="add-btn">Nova Tarefa</button>
+        
+        <div id="list-container"></div>
+        
+        <div class="footer-navigation">
+            <button id="edit-btn">Editar</button>
+            <a href="proxima_pagina.html" class="back-link">← Voltar ao Painel</a>
+        </div>
+    </div>
+
+<script>
+    const taskInput = document.getElementById('task-input');
+    const addBtn = document.getElementById('add-btn');
+    const listContainer = document.getElementById('list-container');
+    const editBtn = document.getElementById('edit-btn');
+    
+    let isEditingMode = false;
+
+    document.addEventListener('DOMContentLoaded', loadTasks);
+
+    function addTask() {
+        if (isEditingMode) {
+            alert("Saia do modo de edição clicando em SALVAR antes de adicionar tarefas.");
+            return;
+        }
+
+        const taskText = taskInput.value.trim();
+        if (taskText === "") return;
+
+        createTaskElement(taskText, false);
+        saveTasksToStorage();
+        
+        taskInput.value = "";
+    }
+
+    function createTaskElement(text, isChecked) {
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('task-item');
+        if (isChecked) itemDiv.classList.add('completed');
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.classList.add('task-content');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = isChecked;
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = text;
+
+        contentWrapper.addEventListener('click', (e) => {
+            if (isEditingMode) return;
+            if (e.target !== checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+            toggleComplete(itemDiv, checkbox.checked);
+        });
+
+        checkbox.addEventListener('change', () => {
+            toggleComplete(itemDiv, checkbox.checked);
+        });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.innerHTML = '🗑️';
+        deleteBtn.addEventListener('click', () => {
+            itemDiv.remove();
+            saveTasksToStorage();
+        });
+
+        contentWrapper.appendChild(checkbox);
+        contentWrapper.appendChild(textSpan);
+        itemDiv.appendChild(contentWrapper);
+        itemDiv.appendChild(deleteBtn);
+        listContainer.appendChild(itemDiv);
+    }
+
+    function toggleComplete(element, isChecked) {
+        if (isChecked) {
+            element.classList.add('completed');
+        } else {
+            element.classList.remove('completed');
+        }
+        saveTasksToStorage();
+    }
+
+    function toggleEditMode() {
+        isEditingMode = !isEditingMode;
+        
+        if (isEditingMode) {
+            listContainer.classList.add('editing');
+            editBtn.textContent = "Salvar";
+            editBtn.classList.add('save-mode');
+            taskInput.disabled = true;
+            addBtn.disabled = true;
+            addBtn.style.opacity = "0.5";
+        } else {
+            listContainer.classList.remove('editing');
+            editBtn.textContent = "Editar";
+            editBtn.classList.remove('save-mode');
+            taskInput.disabled = false;
+            addBtn.disabled = false;
+            addBtn.style.opacity = "1";
+            saveTasksToStorage();
+        }
+    }
+
+    function saveTasksToStorage() {
+        const tasks = [];
+        const pdfTasks = [];
+
+        document.querySelectorAll('.task-item').forEach(item => {
+            const text = item.querySelector('span').textContent;
+            const isChecked = item.querySelector('input[type="checkbox"]').checked;
+
+            tasks.push({ text: text, checked: isChecked });
+
+            // Formatação para gerar no PDF unificado do painel
+            pdfTasks.push({
+                tarefa: text,
+                status: isChecked ? "Concluído" : "Pendente"
+            });
+        });
+
+        // Salva localmente na tela e na chave do PDF
+        localStorage.setItem('my_checklist_funcional', JSON.stringify(tasks));
+        localStorage.setItem('checklist_dados', JSON.stringify(pdfTasks));
+    }
+
+    function loadTasks() {
+        const savedTasks = JSON.parse(localStorage.getItem('my_checklist_funcional')) || [
+            { text: "Degustação do Buffet", checked: true },
+            { text: "Escolher Músicas da Cerimônia", checked: false }
+        ];
+
+        savedTasks.forEach(task => {
+            createTaskElement(task.text, task.checked);
+        });
+
+        saveTasksToStorage();
+    }
+
+    addBtn.addEventListener('click', addTask);
+    taskInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') addTask();
+    });
+    editBtn.addEventListener('click', toggleEditMode);
+</script>
+
+</body>
+</html>
