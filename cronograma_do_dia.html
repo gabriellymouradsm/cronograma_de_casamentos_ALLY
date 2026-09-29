@@ -9,6 +9,15 @@
     <link rel="manifest" href="/site.webmanifest">
     
     <title>Ally - Cronograma do Dia</title>
+
+    <!-- Biblioteca e Conexão do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -299,17 +308,18 @@
     <div class="schedule-container">
         <h2>Cronograma do Dia</h2>
         
-        <div class="input-row">
+        <!-- Área de Adicionar (Apenas Admin) -->
+        <div class="input-row" id="admin-input-row">
             <input type="text" id="time-input" placeholder="00:00" maxlength="5">
             <input type="text" id="task-input" placeholder="Digite o evento do dia">
         </div>
         
-        <button id="add-btn">Adicionar Evento</button>
+        <button id="add-btn" class="admin-control">Adicionar Evento</button>
         
         <div id="schedule-list"></div>
         
         <div class="footer-navigation">
-            <button class="clear-all-btn" onclick="clearAll()">Limpar Tudo</button>
+            <button class="clear-all-btn admin-control" id="clear-all-btn" onclick="clearAll()">Limpar Tudo</button>
             <a href="proxima_pagina.html" class="back-link">← Voltar ao Painel</a>
         </div>
     </div>
@@ -319,18 +329,29 @@
     const taskInput = document.getElementById('task-input');
     const addBtn = document.getElementById('add-btn');
     const scheduleList = document.getElementById('schedule-list');
+    const userRole = localStorage.getItem('user_role');
 
-    document.addEventListener('DOMContentLoaded', loadSchedule);
-
-    timeInput.addEventListener('input', function(e) {
-        let valor = e.target.value.replace(/\D/g, "").slice(0, 4);
-        if (valor.length >= 3) {
-            valor = valor.slice(0, 2) + ":" + valor.slice(2);
+    document.addEventListener('DOMContentLoaded', () => {
+        if (userRole === 'assistant') {
+            document.getElementById('admin-input-row').style.display = 'none';
+            document.querySelectorAll('.admin-control').forEach(el => el.style.display = 'none');
         }
-        e.target.value = valor;
+        loadScheduleFromSupabase();
     });
 
-    function addEvent() {
+    if (timeInput) {
+        timeInput.addEventListener('input', function(e) {
+            let valor = e.target.value.replace(/\D/g, "").slice(0, 4);
+            if (valor.length >= 3) {
+                valor = valor.slice(0, 2) + ":" + valor.slice(2);
+            }
+            e.target.value = valor;
+        });
+    }
+
+    async function addEvent() {
+        if (userRole === 'assistant') return;
+
         const time = timeInput.value.trim();
         const text = taskInput.value.trim();
 
@@ -344,15 +365,47 @@
             return;
         }
 
-        createScheduleItem(time, text, "", false);
-        saveScheduleToStorage();
+        const { error } = await _supabase.from('cronograma_dia').insert([
+            { time: time, text: text, note: "", completed: false }
+        ]);
+
+        if (error) {
+            console.error("Erro ao adicionar evento:", error);
+            return;
+        }
 
         timeInput.value = "";
         taskInput.value = "";
         timeInput.focus();
+        loadScheduleFromSupabase();
     }
 
-    function createScheduleItem(time, text, note = "", completed = false) {
+    async function loadScheduleFromSupabase() {
+        const { data, error } = await _supabase.from('cronograma_dia').select('*');
+
+        if (error) {
+            console.error("Erro ao carregar cronograma:", error);
+            return;
+        }
+
+        scheduleList.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            // Se estiver vazio, insere dados padrões iniciais (opcional)
+            return;
+        }
+
+        // Ordena por horário
+        data.sort((a, b) => a.time.localeCompare(b.time));
+
+        data.forEach(item => {
+            createScheduleItem(item.id, item.time, item.text, item.note || "", item.completed);
+        });
+
+        updatePDFStorage(data);
+    }
+
+    function createScheduleItem(id, time, text, note = "", completed = false) {
         const itemDiv = document.createElement('div');
         itemDiv.classList.add('schedule-item');
         if (completed) itemDiv.classList.add('completed');
@@ -362,9 +415,18 @@
 
         const checkBtn = document.createElement('div');
         checkBtn.classList.add('check-btn');
-        checkBtn.addEventListener('click', () => {
-            itemDiv.classList.toggle('completed');
-            saveScheduleToStorage();
+        checkBtn.addEventListener('click', async () => {
+            const newCompletedState = !itemDiv.classList.contains('completed');
+            
+            const { error } = await _supabase
+                .from('cronograma_dia')
+                .update({ completed: newCompletedState })
+                .eq('id', id);
+
+            if (!error) {
+                itemDiv.classList.toggle('completed');
+                loadScheduleFromSupabase();
+            }
         });
 
         const timeSpan = document.createElement('span');
@@ -378,9 +440,20 @@
         const deleteBtn = document.createElement('button');
         deleteBtn.classList.add('delete-btn');
         deleteBtn.innerHTML = '🗑️';
-        deleteBtn.addEventListener('click', () => {
-            itemDiv.remove();
-            saveScheduleToStorage();
+        
+        if (userRole === 'assistant') {
+            deleteBtn.style.display = 'none';
+        }
+
+        deleteBtn.addEventListener('click', async () => {
+            if (userRole === 'assistant') return;
+
+            if (confirm("Deseja realmente remover este evento?")) {
+                const { error } = await _supabase.from('cronograma_dia').delete().eq('id', id);
+                if (!error) {
+                    loadScheduleFromSupabase();
+                }
+            }
         });
 
         mainRow.appendChild(checkBtn);
@@ -393,73 +466,50 @@
         notesInput.classList.add('notes-input');
         notesInput.placeholder = 'Obs: No horário / Atrasou...';
         notesInput.value = note;
-        notesInput.addEventListener('input', saveScheduleToStorage);
+
+        notesInput.addEventListener('blur', async () => {
+            await _supabase
+                .from('cronograma_dia')
+                .update({ note: notesInput.value })
+                .eq('id', id);
+            
+            loadScheduleFromSupabase();
+        });
 
         itemDiv.appendChild(mainRow);
         itemDiv.appendChild(notesInput);
 
         scheduleList.appendChild(itemDiv);
-        sortList();
     }
 
-    function sortList() {
-        const items = Array.from(scheduleList.children);
-        items.sort((a, b) => {
-            const timeA = a.querySelector('.schedule-time').textContent;
-            const timeB = b.querySelector('.schedule-time').textContent;
-            return timeA.localeCompare(timeB);
-        });
-        items.forEach(item => scheduleList.appendChild(item));
-    }
+    async function clearAll() {
+        if (userRole === 'assistant') return;
 
-    function saveScheduleToStorage() {
-        const scheduleData = [];
-        const pdfScheduleData = [];
-
-        document.querySelectorAll('.schedule-item').forEach(item => {
-            const time = item.querySelector('.schedule-time').textContent;
-            const text = item.querySelector('.schedule-text').textContent;
-            const note = item.querySelector('.notes-input').value;
-            const completed = item.classList.contains('completed');
-
-            scheduleData.push({ time, text, note, completed });
-
-            pdfScheduleData.push({
-                horario: time,
-                atividade: note ? `${text} (Obs: ${note})` : text
-            });
-        });
-
-        localStorage.setItem('ally_cronograma_dia', JSON.stringify(scheduleData));
-        localStorage.setItem('cronograma_dados', JSON.stringify(pdfScheduleData));
-    }
-
-    function loadSchedule() {
-        const savedData = JSON.parse(localStorage.getItem('ally_cronograma_dia')) || [
-            { time: "08:00", text: "Dia de noiva / Cabelo e Maquiagem", note: "No horário", completed: false },
-            { time: "15:00", text: "Chegada dos fotógrafos", note: "", completed: false },
-            { time: "17:00", text: "Início da Cerimônia", note: "", completed: false }
-        ];
-
-        savedData.forEach(item => {
-            createScheduleItem(item.time, item.text, item.note, item.completed);
-        });
-
-        saveScheduleToStorage();
-    }
-
-    function clearAll() {
         if (confirm("Deseja apagar todo o cronograma do dia?")) {
-            localStorage.removeItem('ally_cronograma_dia');
-            localStorage.removeItem('cronograma_dados');
-            scheduleList.innerHTML = '';
+            const { error } = await _supabase.from('cronograma_dia').delete().neq('id', 0); // Apaga todos
+            if (!error) {
+                scheduleList.innerHTML = '';
+                localStorage.removeItem('cronograma_dados');
+            }
         }
     }
 
-    addBtn.addEventListener('click', addEvent);
-    taskInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') addEvent();
-    });
+    function updatePDFStorage(data) {
+        const pdfScheduleData = data.map(item => ({
+            horario: item.time,
+            atividade: item.note ? `${item.text} (Obs: ${item.note})` : item.text
+        }));
+        localStorage.setItem('cronograma_dados', JSON.stringify(pdfScheduleData));
+    }
+
+    if (addBtn) {
+        addBtn.addEventListener('click', addEvent);
+    }
+    if (taskInput) {
+        taskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addEvent();
+        });
+    }
 </script>
 
 </body>
