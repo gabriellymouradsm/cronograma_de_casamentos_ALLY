@@ -69,7 +69,7 @@
         .schedule-container {
             width: 100%;
             max-width: 500px;
-            min-height: 540px;
+            min-height: 560px;
             background-color: #3b2a24;
             border-radius: 28px;
             padding: 30px 25px;
@@ -87,42 +87,49 @@
             text-align: center;
         }
 
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
         .input-row {
             display: flex;
             gap: 10px;
             width: 100%;
-            margin-bottom: 15px;
         }
 
-        #time-input {
-            width: 100px;
-            padding: 12px 10px;
+        .input-field {
+            padding: 12px 14px;
             background-color: #fcfaf7;
             border: none;
             border-radius: 12px;
-            font-size: 15px;
-            color: #3b2a24;
-            text-align: center;
-            outline: none;
-            font-family: Arial, sans-serif;
-            font-weight: bold;
-        }
-
-        #task-input {
-            flex: 1;
-            padding: 12px 16px;
-            background-color: #fcfaf7;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
+            font-size: 14px;
             color: #3b2a24;
             outline: none;
         }
 
-        #task-input::placeholder, #time-input::placeholder {
+        .input-field::placeholder {
             color: #b5ada5;
             font-style: italic;
-            font-family: 'Georgia', serif;
+        }
+
+        .input-time {
+            width: 130px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .input-activity {
+            flex: 1;
+        }
+
+        .input-note {
+            width: 100%;
+            resize: vertical;
+            min-height: 45px;
         }
 
         #add-btn {
@@ -130,12 +137,11 @@
             background-color: #fcfaf7;
             color: #3b2a24;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 12px;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 20px;
             transition: background 0.2s;
             text-transform: uppercase;
         }
@@ -159,12 +165,20 @@
         .schedule-item {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.06);
-            padding: 12px 14px;
+            padding: 12px 16px;
             border-radius: 14px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             animation: fadeIn 0.2s ease;
+        }
+
+        .schedule-item.completed {
+            opacity: 0.6;
+        }
+
+        .schedule-item.completed .schedule-text {
+            text-decoration: line-through;
         }
 
         @keyframes fadeIn {
@@ -172,61 +186,59 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .schedule-main-row {
+        .schedule-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            width: 100%;
-        }
-
-        .check-btn {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            background: transparent;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-
-        .schedule-item.completed .check-btn {
-            background-color: #ffffff;
-        }
-
-        .schedule-item.completed .check-btn::after {
-            content: '✓';
-            color: #3b2a24;
-            font-size: 13px;
-            font-weight: bold;
         }
 
         .schedule-time {
             background-color: #fcfaf7;
             color: #3b2a24;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: bold;
             font-family: Arial, sans-serif;
-            min-width: 65px;
-            text-align: center;
         }
 
         .schedule-text {
-            flex: 1;
             color: #ffffff;
             font-size: 15px;
+            font-weight: bold;
             font-family: Arial, sans-serif;
-            word-break: break-word;
         }
 
-        .schedule-item.completed .schedule-text {
-            text-decoration: line-through;
-            opacity: 0.5;
+        .schedule-note {
+            color: #d1c4bc;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            font-style: italic;
+        }
+
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .status-concluido {
+            background-color: #d9fdd3;
+            color: #128c7e;
+        }
+
+        .status-pendente {
+            background-color: #fff3cd;
+            color: #856404;
         }
 
         .delete-btn {
@@ -236,28 +248,6 @@
             font-size: 16px;
             cursor: pointer;
             padding: 2px;
-            transition: transform 0.2s;
-        }
-
-        .delete-btn:hover {
-            transform: scale(1.15);
-        }
-
-        .notes-input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            padding: 6px 12px;
-            color: #eadecc;
-            font-size: 12px;
-            font-family: Arial, sans-serif;
-            outline: none;
-        }
-
-        .notes-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-            font-style: italic;
         }
 
         .footer-navigation {
@@ -302,213 +292,184 @@
     <header class="brand-header">
         <img src="imagens/Logotipo Monograma Elegante Preto.png" class="brand-logo-img" alt="Logo Ally">
         <h1 class="brand-title">Ally</h1>
-        <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
+        <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
     </header>
 
     <div class="schedule-container">
         <h2>Cronograma do Dia</h2>
         
-        <!-- Área de Adicionar (Apenas Admin) -->
-        <div class="input-row" id="admin-input-row">
-            <input type="text" id="time-input" placeholder="00:00" maxlength="5">
-            <input type="text" id="task-input" placeholder="Digite o evento do dia">
+        <!-- Formulário de Cadastro (Admin Apenas) -->
+        <div class="form-grid" id="admin-form-section">
+            <div class="input-row">
+                <input type="time" id="time-input" class="input-field input-time">
+                <input type="text" id="activity-input" class="input-field input-activity" placeholder="Atividade (ex: Entrada da Noiva)">
+            </div>
+            <textarea id="note-input" class="input-field input-note" placeholder="Observações opcionais (ex: portão principal, som...)" rows="2"></textarea>
+            <button id="add-btn" onclick="addScheduleItem()">Adicionar ao Cronograma</button>
         </div>
-        
-        <button id="add-btn" class="admin-control">Adicionar Evento</button>
         
         <div id="schedule-list"></div>
         
         <div class="footer-navigation">
-            <button class="clear-all-btn admin-control" id="clear-all-btn" onclick="clearAll()">Limpar Tudo</button>
+            <button class="clear-all-btn" id="btn-clear-all" onclick="clearAll()">Limpar Todos</button>
             <a href="proxima_pagina.html" class="back-link">← Voltar ao Painel</a>
         </div>
     </div>
 
 <script>
-    const timeInput = document.getElementById('time-input');
-    const taskInput = document.getElementById('task-input');
-    const addBtn = document.getElementById('add-btn');
-    const scheduleList = document.getElementById('schedule-list');
     const userRole = localStorage.getItem('user_role');
+    const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
+    let scheduleItems = [];
 
     document.addEventListener('DOMContentLoaded', () => {
         if (userRole === 'assistant') {
-            document.getElementById('admin-input-row').style.display = 'none';
-            document.querySelectorAll('.admin-control').forEach(el => el.style.display = 'none');
+            document.getElementById('admin-form-section').style.display = 'none';
+            document.getElementById('btn-clear-all').style.display = 'none';
         }
         loadScheduleFromSupabase();
     });
 
-    if (timeInput) {
-        timeInput.addEventListener('input', function(e) {
-            let valor = e.target.value.replace(/\D/g, "").slice(0, 4);
-            if (valor.length >= 3) {
-                valor = valor.slice(0, 2) + ":" + valor.slice(2);
-            }
-            e.target.value = valor;
-        });
-    }
-
-    async function addEvent() {
-        if (userRole === 'assistant') return;
-
-        const time = timeInput.value.trim();
-        const text = taskInput.value.trim();
-
-        if (!time || time.length < 5) {
-            alert("Por favor, digite um horário válido no formato HH:MM.");
-            return;
-        }
-
-        if (!text) {
-            alert("Por favor, digite a descrição do evento.");
-            return;
-        }
-
-        const { error } = await _supabase.from('cronograma_dia').insert([
-            { time: time, text: text, note: "", completed: false }
-        ]);
-
-        if (error) {
-            console.error("Erro ao adicionar evento:", error);
-            return;
-        }
-
-        timeInput.value = "";
-        taskInput.value = "";
-        timeInput.focus();
-        loadScheduleFromSupabase();
-    }
-
     async function loadScheduleFromSupabase() {
-        const { data, error } = await _supabase.from('cronograma_dia').select('*');
+        const { data, error } = await _supabase
+            .from('cronograma_dia')
+            .select('*')
+            .eq('casal_nome', casalAtivo);
 
         if (error) {
             console.error("Erro ao carregar cronograma:", error);
             return;
         }
 
-        scheduleList.innerHTML = '';
+        scheduleItems = data || [];
+        sortSchedule();
+        renderSchedule();
+        updatePDFStorage();
+    }
 
-        if (!data || data.length === 0) {
-            // Se estiver vazio, insere dados padrões iniciais (opcional)
+    function sortSchedule() {
+        scheduleItems.sort((a, b) => (a.time || "").localeCompare(b.time || ""));
+    }
+
+    function updatePDFStorage() {
+        const pdfData = scheduleItems.map(item => ({
+            horario: item.time || '-',
+            atividade: item.note ? `${item.text} (Obs: ${item.note})` : item.text || '-'
+        }));
+        localStorage.setItem('cronograma_dados', JSON.stringify(pdfData));
+    }
+
+    async function addScheduleItem() {
+        if (userRole === 'assistant') return;
+
+        const time = document.getElementById('time-input').value;
+        const text = document.getElementById('activity-input').value.trim();
+        const note = document.getElementById('note-input').value.trim();
+
+        if (!time || !text) {
+            alert("Por favor, preencha o horário e a atividade.");
             return;
         }
 
-        // Ordena por horário
-        data.sort((a, b) => a.time.localeCompare(b.time));
+        const { error } = await _supabase.from('cronograma_dia').insert([{
+            time,
+            text,
+            note,
+            completed: false,
+            casal_nome: casalAtivo
+        }]);
 
-        data.forEach(item => {
-            createScheduleItem(item.id, item.time, item.text, item.note || "", item.completed);
-        });
-
-        updatePDFStorage(data);
-    }
-
-    function createScheduleItem(id, time, text, note = "", completed = false) {
-        const itemDiv = document.createElement('div');
-        itemDiv.classList.add('schedule-item');
-        if (completed) itemDiv.classList.add('completed');
-
-        const mainRow = document.createElement('div');
-        mainRow.classList.add('schedule-main-row');
-
-        const checkBtn = document.createElement('div');
-        checkBtn.classList.add('check-btn');
-        checkBtn.addEventListener('click', async () => {
-            const newCompletedState = !itemDiv.classList.contains('completed');
-            
-            const { error } = await _supabase
-                .from('cronograma_dia')
-                .update({ completed: newCompletedState })
-                .eq('id', id);
-
-            if (!error) {
-                itemDiv.classList.toggle('completed');
-                loadScheduleFromSupabase();
-            }
-        });
-
-        const timeSpan = document.createElement('span');
-        timeSpan.classList.add('schedule-time');
-        timeSpan.textContent = time;
-
-        const textSpan = document.createElement('span');
-        textSpan.classList.add('schedule-text');
-        textSpan.textContent = text;
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.classList.add('delete-btn');
-        deleteBtn.innerHTML = '🗑️';
-        
-        if (userRole === 'assistant') {
-            deleteBtn.style.display = 'none';
+        if (error) {
+            console.error("Erro ao adicionar atividade:", error);
+            return;
         }
 
-        deleteBtn.addEventListener('click', async () => {
-            if (userRole === 'assistant') return;
+        document.getElementById('time-input').value = "";
+        document.getElementById('activity-input').value = "";
+        document.getElementById('note-input').value = "";
 
-            if (confirm("Deseja realmente remover este evento?")) {
-                const { error } = await _supabase.from('cronograma_dia').delete().eq('id', id);
-                if (!error) {
-                    loadScheduleFromSupabase();
-                }
+        loadScheduleFromSupabase();
+    }
+
+    function renderSchedule() {
+        const listContainer = document.getElementById('schedule-list');
+        listContainer.innerHTML = '';
+
+        if (scheduleItems.length === 0) {
+            listContainer.innerHTML = `<p style="text-align: center; color: #b5ada5; font-size: 13px; padding: 20px;">Nenhuma atividade cadastrada.</p>`;
+            return;
+        }
+
+        scheduleItems.forEach((item) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('schedule-item');
+            if (item.completed) itemDiv.classList.add('completed');
+
+            const headerDiv = document.createElement('div');
+            headerDiv.classList.add('schedule-header');
+
+            const timeSpan = document.createElement('span');
+            timeSpan.classList.add('schedule-time');
+            timeSpan.textContent = item.time || '--:--';
+
+            const actionRow = document.createElement('div');
+            actionRow.classList.add('action-row');
+
+            const statusSpan = document.createElement('span');
+            statusSpan.classList.add('status-badge');
+            statusSpan.textContent = item.completed ? 'Concluído' : 'Pendente';
+            statusSpan.className = `status-badge ${item.completed ? 'status-concluido' : 'status-pendente'}`;
+
+            statusSpan.addEventListener('click', async () => {
+                await _supabase
+                    .from('cronograma_dia')
+                    .update({ completed: !item.completed })
+                    .eq('id', item.id);
+                loadScheduleFromSupabase();
+            });
+
+            actionRow.appendChild(statusSpan);
+
+            if (userRole !== 'assistant') {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.innerHTML = '🗑️';
+                deleteBtn.title = 'Remover Atividade';
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm(`Deseja remover a atividade "${item.text}"?`)) {
+                        await _supabase.from('cronograma_dia').delete().eq('id', item.id);
+                        loadScheduleFromSupabase();
+                    }
+                });
+                actionRow.appendChild(deleteBtn);
             }
+
+            headerDiv.appendChild(timeSpan);
+            headerDiv.appendChild(actionRow);
+
+            const textSpan = document.createElement('span');
+            textSpan.classList.add('schedule-text');
+            textSpan.textContent = item.text;
+
+            itemDiv.appendChild(headerDiv);
+            itemDiv.appendChild(textSpan);
+
+            if (item.note) {
+                const noteSpan = document.createElement('span');
+                noteSpan.classList.add('schedule-note');
+                noteSpan.textContent = `obs: ${item.note}`;
+                itemDiv.appendChild(noteSpan);
+            }
+
+            listContainer.appendChild(itemDiv);
         });
-
-        mainRow.appendChild(checkBtn);
-        mainRow.appendChild(timeSpan);
-        mainRow.appendChild(textSpan);
-        mainRow.appendChild(deleteBtn);
-
-        const notesInput = document.createElement('input');
-        notesInput.type = 'text';
-        notesInput.classList.add('notes-input');
-        notesInput.placeholder = 'Obs: No horário / Atrasou...';
-        notesInput.value = note;
-
-        notesInput.addEventListener('blur', async () => {
-            await _supabase
-                .from('cronograma_dia')
-                .update({ note: notesInput.value })
-                .eq('id', id);
-            
-            loadScheduleFromSupabase();
-        });
-
-        itemDiv.appendChild(mainRow);
-        itemDiv.appendChild(notesInput);
-
-        scheduleList.appendChild(itemDiv);
     }
 
     async function clearAll() {
         if (userRole === 'assistant') return;
-
-        if (confirm("Deseja apagar todo o cronograma do dia?")) {
-            const { error } = await _supabase.from('cronograma_dia').delete().neq('id', 0); // Apaga todos
-            if (!error) {
-                scheduleList.innerHTML = '';
-                localStorage.removeItem('cronograma_dados');
-            }
+        if (confirm("Deseja apagar todo o cronograma deste casal?")) {
+            await _supabase.from('cronograma_dia').delete().eq('casal_nome', casalAtivo);
+            loadScheduleFromSupabase();
         }
-    }
-
-    function updatePDFStorage(data) {
-        const pdfScheduleData = data.map(item => ({
-            horario: item.time,
-            atividade: item.note ? `${item.text} (Obs: ${item.note})` : item.text
-        }));
-        localStorage.setItem('cronograma_dados', JSON.stringify(pdfScheduleData));
-    }
-
-    if (addBtn) {
-        addBtn.addEventListener('click', addEvent);
-    }
-    if (taskInput) {
-        taskInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') addEvent();
-        });
     }
 </script>
 
