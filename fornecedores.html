@@ -9,6 +9,18 @@
     <link rel="manifest" href="/site.webmanifest">
     
     <title>Ally - Fornecedores</title>
+
+    <!-- Biblioteca e Conexão do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <!-- Biblioteca SheetJS para Leitura de Arquivos Excel / CSV -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -78,12 +90,56 @@
             text-align: center;
         }
 
+        /* Bloco de Importação por Planilha */
+        .excel-import-box {
+            width: 100%;
+            background-color: #47362e;
+            border: 1px solid #5d463b;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .excel-import-box p {
+            font-size: 11px;
+            color: #d1c4bc;
+            margin-bottom: 8px;
+            font-family: Arial, sans-serif;
+            font-weight: 500;
+        }
+
+        .excel-btn {
+            background-color: #d9fdd3;
+            color: #128c7e;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s, transform 0.1s;
+            font-family: Arial, sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .excel-btn:hover {
+            background-color: #c2f7b8;
+        }
+
+        .excel-btn:active {
+            transform: scale(0.97);
+        }
+
         .form-grid {
             display: flex;
             flex-direction: column;
             gap: 10px;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .input-row {
@@ -129,13 +185,37 @@
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             transition: background 0.2s;
             text-transform: uppercase;
         }
 
         #add-btn:hover {
             background-color: #f2eee9;
+        }
+
+        /* Barra de Busca / Filtro */
+        .search-box {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 11px 14px;
+            background-color: #47362e;
+            border: 1px solid #5d463b;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #ffffff;
+            outline: none;
+            font-family: Arial, sans-serif;
+        }
+
+        .search-input::placeholder {
+            color: #b5ada5;
+            font-style: italic;
+            font-family: 'Georgia', serif;
         }
 
         #suppliers-list {
@@ -145,7 +225,7 @@
             flex-direction: column;
             gap: 12px;
             margin-bottom: 20px;
-            max-height: 280px;
+            max-height: 320px;
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -153,7 +233,7 @@
         .supplier-item {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.06);
             padding: 12px 16px;
             border-radius: 14px;
@@ -164,6 +244,14 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .supplier-name {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            margin-bottom: 2px;
         }
 
         .supplier-header {
@@ -183,13 +271,6 @@
             font-family: Arial, sans-serif;
         }
 
-        .supplier-name {
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: Arial, sans-serif;
-        }
-
         .supplier-details {
             display: flex;
             justify-content: space-between;
@@ -197,7 +278,53 @@
             font-size: 13px;
             color: #eadecc;
             font-family: Arial, sans-serif;
-            margin-top: 2px;
+        }
+
+        /* Container do Horário */
+        .time-input-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .time-input-container span {
+            font-size: 11px;
+            color: #d1c4bc;
+        }
+
+        .card-time-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 12px;
+            outline: none;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+        }
+
+        /* Campo de Observações embaixo do Horário */
+        .card-notes-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #ffffff;
+            outline: none;
+            font-family: Arial, sans-serif;
+            resize: vertical;
+            min-height: 34px;
+        }
+
+        .card-notes-input::placeholder {
+            color: #b5ada5;
+            font-style: italic;
+            font-family: 'Georgia', serif;
         }
 
         .status-badge {
@@ -222,21 +349,95 @@
         .action-row {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .delete-btn {
+        .edit-btn, .delete-btn {
             background: none;
             border: none;
-            color: #ff6b6b;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             padding: 2px;
             transition: transform 0.2s;
         }
 
+        .edit-btn {
+            color: #d1c4bc;
+        }
+
+        .edit-btn:hover {
+            color: #ffffff;
+            transform: scale(1.15);
+        }
+
+        .delete-btn {
+            color: #ff6b6b;
+        }
+
         .delete-btn:hover {
             transform: scale(1.15);
+        }
+
+        /* Estilo do Modal de Edição */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background-color: #3b2a24;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-card h3 {
+            color: #ffffff;
+            font-size: 20px;
+            text-align: center;
+            font-family: 'Georgia', serif;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .modal-save-btn {
+            background-color: #fcfaf7;
+            color: #3b2a24;
+        }
+
+        .modal-cancel-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
         }
 
         .footer-navigation {
@@ -291,7 +492,17 @@
     <div class="suppliers-container">
         <h2>Fornecedores</h2>
         
-        <div class="form-grid">
+        <!-- Bloco de Importação por Planilha (Admin Apenas) -->
+        <div class="excel-import-box" id="admin-excel-box">
+            <p>Possui uma planilha com os fornecedores em Excel ou CSV?</p>
+            <input type="file" id="excel-input" accept=".xlsx, .xls, .csv" class="hidden" style="display: none;" onchange="handleExcelUpload(event)">
+            <button type="button" class="excel-btn" onclick="triggerExcelClick()">
+                📥 IMPORTAR LISTA (EXCEL / CSV)
+            </button>
+        </div>
+
+        <!-- Formulário de Cadastro (Admin Apenas) -->
+        <div class="form-grid" id="admin-form-section">
             <div class="input-row">
                 <input type="text" id="category-input" class="input-field input-half" placeholder="Serviço (ex: Buffet)">
                 <input type="text" id="name-input" class="input-field input-half" placeholder="Nome do Fornecedor">
@@ -304,15 +515,37 @@
                     <option value="Confirmado">Status: Confirmado</option>
                 </select>
             </div>
+            <button id="add-btn">Adicionar Fornecedor</button>
         </div>
-        
-        <button id="add-btn">Adicionar Fornecedor</button>
+
+        <!-- Barra de Busca / Filtro -->
+        <div class="search-box">
+            <input type="text" id="search-input" class="search-input" placeholder="🔍 Buscar por nome do responsável ou serviço..." oninput="renderSuppliers()">
+        </div>
         
         <div id="suppliers-list"></div>
         
         <div class="footer-navigation">
-            <button class="clear-all-btn" onclick="clearAll()">Limpar Todos</button>
+            <button class="clear-all-btn" id="btn-clear-all" onclick="clearAll()">Limpar Todos</button>
             <a href="proxima_pagina.html" class="back-link">← Voltar ao Painel</a>
+        </div>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>Editar Fornecedor</h3>
+            <input type="text" id="edit-category" class="input-field" placeholder="Serviço (ex: Buffet)">
+            <input type="text" id="edit-name" class="input-field" placeholder="Nome do Fornecedor">
+            <input type="text" id="edit-phone" class="input-field" placeholder="Telefone / Whats">
+            <select id="edit-status" class="input-field">
+                <option value="Pendente">Status: Pendente</option>
+                <option value="Confirmado">Status: Confirmado</option>
+            </select>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-cancel-btn" onclick="closeEditModal()">Cancelar</button>
+                <button type="button" class="modal-btn modal-save-btn" onclick="saveEditedSupplier()">Salvar</button>
+            </div>
         </div>
     </div>
 
@@ -323,10 +556,49 @@
     const statusSelect = document.getElementById('status-select');
     const addBtn = document.getElementById('add-btn');
     const suppliersList = document.getElementById('suppliers-list');
+    const searchInput = document.getElementById('search-input');
+    const userRole = localStorage.getItem('user_role');
 
-    document.addEventListener('DOMContentLoaded', loadSuppliers);
+    let suppliers = [];
+    let editingId = null;
 
-    function addSupplier() {
+    document.addEventListener('DOMContentLoaded', () => {
+        if (userRole === 'assistant') {
+            document.getElementById('admin-excel-box').style.display = 'none';
+            document.getElementById('admin-form-section').style.display = 'none';
+            document.getElementById('btn-clear-all').style.display = 'none';
+        }
+        loadSuppliersFromSupabase();
+    });
+
+    async function loadSuppliersFromSupabase() {
+        const { data, error } = await _supabase.from('fornecedores').select('*');
+        if (error) {
+            console.error("Erro ao carregar fornecedores:", error);
+            return;
+        }
+        suppliers = data || [];
+        sortSuppliers();
+        renderSuppliers();
+        updatePDFStorage();
+    }
+
+    function sortSuppliers() {
+        suppliers.sort((a, b) => a.name.trim().localeCompare(b.name.trim(), 'pt-BR', { sensitivity: 'accent' }));
+    }
+
+    function updatePDFStorage() {
+        const pdfSuppliersData = suppliers.map(s => ({
+            categoria: s.category,
+            nome: s.name,
+            contato: `${s.phone ? '📞 ' + s.phone + ' ' : ''}${s.time ? '⏰ ' + s.time : ''}${s.notes ? ' | Obs: ' + s.notes : ''} (${s.status})`.trim()
+        }));
+        localStorage.setItem('fornecedores_dados', JSON.stringify(pdfSuppliersData));
+    }
+
+    async function addSupplier() {
+        if (userRole === 'assistant') return;
+
         const category = categoryInput.value.trim();
         const name = nameInput.value.trim();
         const phone = phoneInput.value.trim();
@@ -337,72 +609,203 @@
             return;
         }
 
-        createSupplierItem(category, name, phone, status);
-        saveSuppliersToStorage();
+        const { error } = await _supabase.from('fornecedores').insert([{
+            category, name, phone, time: "", notes: "", status
+        }]);
+
+        if (error) {
+            console.error("Erro ao adicionar fornecedor:", error);
+            return;
+        }
 
         categoryInput.value = "";
         nameInput.value = "";
         phoneInput.value = "";
         statusSelect.value = "Pendente";
         categoryInput.focus();
+
+        loadSuppliersFromSupabase();
     }
 
-    function createSupplierItem(category, name, phone, status) {
-        const itemDiv = document.createElement('div');
-        itemDiv.classList.add('supplier-item');
+    function renderSuppliers() {
+        suppliersList.innerHTML = '';
+        const searchTerm = searchInput.value.toLowerCase().trim();
 
-        const headerDiv = document.createElement('div');
-        headerDiv.classList.add('supplier-header');
+        const filteredSuppliers = suppliers.filter(s => 
+            s.name.toLowerCase().includes(searchTerm) || 
+            s.category.toLowerCase().includes(searchTerm) ||
+            s.phone.toLowerCase().includes(searchTerm) ||
+            (s.time && s.time.includes(searchTerm)) ||
+            (s.notes && s.notes.toLowerCase().includes(searchTerm))
+        );
 
-        const categorySpan = document.createElement('span');
-        categorySpan.classList.add('supplier-category');
-        categorySpan.textContent = category;
+        if (filteredSuppliers.length === 0) {
+            suppliersList.innerHTML = `<p style="text-align: center; color: #b5ada5; font-size: 13px; padding: 20px;">Nenhum fornecedor encontrado.</p>`;
+            return;
+        }
 
-        const nameSpan = document.createElement('span');
-        nameSpan.classList.add('supplier-name');
-        nameSpan.textContent = name;
+        filteredSuppliers.forEach((s) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('supplier-item');
 
-        headerDiv.appendChild(categorySpan);
-        headerDiv.appendChild(nameSpan);
+            const nameSpan = document.createElement('span');
+            nameSpan.classList.add('supplier-name');
+            nameSpan.textContent = s.name;
 
-        const detailsDiv = document.createElement('div');
-        detailsDiv.classList.add('supplier-details');
+            const headerDiv = document.createElement('div');
+            headerDiv.classList.add('supplier-header');
 
-        const infoSpan = document.createElement('span');
-        infoSpan.textContent = phone ? `📞 ${phone}` : '';
+            const categorySpan = document.createElement('span');
+            categorySpan.classList.add('supplier-category');
+            categorySpan.textContent = s.category;
 
-        const actionRow = document.createElement('div');
-        actionRow.classList.add('action-row');
+            headerDiv.appendChild(categorySpan);
 
-        const statusSpan = document.createElement('span');
-        statusSpan.classList.add('status-badge');
-        updateStatusBadge(statusSpan, status);
+            const detailsDiv = document.createElement('div');
+            detailsDiv.classList.add('supplier-details');
 
-        statusSpan.addEventListener('click', () => {
-            const currentStatus = statusSpan.textContent;
-            const newStatus = currentStatus === 'Confirmado' ? 'Pendente' : 'Confirmado';
-            updateStatusBadge(statusSpan, newStatus);
-            saveSuppliersToStorage();
+            const infoSpan = document.createElement('span');
+            infoSpan.textContent = s.phone ? `📞 ${s.phone}` : '';
+
+            // Container do Horário
+            const timeContainer = document.createElement('div');
+            timeContainer.classList.add('time-input-container');
+            
+            const timeLabel = document.createElement('span');
+            timeLabel.textContent = '⏰';
+
+            const timeInput = document.createElement('input');
+            timeInput.type = 'time';
+            timeInput.classList.add('card-time-input');
+            timeInput.value = s.time || '';
+            timeInput.title = 'Horário de Chegada';
+            
+            timeInput.addEventListener('change', async () => {
+                await _supabase.from('fornecedores').update({ time: timeInput.value }).eq('id', s.id);
+                loadSuppliersFromSupabase();
+            });
+
+            timeContainer.appendChild(timeLabel);
+            timeContainer.appendChild(timeInput);
+
+            // Linha de ações (Status, Editar, Excluir)
+            const actionRow = document.createElement('div');
+            actionRow.classList.add('action-row');
+
+            const statusSpan = document.createElement('span');
+            statusSpan.classList.add('status-badge');
+            updateStatusBadge(statusSpan, s.status);
+
+            statusSpan.addEventListener('click', async () => {
+                const newStatus = s.status === 'Confirmado' ? 'Pendente' : 'Confirmado';
+                await _supabase.from('fornecedores').update({ status: newStatus }).eq('id', s.id);
+                loadSuppliersFromSupabase();
+            });
+
+            actionRow.appendChild(statusSpan);
+
+            if (userRole !== 'assistant') {
+                const editBtn = document.createElement('button');
+                editBtn.classList.add('edit-btn');
+                editBtn.innerHTML = '✏️';
+                editBtn.title = 'Editar Fornecedor';
+                editBtn.addEventListener('click', () => {
+                    openEditModal(s.id);
+                });
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.innerHTML = '🗑️';
+                deleteBtn.title = 'Remover Fornecedor';
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm(`Deseja realmente remover o fornecedor "${s.name}"?`)) {
+                        await _supabase.from('fornecedores').delete().eq('id', s.id);
+                        loadSuppliersFromSupabase();
+                    }
+                });
+
+                actionRow.appendChild(editBtn);
+                actionRow.appendChild(deleteBtn);
+            }
+
+            detailsDiv.appendChild(infoSpan);
+            detailsDiv.appendChild(timeContainer);
+
+            // Campo de Observações embaixo do horário
+            const notesInput = document.createElement('textarea');
+            notesInput.classList.add('card-notes-input');
+            notesInput.placeholder = 'Adicionar observações (ex: portão lateral, restrições...)';
+            notesInput.value = s.notes || '';
+
+            notesInput.addEventListener('blur', async () => {
+                await _supabase.from('fornecedores').update({ notes: notesInput.value }).eq('id', s.id);
+                loadSuppliersFromSupabase();
+            });
+
+            itemDiv.appendChild(nameSpan);
+            itemDiv.appendChild(headerDiv);
+            itemDiv.appendChild(detailsDiv);
+            itemDiv.appendChild(notesInput);
+            
+            const footerCardRow = document.createElement('div');
+            footerCardRow.style.display = 'flex';
+            footerCardRow.style.justifyContent = 'space-between';
+            footerCardRow.style.alignItems = 'center';
+            footerCardRow.style.width = '100%';
+            footerCardRow.style.marginTop = '2px';
+            
+            const emptyPlaceholder = document.createElement('span');
+            footerCardRow.appendChild(emptyPlaceholder);
+            footerCardRow.appendChild(actionRow);
+
+            itemDiv.appendChild(footerCardRow);
+
+            suppliersList.appendChild(itemDiv);
         });
+    }
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.classList.add('delete-btn');
-        deleteBtn.innerHTML = '🗑️';
-        deleteBtn.addEventListener('click', () => {
-            itemDiv.remove();
-            saveSuppliersToStorage();
-        });
+    function openEditModal(id) {
+        if (userRole === 'assistant') return;
+        editingId = id;
+        const s = suppliers.find(item => item.id === id);
+        if (!s) return;
 
-        actionRow.appendChild(statusSpan);
-        actionRow.appendChild(deleteBtn);
+        document.getElementById('edit-category').value = s.category;
+        document.getElementById('edit-name').value = s.name;
+        document.getElementById('edit-phone').value = s.phone || '';
+        document.getElementById('edit-status').value = s.status;
+        document.getElementById('edit-modal').style.display = 'flex';
+    }
 
-        detailsDiv.appendChild(infoSpan);
-        detailsDiv.appendChild(actionRow);
+    function closeEditModal() {
+        document.getElementById('edit-modal').style.display = 'none';
+        editingId = null;
+    }
 
-        itemDiv.appendChild(headerDiv);
-        itemDiv.appendChild(detailsDiv);
+    async function saveEditedSupplier() {
+        if (userRole === 'assistant' || editingId === null) return;
 
-        suppliersList.appendChild(itemDiv);
+        const newCategory = document.getElementById('edit-category').value.trim();
+        const newName = document.getElementById('edit-name').value.trim();
+        const newPhone = document.getElementById('edit-phone').value.trim();
+        const newStatus = document.getElementById('edit-status').value;
+
+        if (!newCategory || !newName) {
+            alert("Por favor, preencha o serviço e o nome.");
+            return;
+        }
+
+        const { error } = await _supabase.from('fornecedores').update({
+            category: newCategory,
+            name: newName,
+            phone: newPhone,
+            status: newStatus
+        }).eq('id', editingId);
+
+        if (!error) {
+            loadSuppliersFromSupabase();
+            closeEditModal();
+        }
     }
 
     function updateStatusBadge(element, status) {
@@ -414,56 +817,96 @@
         }
     }
 
-    function saveSuppliersToStorage() {
-        const suppliersData = [];
-        const pdfSuppliersData = [];
-
-        document.querySelectorAll('.supplier-item').forEach(item => {
-            const category = item.querySelector('.supplier-category').textContent;
-            const name = item.querySelector('.supplier-name').textContent;
-            const detailsText = item.querySelector('.supplier-details span').textContent;
-            const status = item.querySelector('.status-badge').textContent;
-
-            let phone = detailsText.includes('📞') ? detailsText.replace('📞', '').trim() : '';
-
-            suppliersData.push({ category, name, phone, status });
-
-            // Formatação para a geração do PDF unificado em proxima_pagina.html
-            pdfSuppliersData.push({
-                categoria: category,
-                nome: name,
-                contato: phone ? `${phone} (${status})` : `Status: ${status}`
-            });
-        });
-
-        // Salva na chave local da tela e na chave unificada do PDF
-        localStorage.setItem('ally_fornecedores', JSON.stringify(suppliersData));
-        localStorage.setItem('fornecedores_dados', JSON.stringify(pdfSuppliersData));
+    function triggerExcelClick() {
+        if (userRole === 'assistant') return;
+        document.getElementById('excel-input').click();
     }
 
-    function loadSuppliers() {
-        const savedData = JSON.parse(localStorage.getItem('ally_fornecedores')) || [
-            { category: "Buffet", name: "Gourmet Festas", phone: "(11) 98888-7777", status: "Confirmado" },
-            { category: "Fotografia", name: "Luz & Arte", phone: "(11) 97777-6666", status: "Pendente" }
-        ];
+    function handleExcelUpload(event) {
+        if (userRole === 'assistant') return;
+        const file = event.target.files[0];
+        if (!file) return;
 
-        savedData.forEach(item => {
-            createSupplierItem(item.category, item.name, item.phone, item.status);
-        });
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-        // Garante a sincronização inicial
-        saveSuppliersToStorage();
+                if (jsonRows.length === 0) {
+                    alert("A planilha selecionada está vazia.");
+                    return;
+                }
+
+                let importedCount = 0;
+                let newRowsToInsert = [];
+
+                jsonRows.forEach((row) => {
+                    const getVal = (possibleNames) => {
+                        for (let key of Object.keys(row)) {
+                            const cleanKey = key.toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            for (let pName of possibleNames) {
+                                if (cleanKey.includes(pName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) {
+                                    const val = row[key];
+                                    if (val !== undefined && val !== null && val.toString().trim() !== "") {
+                                        return val.toString().trim();
+                                    }
+                                }
+                            }
+                        }
+                        return "";
+                    };
+
+                    const category = getVal(["servico", "categoria", "tipo", "segmento"]) || "Serviço";
+                    const name = getVal(["nome", "fornecedor", "empresa", "nome do fornecedor"]) || "";
+                    const phone = getVal(["telefone", "whats", "whatsapp", "contato", "celular"]) || "";
+                    const time = getVal(["horario", "hora", "chegada", "horario de chegada"]) || "";
+                    const notes = getVal(["observacao", "observacoes", "obs", "detalhes"]) || "";
+                    const status = getVal(["status", "situacao", "estado"]) || "Pendente";
+
+                    if (name) {
+                        newRowsToInsert.push({
+                            category,
+                            name,
+                            phone,
+                            time,
+                            notes,
+                            status: status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
+                        });
+                        importedCount++;
+                    }
+                });
+
+                if (newRowsToInsert.length > 0) {
+                    await _supabase.from('fornecedores').insert(newRowsToInsert);
+                    loadSuppliersFromSupabase();
+                    event.target.value = "";
+                    alert(`${importedCount} fornecedores importados com sucesso!`);
+                } else {
+                    alert("Não foi possível encontrar colunas válidas.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao ler o arquivo.");
+            }
+        };
+        reader.readAsArrayBuffer(file);
     }
 
-    function clearAll() {
+    async function clearAll() {
+        if (userRole === 'assistant') return;
         if (confirm("Deseja apagar todos os fornecedores?")) {
-            localStorage.removeItem('ally_fornecedores');
-            localStorage.removeItem('fornecedores_dados');
-            suppliersList.innerHTML = '';
+            await _supabase.from('fornecedores').delete().neq('id', 0);
+            loadSuppliersFromSupabase();
         }
     }
 
-    addBtn.addEventListener('click', addSupplier);
+    if (addBtn) {
+        addBtn.addEventListener('click', addSupplier);
+    }
 </script>
 
 </body>
