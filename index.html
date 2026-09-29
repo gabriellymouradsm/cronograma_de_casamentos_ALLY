@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ally - Login e Configuração do Casal</title>
+    <title>Ally - Acesso e Configuração</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="imagens/Logotipo Monograma Elegante Preto.png">
     <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
@@ -109,98 +109,195 @@
     </header>
 
     <main class="w-full max-w-md md:max-w-xl flex-1 flex flex-col justify-center">
-        <div class="card-container text-white p-6 sm:p-8">
-            <h2 id="form-title" class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
-                Acesso ao Sistema
+
+        <!-- ================= TELA 1: LOGIN ================= -->
+        <div id="tela-login" class="card-container text-white p-6 sm:p-8">
+            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
+                Entrar no Sistema
             </h2>
 
-            <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
-                
-                <!-- SELETOR DE MODO (Entrar vs Criar Novo Casal vs Redefinir Senha) -->
-                <div id="mode-selector" class="grid grid-cols-3 gap-1.5 mb-4">
-                    <button type="button" onclick="setMode('login')" id="btn-mode-login" class="py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow">Entrar</button>
-                    <button type="button" onclick="setMode('register')" id="btn-mode-register" class="py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]">Criar Casal</button>
-                    <button type="button" onclick="setMode('recover')" id="btn-mode-recover" class="py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]">Recuperar</button>
-                </div>
-
-                <!-- CAMPO DE CASAL -->
+            <form onsubmit="fazerLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="label-casal">Selecione o Casal</label>
-                    <div id="casal-select-container">
-                        <select id="casalSelect" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
-                            <option value="">A carregar casais...</option>
-                        </select>
-                    </div>
-                    <div id="casal-input-container" class="hidden">
-                        <input type="text" id="novoCasalNome" placeholder="Ex: Lucas & Mariana" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
-                    </div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Selecione o Casal</label>
+                    <select id="loginCasalSelect" required class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                        <option value="">A carregar casais...</option>
+                    </select>
                 </div>
 
-                <!-- CAMPOS DE DATAS E HORAS (Apenas ao criar novo casal) -->
-                <div id="new-couple-fields" class="space-y-4 hidden">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Data do Casamento</label>
-                            <input type="text" id="dataCasamento" placeholder="DD/MM/AAAA" class="w-full custom-input px-3 py-2.5 rounded-xl text-center text-sm"/>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Horário</label>
-                            <input type="text" id="horarioCasamento" placeholder="HH:MM" class="w-full custom-input px-3 py-2.5 rounded-xl text-center text-sm"/>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PERFIL (Admin vs Assistente) -->
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
-                    <select id="userRole" onchange="updateRoleFields()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                    <select id="loginRole" onchange="mudarLabelLogin()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
                         <option value="admin">Administrador(a) do Casamento</option>
                         <option value="assistant">Assistente de Campo</option>
                     </select>
                 </div>
 
-                <!-- NOME DO RESPONSÁVEL -->
                 <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="labelNomeResponsavel">Nome do Administrador</label>
-                    <input type="text" id="nomeResponsavel" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="loginLabelNome">Nome do Administrador</label>
+                    <input type="text" id="loginNome" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
                 </div>
 
-                <!-- SENHA (OU NOVA SENHA) -->
-                <div id="senha-group">
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="labelSenha">Senha de Acesso</label>
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Senha de Acesso</label>
                     <div class="relative">
-                        <input type="password" id="senhaAcesso" required placeholder="Digite a sua senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
-                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
-                            <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                        <input type="password" id="loginSenha" required placeholder="Digite a sua senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
+                        <button type="button" onclick="togglePassword('loginSenha', 'eyeLogin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                            <i class="fa-solid fa-eye" id="eyeLogin"></i>
                         </button>
                     </div>
-                    <p class="text-[11px] text-[#d1c4bc] mt-1 text-center" id="senhaRegra">Mínimo de 6 caracteres.</p>
                 </div>
 
-                <!-- BOTÃO DE SUBMISSÃO -->
                 <div class="pt-2">
-                    <button type="submit" id="btnSubmit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
-                        Entrar no Sistema
+                    <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
+                        Entrar
+                    </button>
+                </div>
+
+                <div class="flex flex-col items-center gap-2 mt-4 text-xs">
+                    <button type="button" onclick="mudarTela('tela-cadastro')" class="text-[#d1c4bc] underline hover:text-white">
+                        Primeiro acesso? Registar novo casal
+                    </button>
+                    <button type="button" onclick="mudarTela('tela-recuperar')" class="text-[#d1c4bc] underline hover:text-white">
+                        Esqueceu-se da senha? Recuperar aqui
                     </button>
                 </div>
             </form>
         </div>
+
+
+        <!-- ================= TELA 2: PRIMEIRO ACESSO / CRIAR NOVO CASAL ================= -->
+        <div id="tela-cadastro" class="card-container text-white p-6 sm:p-8 hidden">
+            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
+                Registar Novo Casal
+            </h2>
+
+            <form onsubmit="registarCasal(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Nome do Casal</label>
+                    <input type="text" id="cadCasalNome" required placeholder="Ex: Lucas & Mariana" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Data do Casamento</label>
+                        <input type="text" id="cadData" required placeholder="DD/MM/AAAA" class="w-full custom-input px-3 py-2.5 rounded-xl text-center text-sm"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Horário</label>
+                        <input type="text" id="cadHorario" required placeholder="HH:MM" class="w-full custom-input px-3 py-2.5 rounded-xl text-center text-sm"/>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
+                    <select id="cadRole" onchange="mudarLabelCadastro()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                        <option value="admin">Administrador(a) do Casamento</option>
+                        <option value="assistant">Assistente de Campo</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="cadLabelNome">Nome do Administrador</label>
+                    <input type="text" id="cadNomeResponsavel" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Definir Senha</label>
+                    <div class="relative">
+                        <input type="password" id="cadSenha" required placeholder="Mínimo de 6 caracteres" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
+                        <button type="button" onclick="togglePassword('cadSenha', 'eyeCad')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                            <i class="fa-solid fa-eye" id="eyeCad"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
+                        Criar e Entrar
+                    </button>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button type="button" onclick="mudarTela('tela-login')" class="text-xs text-[#d1c4bc] underline hover:text-white">
+                        ← Voltar para o Login
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- ================= TELA 3: RECUPERAR SENHA ================= -->
+        <div id="tela-recuperar" class="card-container text-white p-6 sm:p-8 hidden">
+            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
+                Recuperar Senha
+            </h2>
+
+            <form onsubmit="recuperarSenha(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Selecione o Casal</label>
+                    <select id="recCasalSelect" required class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                        <option value="">A carregar casais...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
+                    <select id="recRole" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                        <option value="admin">Administrador(a) do Casamento</option>
+                        <option value="assistant">Assistente de Campo</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Nova Senha</label>
+                    <div class="relative">
+                        <input type="password" id="recNovaSenha" required placeholder="Digite a nova senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
+                        <button type="button" onclick="togglePassword('recNovaSenha', 'eyeRec')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                            <i class="fa-solid fa-eye" id="eyeRec"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
+                        Atualizar Senha
+                    </button>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button type="button" onclick="mudarTela('tela-login')" class="text-xs text-[#d1c4bc] underline hover:text-white">
+                        ← Voltar para o Login
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </main>
 
     <!-- TOAST DE ALERTA -->
     <div id="toast" class="fixed bottom-5 right-5 hidden z-50 bg-[#382a24] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-[#6d5246] flex items-center gap-3">
-        <i class="fa-solid fa-circle-exclamation text-amber-400 text-lg" id="toastIcon"></i>
-        <span id="toast-message" class="text-sm font-medium">Mensagem de aviso</span>
+        <i class="fa-solid fa-circle-exclamation text-amber-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">Aviso</span>
     </div>
 
     <script>
-        let currentMode = 'login'; // 'login', 'register', 'recover'
-
         document.addEventListener('DOMContentLoaded', () => {
             carregarCasaisDropdown();
         });
 
-        // Função de criptografia SHA-256 segura
+        // Função para alternar entre as 3 telas sem sair da página
+        function mudarTela(idTela) {
+            document.getElementById('tela-login').classList.add('hidden');
+            document.getElementById('tela-cadastro').classList.add('hidden');
+            document.getElementById('tela-recuperar').classList.add('hidden');
+            
+            document.getElementById(idTela).classList.remove('hidden');
+            if (idTela === 'tela-login' || idTela === 'tela-recuperar') {
+                carregarCasaisDropdown();
+            }
+        }
+
+        // Criptografia SHA-256
         async function hashPassword(senha) {
             const encoder = new TextEncoder();
             const data = encoder.encode(senha);
@@ -211,91 +308,35 @@
 
         async function carregarCasaisDropdown() {
             const { data, error } = await _supabase.from('casal_config').select('nome');
-            const select = document.getElementById('casalSelect');
-            select.innerHTML = '<option value="">Selecione um casal...</option>';
-
+            const selectLogin = document.getElementById('loginCasalSelect');
+            const selectRec = document.getElementById('recCasalSelect');
+            
+            let opcoes = '<option value="">Selecione um casal...</option>';
             if (!error && data && data.length > 0) {
                 data.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.nome;
-                    opt.textContent = c.nome;
-                    select.appendChild(opt);
+                    opcoes += `<option value="${c.nome}">${c.nome}</option>`;
                 });
             } else {
-                select.innerHTML = '<option value="">Nenhum casal registado</option>';
+                opcoes = '<option value="">Nenhum casal registado</option>';
             }
+
+            selectLogin.innerHTML = opcoes;
+            selectRec.innerHTML = opcoes;
         }
 
-        function setMode(mode) {
-            currentMode = mode;
-            const btnLogin = document.getElementById('btn-mode-login');
-            const btnRegister = document.getElementById('btn-mode-register');
-            const btnRecover = document.getElementById('btn-mode-recover');
-            const formTitle = document.getElementById('form-title');
-            const btnSubmit = document.getElementById('btnSubmit');
-            const casalSelectContainer = document.getElementById('casal-select-container');
-            const casalInputContainer = document.getElementById('casal-input-container');
-            const newCoupleFields = document.getElementById('new-couple-fields');
-            const labelCasal = document.getElementById('label-casal');
-            const labelSenha = document.getElementById('labelSenha');
-
-            // Reset classes
-            btnLogin.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
-            btnRegister.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
-            btnRecover.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
-
-            if (mode === 'login') {
-                btnLogin.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
-                formTitle.textContent = "Acesso ao Sistema";
-                btnSubmit.textContent = "Entrar no Sistema";
-                casalSelectContainer.classList.remove('hidden');
-                casalInputContainer.classList.add('hidden');
-                newCoupleFields.classList.add('hidden');
-                labelCasal.textContent = "Selecione o Casal";
-                labelSenha.textContent = "Senha de Acesso";
-                document.getElementById('casalSelect').required = true;
-                document.getElementById('novoCasalNome').required = false;
-            } else if (mode === 'register') {
-                btnRegister.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
-                formTitle.textContent = "Criar Novo Casal";
-                btnSubmit.textContent = "Registar e Entrar";
-                casalSelectContainer.classList.add('hidden');
-                casalInputContainer.classList.remove('hidden');
-                newCoupleFields.classList.remove('hidden');
-                labelCasal.textContent = "Nome do Casal";
-                labelSenha.textContent = "Definir Senha";
-                document.getElementById('casalSelect').required = false;
-                document.getElementById('novoCasalNome').required = true;
-            } else if (mode === 'recover') {
-                btnRecover.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
-                formTitle.textContent = "Redefinir Senha";
-                btnSubmit.textContent = "Atualizar Senha";
-                casalSelectContainer.classList.remove('hidden');
-                casalInputContainer.classList.add('hidden');
-                newCoupleFields.classList.add('hidden');
-                labelCasal.textContent = "Selecione o Casal";
-                labelSenha.textContent = "Nova Senha";
-                document.getElementById('casalSelect').required = true;
-                document.getElementById('novoCasalNome').required = false;
-            }
+        function mudarLabelLogin() {
+            const role = document.getElementById('loginRole').value;
+            document.getElementById('loginLabelNome').textContent = role === 'admin' ? "Nome do Administrador" : "Nome do Assistente";
         }
 
-        function updateRoleFields() {
-            const role = document.getElementById('userRole').value;
-            const label = document.getElementById('labelNomeResponsavel');
-            const input = document.getElementById('nomeResponsavel');
-            if (role === 'admin') {
-                label.textContent = "Nome do Administrador";
-                input.placeholder = "O seu nome";
-            } else {
-                label.textContent = "Nome do Assistente";
-                input.placeholder = "O seu nome de assistente";
-            }
+        function mudarLabelCadastro() {
+            const role = document.getElementById('cadRole').value;
+            document.getElementById('cadLabelNome').textContent = role === 'admin' ? "Nome do Administrador" : "Nome do Assistente";
         }
 
-        function togglePassword() {
-            const input = document.getElementById('senhaAcesso');
-            const icon = document.getElementById('eyeIcon');
+        function togglePassword(idInput, idIcon) {
+            const input = document.getElementById(idInput);
+            const icon = document.getElementById(idIcon);
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.className = "fa-solid fa-eye-slash";
@@ -305,11 +346,13 @@
             }
         }
 
-        async function handleAuth(e) {
+        // AÇÃO 1: FAZER LOGIN
+        async function fazerLogin(e) {
             e.preventDefault();
-            const role = document.getElementById('userRole').value;
-            const nomeResponsavel = document.getElementById('nomeResponsavel').value.trim();
-            const senhaPura = document.getElementById('senhaAcesso').value;
+            const casalNome = document.getElementById('loginCasalSelect').value;
+            const role = document.getElementById('loginRole').value;
+            const nomeResponsavel = document.getElementById('loginNome').value.trim();
+            const senhaPura = document.getElementById('loginSenha').value;
 
             if (senhaPura.length < 6) {
                 showToast("A senha precisa ter pelo menos 6 caracteres.");
@@ -317,115 +360,119 @@
             }
 
             const senhaHash = await hashPassword(senhaPura);
-            let casalNome = "";
 
-            if (currentMode === 'login') {
-                casalNome = document.getElementById('casalSelect').value;
-                if (!casalNome) {
-                    showToast("Por favor, selecione um casal.");
-                    return;
-                }
+            const { data, error } = await _supabase
+                .from('casal_config')
+                .select('*')
+                .eq('nome', casalNome)
+                .maybeSingle();
 
-                const { data, error } = await _supabase
-                    .from('casal_config')
-                    .select('*')
-                    .eq('nome', casalNome)
-                    .maybeSingle();
-
-                if (error || !data) {
-                    showToast("Casal não encontrado.");
-                    return;
-                }
-
-                const senhaArmazenada = role === 'admin' ? data.senha_admin : data.senha_assistente;
-
-                if (!senhaArmazenada) {
-                    showToast("Nenhuma senha registada para este perfil. Use a opção 'Recuperar' para definir uma.");
-                    return;
-                }
-
-                // Valida o hash ou se ainda estiver em texto simples (compatibilidade)
-                if (senhaArmazenada !== senhaHash && senhaArmazenada !== senhaPura) {
-                    showToast("Senha incorreta. Tente novamente.");
-                    return;
-                }
-
-                // Guarda dados na sessão
-                localStorage.setItem('user_role', role);
-                localStorage.setItem('casal_ativo', casalNome);
-                if (role === 'admin') {
-                    localStorage.setItem('admin_nome', nomeResponsavel);
-                } else {
-                    localStorage.setItem('assistente_nome', nomeResponsavel);
-                }
-
-                window.location.href = "proxima_pagina.html";
-
-            } else if (currentMode === 'register') {
-                casalNome = document.getElementById('novoCasalNome').value.trim();
-                const dataCasamento = document.getElementById('dataCasamento').value.trim();
-                const horarioCasamento = document.getElementById('horarioCasamento').value.trim();
-
-                if (!casalNome || !dataCasamento || !horarioCasamento) {
-                    showToast("Preencha todos os campos do casamento.");
-                    return;
-                }
-
-                const { data: existente } = await _supabase.from('casal_config').select('id').eq('nome', casalNome).maybeSingle();
-                if (existente) {
-                    showToast("Já existe um casal com este nome. Escolha outro.");
-                    return;
-                }
-
-                const novoRegistro = {
-                    nome: casalNome,
-                    data_casamento: dataCasamento,
-                    horario: horarioCasamento,
-                    [role === 'admin' ? 'senha_admin' : 'senha_assistente']: senhaHash
-                };
-
-                const { error: insertError } = await _supabase.from('casal_config').insert([novoRegistro]);
-
-                if (insertError) {
-                    console.error(insertError);
-                    showToast("Erro ao criar o casal na base de dados.");
-                    return;
-                }
-
-                localStorage.setItem('user_role', role);
-                localStorage.setItem('casal_ativo', casalNome);
-                if (role === 'admin') {
-                    localStorage.setItem('admin_nome', nomeResponsavel);
-                } else {
-                    localStorage.setItem('assistente_nome', nomeResponsavel);
-                }
-
-                window.location.href = "proxima_pagina.html";
-
-            } else if (currentMode === 'recover') {
-                // Modo Recuperação / Redefinição de Senha
-                casalNome = document.getElementById('casalSelect').value;
-                if (!casalNome) {
-                    showToast("Por favor, selecione o casal para redefinir a senha.");
-                    return;
-                }
-
-                const campoAtualizar = role === 'admin' ? 'senha_admin' : 'senha_assistente';
-
-                const { error: updateError } = await _supabase
-                    .from('casal_config')
-                    .update({ [campoAtualizar]: senhaHash })
-                    .eq('nome', casalNome);
-
-                if (updateError) {
-                    console.error(updateError);
-                    showToast("Erro ao atualizar a senha na base de dados.");
-                    return;
-                }
-
-                showToast("Senha redefinida com sucesso! Agora já pode entrar.");
-                setMode('login');
+            if (error || !data) {
+                showToast("Casal não encontrado.");
+                return;
             }
+
+            const senhaArmazenada = role === 'admin' ? data.senha_admin : data.senha_assistente;
+
+            if (!senhaArmazenada) {
+                showToast("Nenhuma senha registada para este perfil. Utilize a opção de recuperar.");
+                return;
+            }
+
+            if (senhaArmazenada !== senhaHash && senhaArmazenada !== senhaPura) {
+                showToast("Senha incorreta. Tente novamente.");
+                return;
+            }
+
+            // Sessão válida
+            localStorage.setItem('user_role', role);
+            localStorage.setItem('casal_ativo', casalNome);
+            if (role === 'admin') {
+                localStorage.setItem('admin_nome', nomeResponsavel);
+            } else {
+                localStorage.setItem('assistente_nome', nomeResponsavel);
+            }
+
+            window.location.href = "proxima_pagina.html";
+        }
+
+        // AÇÃO 2: REGISTAR NOVO CASAL
+        async function registarCasal(e) {
+            e.preventDefault();
+            const casalNome = document.getElementById('cadCasalNome').value.trim();
+            const dataCasamento = document.getElementById('cadData').value.trim();
+            const horarioCasamento = document.getElementById('cadHorario').value.trim();
+            const role = document.getElementById('cadRole').value;
+            const nomeResponsavel = document.getElementById('cadNomeResponsavel').value.trim();
+            const senhaPura = document.getElementById('cadSenha').value;
+
+            if (senhaPura.length < 6) {
+                showToast("A senha precisa ter pelo menos 6 caracteres.");
+                return;
+            }
+
+            const senhaHash = await hashPassword(senhaPura);
+
+            const { data: existente } = await _supabase.from('casal_config').select('id').eq('nome', casalNome).maybeSingle();
+            if (existente) {
+                showToast("Já existe um casal com este nome. Escolha outro.");
+                return;
+            }
+
+            const novoRegistro = {
+                nome: casalNome,
+                data_casamento: dataCasamento,
+                horario: horarioCasamento,
+                [role === 'admin' ? 'senha_admin' : 'senha_assistente']: senhaHash
+            };
+
+            const { error: insertError } = await _supabase.from('casal_config').insert([novoRegistro]);
+
+            if (insertError) {
+                console.error(insertError);
+                showToast("Erro ao criar o casal na base de dados.");
+                return;
+            }
+
+            localStorage.setItem('user_role', role);
+            localStorage.setItem('casal_ativo', casalNome);
+            if (role === 'admin') {
+                localStorage.setItem('admin_nome', nomeResponsavel);
+            } else {
+                localStorage.setItem('assistente_nome', nomeResponsavel);
+            }
+
+            window.location.href = "proxima_pagina.html";
+        }
+
+        // AÇÃO 3: RECUPERAR SENHA
+        async function recuperarSenha(e) {
+            e.preventDefault();
+            const casalNome = document.getElementById('recCasalSelect').value;
+            const role = document.getElementById('recRole').value;
+            const senhaPura = document.getElementById('recNovaSenha').value;
+
+            if (senhaPura.length < 6) {
+                showToast("A nova senha precisa ter pelo menos 6 caracteres.");
+                return;
+            }
+
+            const senhaHash = await hashPassword(senhaPura);
+            const campoAtualizar = role === 'admin' ? 'senha_admin' : 'senha_assistente';
+
+            const { error: updateError } = await _supabase
+                .from('casal_config')
+                .update({ [campoAtualizar]: senhaHash })
+                .eq('nome', casalNome);
+
+            if (updateError) {
+                console.error(updateError);
+                showToast("Erro ao atualizar a senha.");
+                return;
+            }
+
+            showToast("Senha redefinida com sucesso!");
+            mudarTela('tela-login');
         }
 
         function showToast(msg) {
