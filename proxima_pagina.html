@@ -40,11 +40,11 @@
             width: 100%;
         }
 
-        .brand-logo-img {
-            width: 50px;
-            height: auto;
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
             display: block;
-            margin: 0 auto 8px;
         }
 
         .brand-title {
@@ -358,7 +358,11 @@
 <body>
 
     <header class="brand-header">
-        <img src="imagens/Logotipo Monograma Elegante Preto.png" class="brand-logo-img" alt="Logo Ally">
+        <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
         <h1 class="brand-title">Ally</h1>
         <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
     </header>
@@ -410,7 +414,6 @@
                     💬 Compartilhar no WhatsApp
                 </button>
 
-                <!-- Abre o modal de seleção do PDF -->
                 <button class="btn-pdf" onclick="abrirModalPDF()">
                     📄 Criar PDF do Cronograma
                 </button>
@@ -616,7 +619,6 @@
             const incluirFornecedores = document.getElementById('chk-fornecedores').checked;
             const incluirNotas = document.getElementById('chk-notas').checked;
 
-            // Busca apenas os dados necessários do Supabase filtrados pelo casal ativo
             let cronograma = [], convidados = [], fornecedores = [], checklist = [], notas = [];
 
             if (incluirCronograma) {
@@ -640,7 +642,6 @@
                 notas = data || [];
             }
 
-            // Monta o conteúdo dinâmico do PDF
             let contentArray = [
                 { text: 'ALLY', style: 'brandTitle' },
                 { text: 'CRONOGRAMA & PLANEJAMENTO DE CASAMENTO', style: 'brandSubtitle' },
