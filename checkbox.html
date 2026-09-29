@@ -9,6 +9,15 @@
     <link rel="manifest" href="/site.webmanifest">
     
     <title>Ally - Check List</title>
+
+    <!-- Biblioteca e Conexão do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -272,9 +281,9 @@
     
     let isEditingMode = false;
 
-    document.addEventListener('DOMContentLoaded', loadTasks);
+    document.addEventListener('DOMContentLoaded', loadTasksFromSupabase);
 
-    function addTask() {
+    async function addTask() {
         if (isEditingMode) {
             alert("Saia do modo de edição clicando em SALVAR antes de adicionar tarefas.");
             return;
@@ -283,13 +292,37 @@
         const taskText = taskInput.value.trim();
         if (taskText === "") return;
 
-        createTaskElement(taskText, false);
-        saveTasksToStorage();
-        
+        const { error } = await _supabase.from('checklist').insert([
+            { text: taskText, checked: false }
+        ]);
+
+        if (error) {
+            console.error("Erro ao adicionar tarefa:", error);
+            return;
+        }
+
         taskInput.value = "";
+        loadTasksFromSupabase();
     }
 
-    function createTaskElement(text, isChecked) {
+    async function loadTasksFromSupabase() {
+        const { data, error } = await _supabase.from('checklist').select('*');
+        if (error) {
+            console.error("Erro ao carregar checklist:", error);
+            return;
+        }
+
+        listContainer.innerHTML = '';
+        const tasks = data || [];
+
+        tasks.forEach(task => {
+            createTaskElement(task.id, task.text, task.checked);
+        });
+
+        updatePDFStorage(tasks);
+    }
+
+    function createTaskElement(id, text, isChecked) {
         const itemDiv = document.createElement('div');
         itemDiv.classList.add('task-item');
         if (isChecked) itemDiv.classList.add('completed');
@@ -304,24 +337,26 @@
         const textSpan = document.createElement('span');
         textSpan.textContent = text;
 
-        contentWrapper.addEventListener('click', (e) => {
+        contentWrapper.addEventListener('click', async (e) => {
             if (isEditingMode) return;
-            if (e.target !== checkbox) {
-                checkbox.checked = !checkbox.checked;
-            }
-            toggleComplete(itemDiv, checkbox.checked);
+            const newCheckedState = !checkbox.checked;
+            checkbox.checked = newCheckedState;
+            
+            await _supabase.from('checklist').update({ checked: newCheckedState }).eq('id', id);
+            loadTasksFromSupabase();
         });
 
-        checkbox.addEventListener('change', () => {
-            toggleComplete(itemDiv, checkbox.checked);
+        checkbox.addEventListener('change', async () => {
+            await _supabase.from('checklist').update({ checked: checkbox.checked }).eq('id', id);
+            loadTasksFromSupabase();
         });
 
         const deleteBtn = document.createElement('button');
         deleteBtn.classList.add('delete-btn');
         deleteBtn.innerHTML = '🗑️';
-        deleteBtn.addEventListener('click', () => {
-            itemDiv.remove();
-            saveTasksToStorage();
+        deleteBtn.addEventListener('click', async () => {
+            await _supabase.from('checklist').delete().eq('id', id);
+            loadTasksFromSupabase();
         });
 
         contentWrapper.appendChild(checkbox);
@@ -329,15 +364,6 @@
         itemDiv.appendChild(contentWrapper);
         itemDiv.appendChild(deleteBtn);
         listContainer.appendChild(itemDiv);
-    }
-
-    function toggleComplete(element, isChecked) {
-        if (isChecked) {
-            element.classList.add('completed');
-        } else {
-            element.classList.remove('completed');
-        }
-        saveTasksToStorage();
     }
 
     function toggleEditMode() {
@@ -357,43 +383,16 @@
             taskInput.disabled = false;
             addBtn.disabled = false;
             addBtn.style.opacity = "1";
-            saveTasksToStorage();
+            loadTasksFromSupabase();
         }
     }
 
-    function saveTasksToStorage() {
-        const tasks = [];
-        const pdfTasks = [];
-
-        document.querySelectorAll('.task-item').forEach(item => {
-            const text = item.querySelector('span').textContent;
-            const isChecked = item.querySelector('input[type="checkbox"]').checked;
-
-            tasks.push({ text: text, checked: isChecked });
-
-            // Formatação para gerar no PDF unificado do painel
-            pdfTasks.push({
-                tarefa: text,
-                status: isChecked ? "Concluído" : "Pendente"
-            });
-        });
-
-        // Salva localmente na tela e na chave do PDF
-        localStorage.setItem('my_checklist_funcional', JSON.stringify(tasks));
+    function updatePDFStorage(tasks) {
+        const pdfTasks = tasks.map(task => ({
+            tarefa: task.text,
+            status: task.checked ? "Concluído" : "Pendente"
+        }));
         localStorage.setItem('checklist_dados', JSON.stringify(pdfTasks));
-    }
-
-    function loadTasks() {
-        const savedTasks = JSON.parse(localStorage.getItem('my_checklist_funcional')) || [
-            { text: "Degustação do Buffet", checked: true },
-            { text: "Escolher Músicas da Cerimônia", checked: false }
-        ];
-
-        savedTasks.forEach(task => {
-            createTaskElement(task.text, task.checked);
-        });
-
-        saveTasksToStorage();
     }
 
     addBtn.addEventListener('click', addTask);
