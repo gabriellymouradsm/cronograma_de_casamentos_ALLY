@@ -42,15 +42,16 @@
             width: 100%;
         }
 
-        .brand-logo-img {
-            width: 45px;
-            height: auto;
-            display: block;
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
             margin: 0 auto 6px;
+            display: block;
         }
 
         .brand-title {
-            font-size: 2rem;
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
             font-weight: bold;
             color: #382a23;
             margin: 0;
@@ -58,11 +59,11 @@
         }
 
         .brand-tagline {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 3px;
             color: #725a4d;
-            margin-top: 5px;
+            margin-top: 6px;
         }
 
         #notebook-container {
@@ -184,7 +185,6 @@
 
         .file-label {
             cursor: pointer;
-            font-size: 18px;
             padding: 6px 10px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
@@ -236,7 +236,11 @@
 <body>
 
     <header class="brand-header">
-        <img src="imagens/Logotipo Monograma Elegante Preto.png" class="brand-logo-img" alt="Logo Ally">
+        <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
         <h1 class="brand-title">Ally</h1>
         <p class="brand-tagline">NOTEBOOK DE ANOTAÇÕES</p>
     </header>
