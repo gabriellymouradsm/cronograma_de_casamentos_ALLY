@@ -352,35 +352,25 @@
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
+                    // Lê a primeira folha do arquivo Excel ("Lista de convidados ")
                     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                     
-                    // Converte o excel num array de objetos (usando a primeira linha como cabeçalho)
-                    const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-
-                    if (!rows || rows.length === 0) {
-                        alert("O arquivo está vazio ou formato inválido.");
-                        return;
-                    }
+                    // Converte extraindo em formato de matriz crua (linhas e colunas por índice)
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
                     let newGuestsToInsert = [];
 
-                    rows.forEach(row => {
-                        // Converte as chaves para minúsculas para encontrar os campos independentemente de como foram nomeados no Excel
-                        const rowLower = {};
-                        Object.keys(row).forEach(k => {
-                            rowLower[k.toLowerCase().trim()] = row[k];
-                        });
+                    // Como o teu modelo tem o cabeçalho na linha 0, começamos a ler a partir da linha 1
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (!row) continue;
 
-                        // Procura por colunas comuns de Nome, Conexão e Mesa
-                        let fullName = rowLower['nome'] || rowLower['nome completo'] || rowLower['convidado'] || rowLower['first_name'] || Object.values(row)[0] || "";
-                        let connection = rowLower['conexao'] || rowLower['categoria'] || rowLower['parentesco'] || rowLower['tipo'] || Object.values(row)[1] || "Convidado";
-                        let tableNumber = rowLower['mesa'] || rowLower['numero da mesa'] || rowLower['table'] || Object.values(row)[2] || "Geral";
+                        // Índice 0: Nome Completo, Índice 1: Classificação, Índice 4: Mesa (baseado no teu modelo)
+                        let fullName = (row[0] || "").toString().trim();
+                        let connection = (row[1] || "").toString().trim();
+                        let tableNumber = (row[4] || row[2] || "").toString().trim();
 
-                        fullName = fullName.toString().trim();
-                        connection = connection.toString().trim();
-                        tableNumber = tableNumber.toString().trim();
-
-                        if (fullName && fullName.toLowerCase() !== "nome" && !fullName.toLowerCase().includes("total")) {
+                        if (fullName && fullName.toLowerCase() !== "nome completo" && !fullName.toLowerCase().includes("total")) {
                             newGuestsToInsert.push({
                                 first_name: fullName,
                                 last_name: "",
@@ -391,16 +381,16 @@
                                 casal_nome: casalAtivo
                             });
                         }
-                    });
+                    }
 
                     if (newGuestsToInsert.length > 0) {
                         await _supabase.from('convidados').insert(newGuestsToInsert);
                         loadGuestsFromSupabase();
                         event.target.value = "";
-                        showToast(`${newGuestsToInsert.length} convidados importados!`);
+                        showToast(`${newGuestsToInsert.length} convidados importados com sucesso!`);
                         switchView('list');
                     } else {
-                        alert("Não foram encontrados convidados válidos no arquivo.");
+                        alert("Não foram encontrados convidados válidos na planilha.");
                     }
                 } catch (err) {
                     console.error(err);
