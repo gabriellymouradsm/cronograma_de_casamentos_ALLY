@@ -8,29 +8,33 @@
     <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
     <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
     <link rel="manifest" href="/site.webmanifest">
-    <title>Ally</title>
+    <title>Ally - Login</title>
+
+    <!-- Biblioteca e Conexão do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
 
     <style>
         body {
             background-color: #f7f5f2;
             font-family: 'Helvetica Neue', Arial, sans-serif;
-
             display: flex;
-            flex-direction: column; /* Força os elementos a ficarem empilhados (Topo -> Baixo) */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-
             min-height: 100vh;
             margin: 0;
             padding: 30px 20px;
-
             box-sizing: border-box;
         }
 
-        /* Estilo do bloco da logo (Header) */
         .brand-header {
             text-align: center;
-            margin-bottom: 25px; /* Espaço entre a logo e o formulário */
+            margin-bottom: 25px;
             width: 100%;
         }
 
@@ -38,7 +42,7 @@
             width: 50px;
             height: auto;
             display: block;
-            margin: 0 auto 8px; /* Centraliza a imagem da logo */
+            margin: 0 auto 8px;
         }
 
         .brand-title {
@@ -58,70 +62,75 @@
             margin-top: 6px;
         }
 
-        /* Estilo do Card do Formulário */
         .card-formulario {
             background-color: #3b2a22;
-
             width: 100%;
             max-width: 625px;
-
-            padding: 50px;
-
+            padding: 45px 50px;
             border-radius: 30px;
-
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-
             box-sizing: border-box;
-
             color: #ffffff;
         }
 
         .card-formulario h1 {
             font-family: Georgia, serif;
-
-            font-size: 34px;
-
+            font-size: 30px;
             font-weight: bold;
-
             text-align: center;
-
             margin-top: 0;
-            margin-bottom: 38px;
+            margin-bottom: 25px;
+        }
+
+        /* Seletor de Perfil (Abas) */
+        .profile-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .profile-btn {
+            flex: 1;
+            padding: 14px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .profile-btn.active {
+            background-color: #f7f5f2;
+            color: #3b2a22;
+            border-color: #f7f5f2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .campo-grupo {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .campo-grupo label {
             display: block;
-
-            font-size: 17px;
-
-            margin-bottom: 10px;
-
+            font-size: 16px;
+            margin-bottom: 8px;
             font-weight: 500;
         }
 
         .campo-grupo input {
             width: 100%;
-
-            padding: 16px;
-
+            padding: 15px;
             background-color: transparent;
-
             border: 1px solid rgba(255, 255, 255, 0.3);
-
             border-radius: 10px;
-
             color: #ffffff;
-
-            font-size: 18px;
-
+            font-size: 17px;
             box-sizing: border-box;
-
             outline: none;
-
             transition: border-color 0.2s;
         }
 
@@ -130,57 +139,46 @@
         }
 
         .campo-grupo input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.4);
         }
 
         .btn-enviar {
             width: 100%;
-
-            padding: 17px;
-
+            padding: 16px;
             background-color: #f7f5f2;
-
             border: none;
-
             border-radius: 30px;
-
             color: #3b2a22;
-
-            font-size: 20px;
-
-            font-weight: 500;
-
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-
-            margin-top: 15px;
+            margin-top: 10px;
             margin-bottom: 18px;
-
             transition: 0.2s;
         }
 
         .btn-enviar:hover {
             background-color: #eadecc;
-
             transform: translateY(-1px);
         }
 
         .rodape-texto {
             font-size: 12px;
-
             color: rgba(255, 255, 255, 0.6);
-
             text-align: center;
-
             margin: 0;
+        }
+
+        .hidden-section {
+            display: none;
         }
 
         @media (max-width: 600px) {
             .card-formulario {
-                padding: 30px 25px;
+                padding: 30px 20px;
             }
-
             .card-formulario h1 {
-                font-size: 27px;
+                font-size: 24px;
             }
         }
     </style>
@@ -188,205 +186,186 @@
 
 <body>
 
-    <!-- LOGO CENTRALIZADA NO TOPO -->
     <header class="brand-header">
         <img src="imagens/aliança 3d.jpg" class="brand-logo-img" alt="Logo Ally">
         <h1 class="brand-title">Ally</h1>
         <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
     </header>
 
-    <!-- FORMULÁRIO -->
     <div class="card-formulario">
 
-        <h1>Coloque os dados do casal:</h1>
+        <h1>Acesso ao Sistema</h1>
 
-        <div class="campo-grupo">
-            <label for="nomeCasal">
-                Primeiro nome do casal
-            </label>
-            <input
-                type="text"
-                id="nomeCasal"
-                autocomplete="off"
-                placeholder="Digite o nome"
-                required
-            >
+        <!-- Seletor de Perfil -->
+        <div class="profile-selector">
+            <button type="button" class="profile-btn active" id="btn-admin" onclick="selectProfile('admin')">
+                👑 Casal / Admin
+            </button>
+            <button type="button" class="profile-btn" id="btn-assistant" onclick="selectProfile('assistant')">
+                ⏱️ Assistente de Campo
+            </button>
         </div>
 
+        <!-- CAMPO COMUM: Nome do Casal -->
         <div class="campo-grupo">
-            <label for="dataCasamento">
-                Data do casamento
-            </label>
-            <input
-                type="text"
-                id="dataCasamento"
-                placeholder="DD/MM/AAAA"
-                maxlength="10"
-                autocomplete="off"
-                required
-            >
+            <label for="nomeCasal">Primeiro nome do casal</label>
+            <input type="text" id="nomeCasal" autocomplete="off" placeholder="Digite o nome">
         </div>
 
-        <div class="campo-grupo">
-            <label for="horarioCasamento">
-                Horário
-            </label>
-            <input
-                type="text"
-                id="horarioCasamento"
-                placeholder="HH:MM"
-                maxlength="5"
-                autocomplete="off"
-                required
-            >
+        <!-- SEÇÃO EXCLUSIVA DO ADMIN (Data, Horário e Senha Mestre) -->
+        <div id="section-admin">
+            <div class="campo-grupo">
+                <label for="dataCasamento">Data do casamento</label>
+                <input type="text" id="dataCasamento" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off">
+            </div>
+
+            <div class="campo-grupo">
+                <label for="horarioCasamento">Horário</label>
+                <input type="text" id="horarioCasamento" placeholder="HH:MM" maxlength="5" autocomplete="off">
+            </div>
+
+            <div class="campo-grupo">
+                <label for="senhaAdmin">Senha de Administrador</label>
+                <input type="password" id="senhaAdmin" placeholder="Digite a senha mestre" autocomplete="off">
+            </div>
         </div>
 
-        <button
-            class="btn-enviar"
-            onclick="salvarEAvancar()"
-        >
-            Novo Casal
+        <!-- SEÇÃO EXCLUSIVA DO ASSISTENTE DE CAMPO (Senha da Equipe) -->
+        <div id="section-assistant" class="hidden-section">
+            <div class="campo-grupo">
+                <label for="senhaAssistant">Senha de Acesso da Equipe</label>
+                <input type="password" id="senhaAssistant" placeholder="Digite a senha fornecida pelo admin" autocomplete="off">
+            </div>
+            <p style="font-size: 13px; color: #d1c4bc; margin-bottom: 25px; line-height: 1.4;">
+                * Acesso operacional restrito para marcação de presenças e horários no dia do evento, sem permissão para excluir ou alterar cadastros principais.
+            </p>
+        </div>
+
+        <button class="btn-enviar" onclick="salvarEAvancar()">
+            Entrar no Sistema
         </button>
 
         <p class="rodape-texto">
-            Bem-vindo(a) ao Ally, seu espaço para organizar cada detalhe de um dos momentos mais especiais!
+            Bem-vindo(a) ao Ally, seu espaço para organizar cada detalhe!
         </p>
 
     </div>
 
     <script>
+        let currentProfile = 'admin';
+
+        function selectProfile(profile) {
+            currentProfile = profile;
+            const btnAdmin = document.getElementById('btn-admin');
+            const btnAssistant = document.getElementById('btn-assistant');
+            const secAdmin = document.getElementById('section-admin');
+            const secAssistant = document.getElementById('section-assistant');
+
+            if (profile === 'admin') {
+                btnAdmin.classList.add('active');
+                btnAssistant.classList.remove('active');
+                secAdmin.classList.remove('hidden-section');
+                secAssistant.classList.add('hidden-section');
+            } else {
+                btnAssistant.classList.add('active');
+                btnAdmin.classList.remove('active');
+                secAssistant.classList.remove('hidden-section');
+                secAdmin.classList.add('hidden-section');
+            }
+        }
 
         // ==========================================
         // MÁSCARA DA DATA
         // ==========================================
-
-        document
-            .getElementById("dataCasamento")
-            .addEventListener("input", function (e) {
-
-                let valor = e.target.value
-                    .replace(/\D/g, "")
-                    .slice(0, 8);
-
-                if (valor.length >= 5) {
-                    valor =
-                        valor.slice(0, 2) +
-                        "/" +
-                        valor.slice(2, 4) +
-                        "/" +
-                        valor.slice(4);
-                } else if (valor.length >= 3) {
-                    valor =
-                        valor.slice(0, 2) +
-                        "/" +
-                        valor.slice(2);
-                }
-
-                e.target.value = valor;
-            });
-
+        document.getElementById("dataCasamento").addEventListener("input", function (e) {
+            let valor = e.target.value.replace(/\D/g, "").slice(0, 8);
+            if (valor.length >= 5) {
+                valor = valor.slice(0, 2) + "/" + valor.slice(2, 4) + "/" + valor.slice(4);
+            } else if (valor.length >= 3) {
+                valor = valor.slice(0, 2) + "/" + valor.slice(2);
+            }
+            e.target.value = valor;
+        });
 
         // ==========================================
         // MÁSCARA DO HORÁRIO
         // ==========================================
-
-        document
-            .getElementById("horarioCasamento")
-            .addEventListener("input", function (e) {
-
-                let valor = e.target.value
-                    .replace(/\D/g, "")
-                    .slice(0, 4);
-
-                if (valor.length >= 3) {
-                    valor =
-                        valor.slice(0, 2) +
-                        ":" +
-                        valor.slice(2);
-                }
-
-                e.target.value = valor;
-            });
-
+        document.getElementById("horarioCasamento").addEventListener("input", function (e) {
+            let valor = e.target.value.replace(/\D/g, "").slice(0, 4);
+            if (valor.length >= 3) {
+                valor = valor.slice(0, 2) + ":" + valor.slice(2);
+            }
+            e.target.value = valor;
+        });
 
         // ==========================================
-        // SALVAR OS DADOS
+        // VALIDAÇÃO E LOGIN COM SUPABASE
         // ==========================================
+        async function salvarEAvancar() {
+            const SENHA_MESTRE = "1234";     
+            const SENHA_ASSISTENTE = "0000"; 
+            const nome = document.getElementById("nomeCasal").value.trim();
 
-        function salvarEAvancar() {
-
-            const nome =
-                document
-                    .getElementById("nomeCasal")
-                    .value
-                    .trim();
-
-            const data =
-                document
-                    .getElementById("dataCasamento")
-                    .value
-                    .trim();
-
-            const horario =
-                document
-                    .getElementById("horarioCasamento")
-                    .value
-                    .trim();
-
-
-            // Verifica se os campos estão preenchidos
-
-            if (
-                !nome ||
-                data.length !== 10 ||
-                horario.length !== 5
-            ) {
-
-                alert(
-                    "Por favor, preencha todos os campos corretamente."
-                );
-
+            if (!nome) {
+                alert("Por favor, digite o nome do casal.");
                 return;
             }
 
+            if (currentProfile === 'admin') {
+                const data = document.getElementById("dataCasamento").value.trim();
+                const horario = document.getElementById("horarioCasamento").value.trim();
+                const senha = document.getElementById("senhaAdmin").value.trim();
 
-            // ==========================================
-            // SALVA NO LOCALSTORAGE
-            // ==========================================
+                if (data.length !== 10 || horario.length !== 5) {
+                    alert("Por favor, preencha a data e o horário do casamento corretamente.");
+                    return;
+                }
 
-            localStorage.setItem(
-                "casal_nome",
-                nome
-            );
+                if (senha !== SENHA_MESTRE) {
+                    alert("Senha de Administrador incorreta!");
+                    return;
+                }
 
-            localStorage.setItem(
-                "casal_data",
-                data
-            );
+                // Salva na tabela 'casal_config' do Supabase
+                const { error } = await _supabase.from('casal_config').insert([
+                    { nome: nome, data_casamento: data, horario: horario }
+                ]);
 
-            localStorage.setItem(
-                "casal_horario",
-                horario
-            );
+                if (error) {
+                    console.error("Erro ao salvar configuração no Supabase:", error);
+                }
 
+                // Salva dados locais para controle de sessão/perfil
+                localStorage.setItem("casal_nome", nome);
+                localStorage.setItem("casal_data", data);
+                localStorage.setItem("casal_horario", horario);
+                localStorage.setItem("user_role", "admin");
 
-            // ==========================================
-            // VAI PARA A PRÓXIMA PÁGINA
-            // ==========================================
+            } else {
+                const senha = document.getElementById("senhaAssistant").value.trim();
 
-            window.location.href =
-                "proxima_pagina.html";
+                if (senha !== SENHA_ASSISTENTE) {
+                    alert("Senha de Assistente incorreta!");
+                    return;
+                }
+
+                localStorage.setItem("casal_nome", nome);
+                localStorage.setItem("user_role", "assistant");
+            }
+
+            window.location.href = "proxima_pagina.html";
         }
-
     </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/cronograma_de_casamentos_ALLY/sw.js')
-        .then((reg) => console.log('Service Worker registrado com sucesso:', reg.scope))
-        .err((err) => console.log('Falha ao registrar o Service Worker:', err));
-    });
-  }
-</script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/cronograma_de_casamentos_ALLY/sw.js')
+            .then((reg) => console.log('Service Worker registrado com sucesso:', reg.scope))
+            .catch((err) => console.log('Falha ao registrar o Service Worker:', err));
+        });
+      }          
+    </script>
+    
 </body>
 </html>
