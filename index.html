@@ -116,13 +116,14 @@
 
             <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
                 
-                <!-- SELETOR DE MODO (Entrar vs Criar Novo Casal) -->
-                <div id="mode-selector" class="grid grid-cols-2 gap-2 mb-4">
-                    <button type="button" onclick="setMode('login')" id="btn-mode-login" class="py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow">Entrar</button>
-                    <button type="button" onclick="setMode('register')" id="btn-mode-register" class="py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]">Criar Casal</button>
+                <!-- SELETOR DE MODO (Entrar vs Criar Novo Casal vs Redefinir Senha) -->
+                <div id="mode-selector" class="grid grid-cols-3 gap-1.5 mb-4">
+                    <button type="button" onclick="setMode('login')" id="btn-mode-login" class="py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow">Entrar</button>
+                    <button type="button" onclick="setMode('register')" id="btn-mode-register" class="py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]">Criar Casal</button>
+                    <button type="button" onclick="setMode('recover')" id="btn-mode-recover" class="py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]">Recuperar</button>
                 </div>
 
-                <!-- CAMPO DE CASAL (Ativo ou Novo) -->
+                <!-- CAMPO DE CASAL -->
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="label-casal">Selecione o Casal</label>
                     <div id="casal-select-container">
@@ -135,7 +136,7 @@
                     </div>
                 </div>
 
-                <!-- CAMPOS DE DATAS E HORAS (Apenas visíveis ao criar novo casal) -->
+                <!-- CAMPOS DE DATAS E HORAS (Apenas ao criar novo casal) -->
                 <div id="new-couple-fields" class="space-y-4 hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
@@ -164,11 +165,11 @@
                     <input type="text" id="nomeResponsavel" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
                 </div>
 
-                <!-- SENHA SEGURA -->
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Senha de Acesso</label>
+                <!-- SENHA (OU NOVA SENHA) -->
+                <div id="senha-group">
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="labelSenha">Senha de Acesso</label>
                     <div class="relative">
-                        <input type="password" id="senhaAcesso" required placeholder="Digite a sua senha segura" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
+                        <input type="password" id="senhaAcesso" required placeholder="Digite a sua senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
                         <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
                             <i class="fa-solid fa-eye" id="eyeIcon"></i>
                         </button>
@@ -193,13 +194,13 @@
     </div>
 
     <script>
-        let currentMode = 'login'; // 'login' ou 'register'
+        let currentMode = 'login'; // 'login', 'register', 'recover'
 
         document.addEventListener('DOMContentLoaded', () => {
             carregarCasaisDropdown();
         });
 
-        // Função para encriptar a senha usando SHA-256 (Gera um hash seguro irreversível)
+        // Função de criptografia SHA-256 segura
         async function hashPassword(senha) {
             const encoder = new TextEncoder();
             const data = encoder.encode(senha);
@@ -229,35 +230,53 @@
             currentMode = mode;
             const btnLogin = document.getElementById('btn-mode-login');
             const btnRegister = document.getElementById('btn-mode-register');
+            const btnRecover = document.getElementById('btn-mode-recover');
             const formTitle = document.getElementById('form-title');
             const btnSubmit = document.getElementById('btnSubmit');
             const casalSelectContainer = document.getElementById('casal-select-container');
             const casalInputContainer = document.getElementById('casal-input-container');
             const newCoupleFields = document.getElementById('new-couple-fields');
             const labelCasal = document.getElementById('label-casal');
+            const labelSenha = document.getElementById('labelSenha');
+
+            // Reset classes
+            btnLogin.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
+            btnRegister.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
+            btnRecover.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
 
             if (mode === 'login') {
-                btnLogin.className = "py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
-                btnRegister.className = "py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
+                btnLogin.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
                 formTitle.textContent = "Acesso ao Sistema";
                 btnSubmit.textContent = "Entrar no Sistema";
                 casalSelectContainer.classList.remove('hidden');
                 casalInputContainer.classList.add('hidden');
                 newCoupleFields.classList.add('hidden');
                 labelCasal.textContent = "Selecione o Casal";
+                labelSenha.textContent = "Senha de Acesso";
                 document.getElementById('casalSelect').required = true;
                 document.getElementById('novoCasalNome').required = false;
-            } else {
-                btnRegister.className = "py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
-                btnLogin.className = "py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
+            } else if (mode === 'register') {
+                btnRegister.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
                 formTitle.textContent = "Criar Novo Casal";
                 btnSubmit.textContent = "Registar e Entrar";
                 casalSelectContainer.classList.add('hidden');
                 casalInputContainer.classList.remove('hidden');
                 newCoupleFields.classList.remove('hidden');
                 labelCasal.textContent = "Nome do Casal";
+                labelSenha.textContent = "Definir Senha";
                 document.getElementById('casalSelect').required = false;
                 document.getElementById('novoCasalNome').required = true;
+            } else if (mode === 'recover') {
+                btnRecover.className = "py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
+                formTitle.textContent = "Redefinir Senha";
+                btnSubmit.textContent = "Atualizar Senha";
+                casalSelectContainer.classList.remove('hidden');
+                casalInputContainer.classList.add('hidden');
+                newCoupleFields.classList.add('hidden');
+                labelCasal.textContent = "Selecione o Casal";
+                labelSenha.textContent = "Nova Senha";
+                document.getElementById('casalSelect').required = true;
+                document.getElementById('novoCasalNome').required = false;
             }
         }
 
@@ -297,10 +316,9 @@
                 return;
             }
 
-            // Gera o hash seguro SHA-256 da senha
             const senhaHash = await hashPassword(senhaPura);
-
             let casalNome = "";
+
             if (currentMode === 'login') {
                 casalNome = document.getElementById('casalSelect').value;
                 if (!casalNome) {
@@ -308,7 +326,6 @@
                     return;
                 }
 
-                // Verifica na tabela 'casal_config' se a senha corresponde ao perfil
                 const { data, error } = await _supabase
                     .from('casal_config')
                     .select('*')
@@ -320,16 +337,20 @@
                     return;
                 }
 
-                // Validação segura da senha dependendo do perfil
-                let senhaArmazenada = role === 'admin' ? data.senha_admin : data.senha_assistente;
-                
-                // Se a base de dados ainda tiver senha antiga em texto simples (migração suave), converte ou valida
-                if (senhaArmazenada && senhaArmazenada !== senhaHash && senhaArmazenada !== senhaPura) {
+                const senhaArmazenada = role === 'admin' ? data.senha_admin : data.senha_assistente;
+
+                if (!senhaArmazenada) {
+                    showToast("Nenhuma senha registada para este perfil. Use a opção 'Recuperar' para definir uma.");
+                    return;
+                }
+
+                // Valida o hash ou se ainda estiver em texto simples (compatibilidade)
+                if (senhaArmazenada !== senhaHash && senhaArmazenada !== senhaPura) {
                     showToast("Senha incorreta. Tente novamente.");
                     return;
                 }
 
-                // Guarda dados de sessão seguros no localStorage
+                // Guarda dados na sessão
                 localStorage.setItem('user_role', role);
                 localStorage.setItem('casal_ativo', casalNome);
                 if (role === 'admin') {
@@ -340,8 +361,7 @@
 
                 window.location.href = "proxima_pagina.html";
 
-            } else {
-                // Modo Registo / Criação de Novo Casal
+            } else if (currentMode === 'register') {
                 casalNome = document.getElementById('novoCasalNome').value.trim();
                 const dataCasamento = document.getElementById('dataCasamento').value.trim();
                 const horarioCasamento = document.getElementById('horarioCasamento').value.trim();
@@ -351,14 +371,12 @@
                     return;
                 }
 
-                // Verifica se já existe
                 const { data: existente } = await _supabase.from('casal_config').select('id').eq('nome', casalNome).maybeSingle();
                 if (existente) {
                     showToast("Já existe um casal com este nome. Escolha outro.");
                     return;
                 }
 
-                // Salva com a senha encriptada em hash SHA-256
                 const novoRegistro = {
                     nome: casalNome,
                     data_casamento: dataCasamento,
@@ -383,6 +401,30 @@
                 }
 
                 window.location.href = "proxima_pagina.html";
+
+            } else if (currentMode === 'recover') {
+                // Modo Recuperação / Redefinição de Senha
+                casalNome = document.getElementById('casalSelect').value;
+                if (!casalNome) {
+                    showToast("Por favor, selecione o casal para redefinir a senha.");
+                    return;
+                }
+
+                const campoAtualizar = role === 'admin' ? 'senha_admin' : 'senha_assistente';
+
+                const { error: updateError } = await _supabase
+                    .from('casal_config')
+                    .update({ [campoAtualizar]: senhaHash })
+                    .eq('nome', casalNome);
+
+                if (updateError) {
+                    console.error(updateError);
+                    showToast("Erro ao atualizar a senha na base de dados.");
+                    return;
+                }
+
+                showToast("Senha redefinida com sucesso! Agora já pode entrar.");
+                setMode('login');
             }
         }
 
