@@ -147,14 +147,12 @@
                     </div>
                 </div>
 
-                <!-- Botão de Entrar -->
                 <div class="pt-2">
                     <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
                         Entrar
                     </button>
                 </div>
 
-                <!-- Botão Destacado para Criar Novo Casal -->
                 <div>
                     <button type="button" onclick="mudarTela('tela-novo-casal')" class="w-full bg-[#47362e] hover:bg-[#523d34] text-[#d1c4bc] hover:text-white font-bold py-3 px-4 rounded-xl transition border border-[#5d463b] uppercase tracking-wider text-xs shadow-md">
                         + Criar um Novo Casal
@@ -162,7 +160,7 @@
                 </div>
 
                 <div class="flex justify-between items-center mt-3 text-xs">
-                    <button type="button" onclick="mudarTela('tela-cadastro-colaborador')" class="text-[#d1c4bc] underline hover:text-white">
+                    <button type="button" onclick="irParaRegistarColaborador()" class="text-[#d1c4bc] underline hover:text-white">
                         Primeiro acesso? Registar colaborador
                     </button>
                     <button type="button" onclick="mudarTela('tela-recuperar')" class="text-[#d1c4bc] underline hover:text-white">
@@ -198,7 +196,7 @@
 
                 <div class="pt-2">
                     <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
-                        Criar Casal
+                        Avançar para Registar Colaborador
                     </button>
                 </div>
 
@@ -211,20 +209,13 @@
         </div>
 
 
-        <!-- ================= TELA 3: PRIMEIRO ACESSO / REGISTAR COLABORADOR ================= -->
+        <!-- ================= TELA 3: REGISTAR COLABORADOR ================= -->
         <div id="tela-cadastro-colaborador" class="card-container text-white p-6 sm:p-8 hidden">
             <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
                 Registar Colaborador
             </h2>
 
             <form onsubmit="registarColaborador(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Selecione o Casal</label>
-                    <select id="cadColabCasalSelect" required class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
-                        <option value="">A carregar casais...</option>
-                    </select>
-                </div>
-
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
                     <select id="cadColabRole" onchange="mudarLabelRegistarColab()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
@@ -328,6 +319,8 @@
     </div>
 
     <script>
+        let casalEmCriacao = "";
+
         document.addEventListener('DOMContentLoaded', () => {
             carregarCasaisDropdown();
         });
@@ -339,7 +332,7 @@
             document.getElementById('tela-recuperar').classList.add('hidden');
             
             document.getElementById(idTela).classList.remove('hidden');
-            if (idTela === 'tela-login' || idTela === 'tela-cadastro-colaborador' || idTela === 'tela-recuperar') {
+            if (idTela === 'tela-login' || idTela === 'tela-recuperar') {
                 carregarCasaisDropdown();
             }
         }
@@ -355,7 +348,6 @@
         async function carregarCasaisDropdown() {
             const { data, error } = await _supabase.from('casal_config').select('nome');
             const selectLogin = document.getElementById('loginCasalSelect');
-            const selectColab = document.getElementById('cadColabCasalSelect');
             const selectRec = document.getElementById('recCasalSelect');
             
             let opcoes = '<option value="">Selecione um casal...</option>';
@@ -368,7 +360,6 @@
             }
 
             selectLogin.innerHTML = opcoes;
-            selectColab.innerHTML = opcoes;
             selectRec.innerHTML = opcoes;
         }
 
@@ -392,6 +383,13 @@
                 input.type = 'password';
                 icon.className = "fa-solid fa-eye";
             }
+        }
+
+        function irParaRegistarColaborador() {
+            // Se o utilizador clicar em registar colaborador a partir do login, pedimos para selecionar um casal primeiro ou escolhemos o primeiro se houver, 
+            // mas o ideal é que venha do botão de novo casal. Se vier direto, podemos redirecionar ou pedir o nome do casal.
+            // Para simplificar, vamos enviar para a tela de novo casal primeiro, ou verificar se já existe um casal ativo.
+            mudarTela('tela-novo-casal');
         }
 
         // 1. FAZER LOGIN
@@ -423,7 +421,7 @@
             const senhaArmazenada = role === 'admin' ? data.senha_admin : data.senha_assistente;
 
             if (!senhaArmazenada) {
-                showToast("Nenhuma senha registada para este perfil. Utilize a opção de registo/recuperação.");
+                showToast("Nenhuma senha registada para este perfil. Utilize a opção de recuperação.");
                 return;
             }
 
@@ -443,7 +441,7 @@
             window.location.href = "proxima_pagina.html";
         }
 
-        // 2. CRIAR NOVO CASAL (Apenas Nome, Data e Horário)
+        // 2. CRIAR NOVO CASAL
         async function criarNovoCasal(e) {
             e.preventDefault();
             const casalNome = document.getElementById('novoCasalNome').value.trim();
@@ -472,18 +470,24 @@
                 return;
             }
 
+            casalEmCriacao = casalNome;
             showToast("Casal criado com sucesso! Agora registe o colaborador.");
             mudarTela('tela-cadastro-colaborador');
         }
 
-        // 3. REGISTAR COLABORADOR (Admin ou Assistente com Confirmação de Senha)
+        // 3. REGISTAR COLABORADOR (Sem selecionar casal, usa o casal recém-criado)
         async function registarColaborador(e) {
             e.preventDefault();
-            const casalNome = document.getElementById('cadColabCasalSelect').value;
             const role = document.getElementById('cadColabRole').value;
             const nomeResponsavel = document.getElementById('cadColabNome').value.trim();
             const senhaPura = document.getElementById('cadColabSenha').value;
             const confirmaSenha = document.getElementById('cadColabConfirmaSenha').value;
+
+            if (!casalEmCriacao) {
+                showToast("Nenhum casal selecionado. Crie um casal primeiro.");
+                mudarTela('tela-novo-casal');
+                return;
+            }
 
             if (senhaPura.length < 6) {
                 showToast("A senha precisa ter pelo menos 6 caracteres.");
@@ -501,15 +505,15 @@
             const { error: updateError } = await _supabase
                 .from('casal_config')
                 .update({ [campoAtualizar]: senhaHash })
-                .eq('nome', casalNome);
+                .eq('nome', casalEmCriacao);
 
             if (updateError) {
-                showToast("Erro ao guardar as credenciais.");
+                showToast("Erro ao guardar as credenciais na base de dados.");
                 return;
             }
 
             localStorage.setItem('user_role', role);
-            localStorage.setItem('casal_ativo', casalNome);
+            localStorage.setItem('casal_ativo', casalEmCriacao);
             if (role === 'admin') {
                 localStorage.setItem('admin_nome', nomeResponsavel);
             } else {
