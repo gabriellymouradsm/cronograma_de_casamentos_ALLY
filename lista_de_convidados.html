@@ -10,10 +10,18 @@
     <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
     <link rel="manifest" href="/site.webmanifest">
 
+    <!-- Biblioteca e Conexão do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -21,6 +29,9 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Biblioteca SheetJS para Leitura de Arquivos Excel / CSV -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <style>
         :root {
             --bg-cream: #fbf8f3;
@@ -79,11 +90,11 @@
             width: 100%;
         }
 
-        .brand-logo-img {
-            width: 50px;
-            height: auto;
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
             display: block;
-            margin: 0 auto 8px;
         }
 
         .brand-title {
@@ -108,22 +119,42 @@
 
     <!-- LOGO CENTRALIZADA NO TOPO -->
     <header class="brand-header">
-        <img src="imagens/Logotipo Monograma Elegante Preto.png" class="brand-logo-img" alt="Logo Ally">
+        <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
         <h1 class="brand-title">Ally</h1>
-        <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
+        <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
     </header>
 
     <!-- MAIN CONTAINER -->
     <main class="w-full max-w-md md:max-w-xl flex-1 flex flex-col justify-center">
 
-        <!-- VIEW 1: FORMULÁRIO DE CONVIDADOS -->
+        <!-- VIEW 1: FORMULÁRIO DE CONVIDADOS E IMPORTAÇÃO (Admin apenas) -->
         <div id="view-form" class="card-container text-white p-6 sm:p-8 transition-all duration-300">
             <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
                 Formulário de Convidados
             </h2>
 
+            <!-- Botão de Importação por Excel / CSV -->
+            <div class="mb-6 p-4 bg-[#47362e] border border-[#5d463b] rounded-2xl text-center">
+                <p class="text-xs text-[#d1c4bc] mb-2 font-medium">Possui uma planilha com a lista em Excel ou CSV?</p>
+                
+                <input type="file" id="excel-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
+                
+                <button type="button" onclick="triggerExcelClick()" class="inline-flex items-center gap-2 bg-[#d9fdd3] hover:bg-[#c2f7b8] text-[#128c7e] font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition shadow-md active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-file-excel text-sm"></i> IMPORTAR LISTA (EXCEL / CSV)
+                </button>
+            </div>
+
+            <div class="relative flex py-1 items-center mb-5">
+                <div class="flex-grow border-t border-[#5d463b]"></div>
+                <span class="flex-shrink mx-3 text-xs text-[#a0958e] uppercase tracking-wider font-semibold">ou cadastre manualmente</span>
+                <div class="flex-grow border-t border-[#5d463b]"></div>
+            </div>
+
             <form id="guest-form" class="space-y-4" onsubmit="handleAddGuest(event)">
-                <!-- Nome Completo -->
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">
                         Nome Completo
@@ -142,7 +173,6 @@
                             <input 
                                 type="text" 
                                 id="lastName" 
-                                required 
                                 placeholder="Último Nome" 
                                 class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"
                             />
@@ -150,7 +180,6 @@
                     </div>
                 </div>
 
-                <!-- Conexão com o Casal -->
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">
                         Conexão com o Casal
@@ -164,7 +193,6 @@
                     />
                 </div>
 
-                <!-- Número de Telefone -->
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">
                         Número de Telefone
@@ -172,29 +200,24 @@
                     <input 
                         type="tel" 
                         id="phone" 
-                        required 
                         placeholder="Digite aqui!" 
                         class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"
                     />
                 </div>
 
-                <!-- Número da Mesa -->
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">
                         Número da Mesa
                     </label>
                     <input 
-                        type="number" 
+                        type="text" 
                         id="tableNumber" 
                         required 
                         placeholder="Digite aqui!" 
-                        min="1"
-                        max="99"
                         class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"
                     />
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button 
                         type="submit" 
@@ -226,12 +249,17 @@
                 <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center sm:text-left text-[#faf7f2]">
                     Lista de Convidados
                 </h2>
-                <span id="guest-count-badge" class="bg-[#523d34] text-[#f7f4ef] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246]">
-                    0 convidados
-                </span>
+                <div class="flex items-center gap-2">
+                    <span id="guest-count-badge" class="bg-[#523d34] text-[#f7f4ef] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246]">
+                        0 convidados
+                    </span>
+                    <!-- Botão Limpar Lista (Oculto para Assistente) -->
+                    <button id="btn-clear-all" onclick="clearAllGuests()" title="Apagar toda a lista" class="bg-[#523d34] hover:bg-red-900/60 text-red-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246] transition">
+                        <i class="fa-solid fa-trash-can mr-1"></i> Limpar Lista
+                    </button>
+                </div>
             </div>
 
-            <!-- Search Filter Input -->
             <div class="mb-4 relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a0958e]"></i>
                 <input 
@@ -243,24 +271,23 @@
                 />
             </div>
 
-            <!-- Guest List Container -->
             <div class="max-h-[360px] overflow-y-auto pr-1 space-y-3 custom-scrollbar" id="guests-container">
             </div>
 
-            <!-- Empty State Message -->
             <div id="empty-state" class="hidden text-center py-8 text-[#caa28b]">
                 <i class="fa-regular fa-address-book text-4xl mb-2 opacity-60"></i>
                 <p class="text-sm">Nenhum convidado encontrado.</p>
             </div>
 
-            <!-- Back to Form Button -->
             <div class="mt-6 pt-4 border-t border-[#523d34]/60 flex flex-col gap-2">
+                <!-- Botão Adicionar/Importar (Oculto para Assistente) -->
                 <button 
                     type="button" 
+                    id="btn-goto-form"
                     onclick="switchView('form')"
                     class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3 px-4 rounded-xl transition duration-200 transform active:scale-95 shadow-md uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2"
                 >
-                    <i class="fa-solid fa-plus text-xs"></i> Adicionar Novo Convidado
+                    <i class="fa-solid fa-plus text-xs"></i> Adicionar / Importar Mais
                 </button>
                 <a href="proxima_pagina.html" class="text-center text-xs text-[#d1c4bc] underline hover:text-white mt-2">
                     ← Voltar ao Painel
@@ -269,6 +296,32 @@
         </div>
 
     </main>
+
+    <!-- MODAL DE EDIÇÃO DE CONVIDADO -->
+    <div id="edit-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#382a24] border border-[#6d5246] rounded-2xl p-6 w-full max-w-md text-white shadow-2xl">
+            <h3 class="text-xl font-serif-title font-bold mb-4 text-[#faf7f2]">Editar Convidado</h3>
+            <form id="edit-form" onsubmit="saveEditedGuest(event)" class="space-y-3">
+                <input type="hidden" id="edit-id">
+                <div>
+                    <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Nome Completo</label>
+                    <input type="text" id="edit-name" required class="w-full custom-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Classificação</label>
+                    <input type="text" id="edit-connection" required class="w-full custom-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Número da Mesa</label>
+                    <input type="text" id="edit-table" required class="w-full custom-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div class="flex gap-2 pt-3">
+                    <button type="submit" class="flex-1 bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider">Salvar</button>
+                    <button type="button" onclick="closeEditModal()" class="flex-1 bg-[#523d34] hover:bg-[#6d5246] text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-5 right-5 hidden z-50 bg-[#382a24] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-[#6d5246] flex items-center gap-3 toast-animate">
@@ -282,30 +335,55 @@
     </footer>
 
     <script>
-        // Carrega a lista original
-        let guests = JSON.parse(localStorage.getItem('ally_guests')) || [
-            { id: 1, firstName: 'Maria', lastName: 'Silva', connection: 'Madrinha da Noiva', phone: '(11) 98765-4321', tableNumber: '02' },
-            { id: 2, firstName: 'Lucas', lastName: 'Oliveira', connection: 'Amigo do Noivo', phone: '(11) 91234-5678', tableNumber: '05' }
-        ];
+        let guests = [];
+        const userRole = localStorage.getItem('user_role');
 
-        // Sincroniza com o LocalStorage (Chave local da tela + Chave unificada para o PDF)
-        function saveGuests() {
-            localStorage.setItem('ally_guests', JSON.stringify(guests));
-            
-            // Mapeia para o formato lido na geração do PDF em proxima_pagina.html
+        document.addEventListener('DOMContentLoaded', () => {
+            if (userRole === 'assistant') {
+                document.getElementById('view-form').classList.add('hidden');
+                document.getElementById('view-list').classList.remove('hidden');
+                document.getElementById('btn-clear-all').style.display = 'none';
+                document.getElementById('btn-goto-form').style.display = 'none';
+            }
+            loadGuestsFromSupabase();
+        });
+
+        async function loadGuestsFromSupabase() {
+            const { data, error } = await _supabase.from('convidados').select('*');
+            if (error) {
+                console.error("Erro ao carregar convidados:", error);
+                return;
+            }
+            guests = data || [];
+            sortGuestsAlphabetically();
+            renderGuests();
+            updatePDFStorage();
+        }
+
+        function sortGuestsAlphabetically() {
+            guests.sort((a, b) => {
+                const nameA = `${a.first_name} ${a.last_name || ''}`.trim().toLowerCase();
+                const nameB = `${b.first_name} ${b.last_name || ''}`.trim().toLowerCase();
+                return nameA.localeCompare(nameB, 'pt-BR');
+            });
+        }
+
+        function updatePDFStorage() {
             const dadosParaPDF = guests.map(g => ({
-                nome: `${g.firstName} ${g.lastName}`,
-                categoria: `${g.connection} (Mesa ${g.tableNumber})`,
-                confirmado: "Sim"
+                nome: `${g.first_name} ${g.last_name || ''}`.trim(),
+                categoria: `${g.connection} (Mesa ${g.table_number})`,
+                confirmado: g.present ? "Sim" : "Não"
             }));
-            
             localStorage.setItem('convidados_dados', JSON.stringify(dadosParaPDF));
         }
 
-        // Garante a primeira sincronização ao carregar
-        saveGuests();
+        function triggerExcelClick() {
+            document.getElementById('excel-input').click();
+        }
 
         function switchView(viewName) {
+            if (userRole === 'assistant' && viewName === 'form') return;
+
             const formView = document.getElementById('view-form');
             const listView = document.getElementById('view-list');
 
@@ -319,7 +397,7 @@
             }
         }
 
-        function handleAddGuest(e) {
+        async function handleAddGuest(e) {
             e.preventDefault();
 
             const firstName = document.getElementById('firstName').value.trim();
@@ -328,25 +406,113 @@
             const phone = document.getElementById('phone').value.trim();
             const tableNumber = document.getElementById('tableNumber').value.trim();
 
-            if (!firstName || !lastName || !connection || !phone || !tableNumber) {
-                showToast('Por favor, preencha todos os campos.', 'error');
+            if (!firstName || !connection || !tableNumber) {
+                showToast('Por favor, preencha os campos obrigatórios.');
                 return;
             }
 
-            const newGuest = {
-                id: Date.now(),
-                firstName,
-                lastName,
+            const { error } = await _supabase.from('convidados').insert([{
+                first_name: firstName,
+                last_name: lastName,
                 connection,
                 phone,
-                tableNumber
-            };
+                table_number: tableNumber,
+                present: false
+            }]);
 
-            guests.unshift(newGuest);
-            saveGuests();
+            if (error) {
+                console.error("Erro ao cadastrar convidado:", error);
+                return;
+            }
 
             document.getElementById('guest-form').reset();
             showToast(`Convidado ${firstName} cadastrado!`);
+            loadGuestsFromSupabase();
+        }
+
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+
+                    if (rows.length === 0) {
+                        alert("A planilha selecionada está vazia.");
+                        return;
+                    }
+
+                    let nameColIdx = 3;
+                    let classColIdx = 4;
+                    let tableColIdx = 7;
+
+                    for (let r = 0; r < Math.min(rows.length, 10); r++) {
+                        const row = rows[r];
+                        for (let c = 0; c < row.length; c++) {
+                            const val = row[c]?.toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            if (val.includes("nome")) nameColIdx = c;
+                            if (val.includes("classificacao")) classColIdx = c;
+                            if (val === "mesa") tableColIdx = c;
+                        }
+                        if (nameColIdx !== -1 && r > 0) break;
+                    }
+
+                    let importedCount = 0;
+                    let newGuestsToInsert = [];
+
+                    for (let i = 4; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (!row) continue;
+
+                        let fullName = row[nameColIdx]?.toString().trim() || "";
+                        let connection = row[classColIdx]?.toString().trim() || "";
+                        let tableNumber = row[tableColIdx]?.toString().trim() || "";
+
+                        if (!fullName) {
+                            for (let c = 0; c < row.length; c++) {
+                                const cellVal = row[c]?.toString().trim();
+                                if (cellVal && isNaN(cellVal) && cellVal.length > 2 && !cellVal.toLowerCase().includes("total") && !cellVal.toLowerCase().includes("geral")) {
+                                    fullName = cellVal;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (fullName && fullName.toLowerCase() !== "nome completo" && fullName.toLowerCase() !== "nome" && !fullName.toLowerCase().includes("total")) {
+                            newGuestsToInsert.push({
+                                first_name: fullName,
+                                last_name: "",
+                                connection: connection || "Convidado",
+                                phone: "-",
+                                table_number: tableNumber || "Geral",
+                                present: false
+                            });
+                            importedCount++;
+                        }
+                    }
+
+                    if (newGuestsToInsert.length > 0) {
+                        await _supabase.from('convidados').insert(newGuestsToInsert);
+                        loadGuestsFromSupabase();
+                        event.target.value = "";
+                        showToast(`${importedCount} convidados importados com sucesso!`);
+                        switchView('list');
+                    } else {
+                        alert("Não foi possível extrair os convidados da planilha.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Erro ao ler o arquivo.");
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
         }
 
         function renderGuests() {
@@ -358,9 +524,9 @@
             container.innerHTML = '';
 
             const filteredGuests = guests.filter(g => {
-                const fullName = `${g.firstName} ${g.lastName}`.toLowerCase();
-                const connection = g.connection.toLowerCase();
-                const table = g.tableNumber.toString();
+                const fullName = `${g.first_name} ${g.last_name || ''}`.trim().toLowerCase();
+                const connection = (g.connection || '').toLowerCase();
+                const table = (g.table_number || '').toString().toLowerCase();
                 return fullName.includes(searchVal) || connection.includes(searchVal) || table.includes(searchVal);
             });
 
@@ -375,42 +541,137 @@
 
             filteredGuests.forEach(guest => {
                 const card = document.createElement('div');
-                card.className = "bg-[#47362e] border border-[#5d463b] rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition hover:border-[#8b6b55]";
+                card.className = `bg-[#47362e] border rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition ${guest.present ? 'border-emerald-500/80 bg-[#403129]' : 'border-[#5d463b]'}`;
+                
+                const nomeCompleto = `${guest.first_name} ${guest.last_name || ''}`.trim();
+
+                let actionButtonsHTML = `
+                    <button 
+                        onclick="togglePresence(${guest.id}, ${guest.present})" 
+                        title="${guest.present ? 'Marcar como ausente' : 'Marcar como presente'}" 
+                        class="${guest.present ? 'bg-emerald-600 text-white' : 'bg-[#382a24] text-[#d1c4bc] hover:bg-[#523d34]'} p-2 rounded-lg border border-[#6d5246] transition text-xs font-semibold px-3 flex items-center gap-1.5"
+                    >
+                        <i class="fa-solid ${guest.present ? 'fa-check-to-slot' : 'fa-square'}"></i> ${guest.present ? 'Presente' : 'Marcar'}
+                    </button>
+                `;
+
+                if (userRole !== 'assistant') {
+                    actionButtonsHTML += `
+                        <button 
+                            onclick="openEditModal(${guest.id})" 
+                            title="Editar Convidado" 
+                            class="text-[#d1c4bc] hover:text-white p-2 rounded-lg hover:bg-[#382a24] transition"
+                        >
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button 
+                            onclick="confirmDeleteGuest(${guest.id}, '${nomeCompleto}')" 
+                            title="Remover Convidado" 
+                            class="text-[#c28d88] hover:text-red-400 p-2 rounded-lg hover:bg-[#382a24] transition"
+                        >
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    `;
+                }
+
                 card.innerHTML = `
                     <div class="flex-1">
-                        <div class="flex items-center gap-2">
-                            <h3 class="font-serif-title font-bold text-lg text-[#faf7f2]">${guest.firstName} ${guest.lastName}</h3>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-serif-title font-bold text-lg text-[#faf7f2]">${nomeCompleto}</h3>
                             <span class="bg-[#382a24] text-[#d4af37] text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-[#6d5246]">
-                                Mesa ${guest.tableNumber}
+                                Mesa ${guest.table_number}
+                            </span>
+                            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full border ${guest.present ? 'bg-emerald-950 text-emerald-300 border-emerald-700' : 'bg-[#382a24] text-[#a0958e] border-[#5d463b]'}">
+                                ${guest.present ? '✓ Presente' : 'Ausente'}
                             </span>
                         </div>
                         <p class="text-xs text-[#d1c4bc] mt-1">
                             <i class="fa-solid fa-heart text-[10px] mr-1 text-[#caa28b]"></i> ${guest.connection}
                         </p>
-                        <p class="text-xs text-[#a0958e] mt-0.5">
-                            <i class="fa-solid fa-phone text-[10px] mr-1"></i> ${guest.phone}
-                        </p>
                     </div>
-                    <button 
-                        onclick="deleteGuest(${guest.id})" 
-                        title="Remover Convidado" 
-                        class="text-[#c28d88] hover:text-red-400 p-2 rounded-lg hover:bg-[#382a24] transition self-end sm:self-center"
-                    >
-                        <i class="fa-regular fa-trash-can"></i>
-                    </button>
+                    <div class="flex items-center gap-1 self-end sm:self-center">
+                        ${actionButtonsHTML}
+                    </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function deleteGuest(id) {
-            guests = guests.filter(g => g.id !== id);
-            saveGuests();
-            renderGuests();
-            showToast('Convidado removido.', 'info');
+        async function togglePresence(id, currentStatus) {
+            const { error } = await _supabase
+                .from('convidados')
+                .update({ present: !currentStatus })
+                .eq('id', id);
+
+            if (!error) {
+                loadGuestsFromSupabase();
+                showToast(!currentStatus ? 'Convidado marcado como presente!' : 'Convidado marcado como ausente.');
+            }
         }
 
-        function showToast(message, type = 'success') {
+        function openEditModal(id) {
+            if (userRole === 'assistant') return;
+            const guest = guests.find(g => g.id === id);
+            if (!guest) return;
+
+            document.getElementById('edit-id').value = guest.id;
+            document.getElementById('edit-name').value = `${guest.first_name} ${guest.last_name || ''}`.trim();
+            document.getElementById('edit-connection').value = guest.connection;
+            document.getElementById('edit-table').value = guest.table_number;
+
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        async function saveEditedGuest(e) {
+            e.preventDefault();
+            if (userRole === 'assistant') return;
+
+            const id = Number(document.getElementById('edit-id').value);
+            const fullName = document.getElementById('edit-name').value.trim();
+            const connection = document.getElementById('edit-connection').value.trim();
+            const tableNumber = document.getElementById('edit-table').value.trim();
+
+            const { error } = await _supabase.from('convidados').update({
+                first_name: fullName,
+                last_name: "",
+                connection: connection,
+                table_number: tableNumber
+            }).eq('id', id);
+
+            if (!error) {
+                loadGuestsFromSupabase();
+                closeEditModal();
+                showToast('Convidado atualizado com sucesso!');
+            }
+        }
+
+        async function confirmDeleteGuest(id, nome) {
+            if (userRole === 'assistant') return;
+            if (confirm(`Deseja realmente remover o(a) convidado(a) "${nome}" da lista?`)) {
+                const { error } = await _supabase.from('convidados').delete().eq('id', id);
+                if (!error) {
+                    loadGuestsFromSupabase();
+                    showToast('Convidado removido.');
+                }
+            }
+        }
+
+        async function clearAllGuests() {
+            if (userRole === 'assistant') return;
+            if (confirm("Tem certeza que deseja apagar toda a lista de convidados?")) {
+                const { error } = await _supabase.from('convidados').delete().neq('id', 0);
+                if (!error) {
+                    loadGuestsFromSupabase();
+                    showToast('Lista de convidados limpa.');
+                }
+            }
+        }
+
+        function showToast(message) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toast-message');
             
