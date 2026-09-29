@@ -86,10 +86,11 @@
 
         .card-resultado h1 {
             font-family: Georgia, serif;
-            font-size: 32px;
+            font-size: 26px;
             font-weight: bold;
             margin-top: 0;
             margin-bottom: 5px;
+            word-break: break-word;
         }
 
         .subtitulo {
@@ -275,8 +276,8 @@
     <div class="dashboard-container">
         <div class="card-resultado">
             <div>
-                <h1>Novo Casal Criado!</h1>
-                <div class="subtitulo">Informações Registradas</div>
+                <h1 id="tituloNomeUsuario">Bem-vindo(a)!</h1>
+                <div class="subtitulo" id="subtituloPerfil">Painel de Controle</div>
 
                 <div class="dados-container">
                     <div class="dado-bloco">
@@ -324,7 +325,7 @@
                 </button>
 
                 <button class="btn-voltar" onclick="editarInformacoes()">
-                    Editar Informações
+                    Trocar / Voltar
                 </button>
             </div>
         </div>
@@ -384,12 +385,31 @@
         let diasFaltandoGlobal = 0;
 
         window.addEventListener("DOMContentLoaded", async function () {
-            const { data, error } = await _supabase.from('casal_config').select('*').order('id', { ascending: false }).limit(1);
+            // Puxa o nome de quem entrou (Admin ou Assistente) guardado no index.html
+            const userRole = localStorage.getItem('user_role');
+            const adminNome = localStorage.getItem('admin_nome');
+            const assistenteNome = localStorage.getItem('assistente_nome');
+            const casalAtivo = localStorage.getItem('casal_ativo');
 
-            if (!error && data && data.length > 0) {
-                nomeSalvo = data[0].nome;
-                dataSalva = data[0].data_casamento;
-                horarioSalvo = data[0].horario;
+            if (userRole === 'admin' && adminNome) {
+                document.getElementById("tituloNomeUsuario").textContent = adminNome;
+                document.getElementById("subtituloPerfil").textContent = "Administrador(a)";
+            } else if (userRole === 'assistant' && assistenteNome) {
+                document.getElementById("tituloNomeUsuario").textContent = assistenteNome;
+                document.getElementById("subtituloPerfil").textContent = "Assistente de Campo";
+            }
+
+            // Puxa os dados do casal diretamente do Supabase com base no casal ativo
+            const { data, error } = await _supabase
+                .from('casal_config')
+                .select('*')
+                .eq('nome', casalAtivo)
+                .maybeSingle();
+
+            if (!error && data) {
+                nomeSalvo = data.nome;
+                dataSalva = data.data_casamento;
+                horarioSalvo = data.horario;
 
                 document.getElementById("exibirNome").textContent = nomeSalvo;
                 document.getElementById("exibirData").textContent = dataSalva;
@@ -398,21 +418,8 @@
                 atualizarCronometro();
                 setInterval(atualizarCronometro, 60000);
             } else {
-                nomeSalvo = localStorage.getItem("casal_nome");
-                dataSalva = localStorage.getItem("casal_data");
-                horarioSalvo = localStorage.getItem("casal_horario");
-
-                if (nomeSalvo && dataSalva && horarioSalvo) {
-                    document.getElementById("exibirNome").textContent = nomeSalvo;
-                    document.getElementById("exibirData").textContent = dataSalva;
-                    document.getElementById("exibirHorario").textContent = horarioSalvo;
-
-                    atualizarCronometro();
-                    setInterval(atualizarCronometro, 60000);
-                } else {
-                    alert("Nenhum dado encontrado. Voltando para o formulário.");
-                    window.location.href = "index.html";
-                }
+                alert("Nenhum dado encontrado para este casal. Voltando ao início.");
+                window.location.href = "index.html";
             }
         });
 
@@ -454,7 +461,7 @@
 
         function compartilharWhatsApp() {
             let mensagem = "*Grande Notícia!* 🔔\n\n";
-            mensagem += "Os dados do casal *" + nomeSalvo + "* foram gerados com sucesso!\n";
+            mensagem += "Planejamento do casamento de *" + nomeSalvo + "*\n";
             mensagem += "🗓️ *Data:* " + dataSalva + "\n";
             mensagem += "⏰ *Horário:* " + horarioSalvo + "\n\n";
 
@@ -473,10 +480,10 @@
         }
 
         async function gerarPDF() {
-            const { data: cronogramaData } = await _supabase.from('cronograma_dia').select('*');
-            const { data: convidadosData } = await _supabase.from('convidados').select('*');
-            const { data: fornecedoresData } = await _supabase.from('fornecedores').select('*');
-            const { data: checklistData } = await _supabase.from('checklist').select('*');
+            const { data: cronogramaData } = await _supabase.from('cronograma_dia').select('*').eq('casal_nome', nomeSalvo);
+            const { data: convidadosData } = await _supabase.from('convidados').select('*').eq('casal_nome', nomeSalvo);
+            const { data: fornecedoresData } = await _supabase.from('fornecedores').select('*').eq('casal_nome', nomeSalvo);
+            const { data: checklistData } = await _supabase.from('checklist').select('*').eq('casal_nome', nomeSalvo);
 
             const cronograma = cronogramaData || [];
             const convidados = convidadosData || [];
