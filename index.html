@@ -160,7 +160,7 @@
                 </div>
 
                 <div class="flex justify-between items-center mt-3 text-xs">
-                    <button type="button" onclick="irParaRegistarColaborador()" class="text-[#d1c4bc] underline hover:text-white">
+                    <button type="button" onclick="mudarTela('tela-cadastro-colaborador')" class="text-[#d1c4bc] underline hover:text-white">
                         Primeiro acesso? Registar colaborador
                     </button>
                     <button type="button" onclick="mudarTela('tela-recuperar')" class="text-[#d1c4bc] underline hover:text-white">
@@ -209,7 +209,7 @@
         </div>
 
 
-        <!-- ================= TELA 3: REGISTAR COLABORADOR ================= -->
+        <!-- ================= TELA 3: REGISTAR COLABORADOR (Sem selecionar casal) ================= -->
         <div id="tela-cadastro-colaborador" class="card-container text-white p-6 sm:p-8 hidden">
             <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
                 Registar Colaborador
@@ -385,13 +385,6 @@
             }
         }
 
-        function irParaRegistarColaborador() {
-            // Se o utilizador clicar em registar colaborador a partir do login, pedimos para selecionar um casal primeiro ou escolhemos o primeiro se houver, 
-            // mas o ideal é que venha do botão de novo casal. Se vier direto, podemos redirecionar ou pedir o nome do casal.
-            // Para simplificar, vamos enviar para a tela de novo casal primeiro, ou verificar se já existe um casal ativo.
-            mudarTela('tela-novo-casal');
-        }
-
         // 1. FAZER LOGIN
         async function fazerLogin(e) {
             e.preventDefault();
@@ -475,7 +468,7 @@
             mudarTela('tela-cadastro-colaborador');
         }
 
-        // 3. REGISTAR COLABORADOR (Sem selecionar casal, usa o casal recém-criado)
+        // 3. REGISTAR COLABORADOR (Grava no Supabase atrelado ao casal criado)
         async function registarColaborador(e) {
             e.preventDefault();
             const role = document.getElementById('cadColabRole').value;
