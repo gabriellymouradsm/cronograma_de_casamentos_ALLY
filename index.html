@@ -217,13 +217,6 @@
 
             <form onsubmit="registarColaborador(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Selecione o Casal (Opcional ou Vincular)</label>
-                    <select id="colabCasalSelect" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
-                        <option value="">Nenhum / Criar depois</option>
-                    </select>
-                </div>
-
-                <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
                     <select id="cadColabRole" onchange="mudarLabelRegistarColab()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
                         <option value="admin">Administrador(a) do Casamento</option>
@@ -337,7 +330,7 @@
             document.getElementById('tela-recuperar').classList.add('hidden');
             
             document.getElementById(idTela).classList.remove('hidden');
-            if (idTela === 'tela-login' || idTela === 'tela-cadastro-colaborador' || idTela === 'tela-recuperar') {
+            if (idTela === 'tela-login' || idTela === 'tela-recuperar') {
                 carregarCasaisDropdown();
             }
         }
@@ -353,23 +346,18 @@
         async function carregarCasaisDropdown() {
             const { data, error } = await _supabase.from('casal_config').select('nome');
             const selectLogin = document.getElementById('loginCasalSelect');
-            const selectColab = document.getElementById('colabCasalSelect');
             const selectRec = document.getElementById('recCasalSelect');
             
             let opcoes = '<option value="">Selecione um casal...</option>';
-            let opcoesColab = '<option value="">Nenhum / Criar depois</option>';
-
             if (!error && data && data.length > 0) {
                 data.forEach(c => {
                     opcoes += `<option value="${c.nome}">${c.nome}</option>`;
-                    opcoesColab += `<option value="${c.nome}">${c.nome}</option>`;
                 });
             } else {
                 opcoes = '<option value="">Nenhum casal registado</option>';
             }
 
             selectLogin.innerHTML = opcoes;
-            selectColab.innerHTML = opcoesColab;
             selectRec.innerHTML = opcoes;
         }
 
@@ -410,25 +398,20 @@
 
             const senhaHash = await hashPassword(senhaPura);
 
+            // Verifica na tabela de colaboradores se existe o registo correspondente
             const { data, error } = await _supabase
-                .from('casal_config')
+                .from('colaboradores')
                 .select('*')
-                .eq('nome', casalNome)
+                .eq('role', role)
+                .eq('nome', nomeResponsavel)
                 .maybeSingle();
 
             if (error || !data) {
-                showToast("Casal não encontrado.");
+                showToast("Colaborador não encontrado. Verifique o nome e perfil.");
                 return;
             }
 
-            const senhaArmazenada = role === 'admin' ? data.senha_admin : data.senha_assistente;
-
-            if (!senhaArmazenada) {
-                showToast("Nenhuma senha registada para este perfil.");
-                return;
-            }
-
-            if (senhaArmazenada !== senhaHash && senhaArmazenada !== senhaPura) {
+            if (data.senha_hash !== senhaHash && data.senha_hash !== senhaPura) {
                 showToast("Senha incorreta. Tente novamente.");
                 return;
             }
@@ -477,10 +460,9 @@
             mudarTela('tela-login');
         }
 
-        // 3. REGISTAR COLABORADOR (Independente)
+        // 3. REGISTAR COLABORADOR (Independente, guarda na tabela 'colaboradores' e volta para o login)
         async function registarColaborador(e) {
             e.preventDefault();
-            const casalSelecionado = document.getElementById('colabCasalSelect').value;
             const role = document.getElementById('cadColabRole').value;
             const nomeResponsavel = document.getElementById('cadColabNome').value.trim();
             const senhaPura = document.getElementById('cadColabSenha').value;
@@ -498,21 +480,16 @@
 
             const senhaHash = await hashPassword(senhaPura);
 
-            // Se o usuário selecionou um casal existente, atualiza a senha nele
-            if (casalSelecionado) {
-                const campoAtualizar = role === 'admin' ? 'senha_admin' : 'senha_assistente';
-                await _supabase.from('casal_config').update({ [campoAtualizar]: senhaHash }).eq('nome', casalSelecionado);
-                localStorage.setItem('casal_ativo', casalSelecionado);
-            } else {
-                // Se não selecionou nenhum casal, guardamos apenas em cache temporário até entrar/criar o casal
-                localStorage.removeItem('casal_ativo');
-            }
+            // Insere na tabela independente de colaboradores
+            const { error: insertError } = await _supabase.from('colaboradores').insert([{
+                role: role,
+                nome: nomeResponsavel,
+                senha_hash: senhaHash
+            }]);
 
-            localStorage.setItem('user_role', role);
-            if (role === 'admin') {
-                localStorage.setItem('admin_nome', nomeResponsavel);
-            } else {
-                localStorage.setItem('assistente_nome', nomeResponsavel);
+            if (insertError) {
+                showToast("Erro ao guardar as credenciais na base de dados.");
+                return;
             }
 
             showToast("Colaborador registado com sucesso!");
