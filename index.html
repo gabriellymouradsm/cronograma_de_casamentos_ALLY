@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ally - Login e Acesso</title>
+    <title>Ally - Login e Configuração do Casal</title>
 
-    <!-- Supabase SDK -->
+    <link rel="apple-touch-icon" sizes="180x180" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
+
+    <!-- Biblioteca e Conexão do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
@@ -13,340 +17,381 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Georgia', serif;
+        :root {
+            --bg-cream: #fbf8f3;
+            --card-brown: #382a24;
+            --input-bg: #f7f4ef;
         }
 
         body {
-            background-color: #f7f5f2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            background-color: var(--bg-cream);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #2c221e;
+        }
+
+        .font-serif-title {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .custom-input {
+            background-color: var(--input-bg);
+            color: #382a24;
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: #8b6b55;
+            box-shadow: 0 0 0 3px rgba(139, 107, 85, 0.25);
+            background-color: #ffffff;
+        }
+
+        .card-container {
+            background-color: var(--card-brown);
+            box-shadow: 0 20px 40px rgba(56, 42, 36, 0.18);
+            border-radius: 28px;
         }
 
         .brand-header {
             text-align: center;
             margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
+            display: block;
         }
 
         .brand-title {
-            font-size: 2.5rem;
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
             font-weight: bold;
             color: #382a23;
+            margin: 0;
+            line-height: 1;
         }
 
         .brand-tagline {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 3px;
             color: #725a4d;
-            margin-top: 5px;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 440px;
-            background-color: #3b2a24;
-            border-radius: 28px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            color: #ffffff;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #faf7f2;
-        }
-
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .action-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.2s;
-        }
-
-        .btn-primary {
-            background-color: #fcfaf7;
-            color: #3b2a24;
-        }
-
-        .btn-primary:hover {
-            background-color: #f2eee9;
-        }
-
-        .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 12px 15px;
-            background-color: #fcfaf7;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            color: #3b2a24;
-            outline: none;
-            margin-bottom: 12px;
-        }
-
-        .input-field::placeholder {
-            color: #b5ada5;
-            font-style: italic;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .back-link {
-            color: #eadecc;
-            font-size: 12px;
-            text-decoration: underline;
-            cursor: pointer;
-            margin-top: 15px;
-            display: inline-block;
-        }
-
-        .label-text {
-            display: block;
-            text-align: left;
-            font-size: 12px;
-            color: #d1c4bc;
-            margin-bottom: 4px;
-            margin-left: 4px;
+            margin-top: 6px;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-10">
 
     <header class="brand-header">
+        <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
         <h1 class="brand-title">Ally</h1>
         <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
     </header>
 
-    <!-- TELA INICIAL: SELECIONAR PERFIL -->
-    <div class="card" id="view-role">
-        <h2>Selecione o seu perfil</h2>
-        <div class="btn-group">
-            <button class="action-btn btn-primary" onclick="escolherPerfil('admin')">👑 Administrador (Casal)</button>
-            <button class="action-btn btn-secondary" onclick="escolherPerfil('assistant')">📋 Assistente de Campo</button>
+    <main class="w-full max-w-md md:max-w-xl flex-1 flex flex-col justify-center">
+        <div class="card-container text-white p-6 sm:p-8">
+            <h2 id="form-title" class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
+                Acesso ao Sistema
+            </h2>
+
+            <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
+                
+                <!-- SELETOR DE MODO (Entrar vs Criar Novo Casal) -->
+                <div id="mode-selector" class="grid grid-cols-2 gap-2 mb-4">
+                    <button type="button" onclick="setMode('login')" id="btn-mode-login" class="py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow">Entrar</button>
+                    <button type="button" onclick="setMode('register')" id="btn-mode-register" class="py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]">Criar Casal</button>
+                </div>
+
+                <!-- CAMPO DE CASAL (Ativo ou Novo) -->
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="label-casal">Selecione o Casal</label>
+                    <div id="casal-select-container">
+                        <select id="casalSelect" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                            <option value="">A carregar casais...</option>
+                        </select>
+                    </div>
+                    <div id="casal-input-container" class="hidden">
+                        <input type="text" id="novoCasalNome" placeholder="Ex: Lucas & Mariana" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                    </div>
+                </div>
+
+                <!-- CAMPOS DE DATAS E HORAS (Apenas visíveis ao criar novo casal) -->
+                <div id="new-couple-fields" class="space-y-4 hidden">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Data do Casamento</label>
+                            <input type="text" id="dataCasamento" placeholder="DD/MM/AAAA" class="w-full custom-input px-3 py-2.5 rounded-xl text-center text-sm"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Horário</label>
+                            <input type="text" id="horarioCasamento" placeholder="HH:MM" class="w-full custom-input px-3 py-2.5 rounded-xl text-center text-sm"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PERFIL (Admin vs Assistente) -->
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
+                    <select id="userRole" onchange="updateRoleFields()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                        <option value="admin">Administrador(a) do Casamento</option>
+                        <option value="assistant">Assistente de Campo</option>
+                    </select>
+                </div>
+
+                <!-- NOME DO RESPONSÁVEL -->
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="labelNomeResponsavel">Nome do Administrador</label>
+                    <input type="text" id="nomeResponsavel" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                </div>
+
+                <!-- SENHA SEGURA -->
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Senha de Acesso</label>
+                    <div class="relative">
+                        <input type="password" id="senhaAcesso" required placeholder="Digite a sua senha segura" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                            <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-[#d1c4bc] mt-1 text-center" id="senhaRegra">Mínimo de 6 caracteres.</p>
+                </div>
+
+                <!-- BOTÃO DE SUBMISSÃO -->
+                <div class="pt-2">
+                    <button type="submit" id="btnSubmit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
+                        Entrar no Sistema
+                    </button>
+                </div>
+            </form>
         </div>
+    </main>
+
+    <!-- TOAST DE ALERTA -->
+    <div id="toast" class="fixed bottom-5 right-5 hidden z-50 bg-[#382a24] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-[#6d5246] flex items-center gap-3">
+        <i class="fa-solid fa-circle-exclamation text-amber-400 text-lg" id="toastIcon"></i>
+        <span id="toast-message" class="text-sm font-medium">Mensagem de aviso</span>
     </div>
 
-    <!-- TELA DO ADMINISTRADOR -->
-    <div class="card hidden" id="view-admin">
-        <h2>Área do Administrador</h2>
+    <script>
+        let currentMode = 'login'; // 'login' ou 'register'
 
-        <form id="form-admin" onsubmit="salvarOuAcessarAdmin(event)">
-            <label class="label-text">Nome do Casal (Digite para buscar ou criar novo)</label>
-            <input type="text" id="admin-nome-casal" class="input-field" placeholder="Ex: Ana & João" list="lista-casais" oninput="verificarCasalDigitado(this)" required>
-            <datalist id="lista-casais">
-                <!-- Preenchido dinamicamente via JS -->
-            </datalist>
-
-            <label class="label-text">Data do Casamento</label>
-            <input type="text" id="admin-data-casal" class="input-field" placeholder="Ex: 20/10/2026" required>
-
-            <label class="label-text">Horário do Casamento</label>
-            <input type="time" id="admin-horario-casal" class="input-field" required>
-
-            <label class="label-text">Nome do Administrador</label>
-            <input type="text" id="admin-nome-adm" class="input-field" placeholder="Nome do Responsável" required>
-
-            <label class="label-text">Senha do Administrador</label>
-            <input type="password" id="admin-senha" class="input-field" placeholder="Senha de Acesso" required>
-
-            <button type="submit" class="action-btn btn-primary" style="margin-top: 5px;">Entrar no Painel</button>
-        </form>
-        <span class="back-link" onclick="voltarParaPerfil()">← Voltar</span>
-    </div>
-
-    <!-- TELA DO ASSISTENTE -->
-    <div class="card hidden" id="view-assistente">
-        <h2>Acesso Assistente</h2>
-        
-        <form onsubmit="entrarAssistente(event)">
-            <label class="label-text">Nome do Casal (Digite ou selecione)</label>
-            <input type="text" id="assistant-nome-casal" class="input-field" placeholder="Digite o nome do casal..." list="lista-casais-assistant" oninput="preencherDadosAssistentePorDigitacao(this)" required>
-            <datalist id="lista-casais-assistant">
-                <!-- Preenchido dinamicamente via JS -->
-            </datalist>
-
-            <label class="label-text">Data do Casamento</label>
-            <input type="text" id="assistant-data-casal" class="input-field" placeholder="--" readonly style="background-color: #eae5de; cursor: not-allowed;">
-
-            <label class="label-text">Horário do Casamento</label>
-            <input type="text" id="assistant-horario-casal" class="input-field" placeholder="--" readonly style="background-color: #eae5de; cursor: not-allowed;">
-
-            <label class="label-text">Nome do Assistente</label>
-            <input type="text" id="assistant-nome" class="input-field" placeholder="O seu nome" required>
-
-            <label class="label-text">Senha do Assistente</label>
-            <input type="password" id="assistant-senha" class="input-field" placeholder="Senha de Acesso" required>
-
-            <button type="submit" class="action-btn btn-primary" style="margin-top: 10px;">Entrar como Assistente</button>
-        </form>
-        <span class="back-link" onclick="voltarParaPerfil()">← Voltar</span>
-    </div>
-
-<script>
-    let listaCasaisGlobal = [];
-
-    async function escolherPerfil(role) {
-        localStorage.setItem('user_role', role);
-        document.getElementById('view-role').classList.add('hidden');
-
-        if (role === 'admin') {
-            document.getElementById('view-admin').classList.remove('hidden');
-            await carregarListaCasais();
-        } else {
-            document.getElementById('view-assistente').classList.remove('hidden');
-            await carregarListaCasais();
-        }
-    }
-
-    function voltarParaPerfil() {
-        localStorage.clear();
-        document.getElementById('view-admin').classList.add('hidden');
-        document.getElementById('view-assistente').classList.add('hidden');
-        document.getElementById('view-role').classList.remove('hidden');
-    }
-
-    async function carregarListaCasais() {
-        const { data, error } = await _supabase.from('casal_config').select('*').order('id', { ascending: false });
-
-        if (error || !data) {
-            listaCasaisGlobal = [];
-            return;
-        }
-
-        listaCasaisGlobal = data;
-
-        // Preenche o datalist do admin
-        const datalistAdmin = document.getElementById('lista-casais');
-        datalistAdmin.innerHTML = '';
-        data.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.nome;
-            opt.textContent = `${c.data_casamento} - ${c.horario}`;
-            datalistAdmin.appendChild(opt);
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarCasaisDropdown();
         });
 
-        // Preenche o datalist do assistente
-        const datalistAssistant = document.getElementById('lista-casais-assistant');
-        datalistAssistant.innerHTML = '';
-        data.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.nome;
-            opt.textContent = `${c.data_casamento} - ${c.horario}`;
-            datalistAssistant.appendChild(opt);
-        });
-    }
-
-    function verificarCasalDigitado(inputElem) {
-        const nomeDigitado = inputElem.value.trim();
-        const casalEncontrado = listaCasaisGlobal.find(c => c.nome.toLowerCase() === nomeDigitado.toLowerCase());
-        
-        if (casalEncontrado) {
-            document.getElementById('admin-data-casal').value = casalEncontrado.data_casamento;
-            document.getElementById('admin-horario-casal').value = casalEncontrado.horario;
-        }
-    }
-
-    function preencherDadosAssistentePorDigitacao(inputElem) {
-        const nomeDigitado = inputElem.value.trim();
-        const casalEncontrado = listaCasaisGlobal.find(c => c.nome.toLowerCase() === nomeDigitado.toLowerCase());
-        
-        if (casalEncontrado) {
-            document.getElementById('assistant-data-casal').value = casalEncontrado.data_casamento;
-            document.getElementById('assistant-horario-casal').value = casalEncontrado.horario;
-        } else {
-            document.getElementById('assistant-data-casal').value = "";
-            document.getElementById('assistant-horario-casal').value = "";
-        }
-    }
-
-    async function salvarOuAcessarAdmin(e) {
-        e.preventDefault();
-        const nome = document.getElementById('admin-nome-casal').value.trim();
-        const data_casamento = document.getElementById('admin-data-casal').value.trim();
-        const horario = document.getElementById('admin-horario-casal').value;
-        const adminNome = document.getElementById('admin-nome-adm').value.trim();
-        const adminSenha = document.getElementById('admin-senha').value.trim();
-
-        if (!nome || !data_casamento || !horario || !adminNome || !adminSenha) {
-            alert("Preencha todos os campos do Administrador.");
-            return;
+        // Função para encriptar a senha usando SHA-256 (Gera um hash seguro irreversível)
+        async function hashPassword(senha) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(senha);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // Verifica se o casal já existe
-        const { data: existente } = await _supabase.from('casal_config').select('*').eq('nome', nome).maybeSingle();
+        async function carregarCasaisDropdown() {
+            const { data, error } = await _supabase.from('casal_config').select('nome');
+            const select = document.getElementById('casalSelect');
+            select.innerHTML = '<option value="">Selecione um casal...</option>';
 
-        if (!existente) {
-            // Se não existe, cria automaticamente na base de dados
-            const { error } = await _supabase.from('casal_config').insert([{ nome, data_casamento, horario }]);
-            if (error) {
-                alert("Erro ao criar o novo casal.");
-                return;
+            if (!error && data && data.length > 0) {
+                data.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.nome;
+                    opt.textContent = c.nome;
+                    select.appendChild(opt);
+                });
+            } else {
+                select.innerHTML = '<option value="">Nenhum casal registado</option>';
             }
         }
 
-        localStorage.setItem('casal_ativo', nome);
-        localStorage.setItem('admin_nome', adminNome);
-        window.location.href = "proxima_pagina.html";
-    }
+        function setMode(mode) {
+            currentMode = mode;
+            const btnLogin = document.getElementById('btn-mode-login');
+            const btnRegister = document.getElementById('btn-mode-register');
+            const formTitle = document.getElementById('form-title');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const casalSelectContainer = document.getElementById('casal-select-container');
+            const casalInputContainer = document.getElementById('casal-input-container');
+            const newCoupleFields = document.getElementById('new-couple-fields');
+            const labelCasal = document.getElementById('label-casal');
 
-    async function entrarAssistente(e) {
-        e.preventDefault();
-        const nomeCasal = document.getElementById('assistant-nome-casal').value.trim();
-        const assistenteNome = document.getElementById('assistant-nome').value.trim();
-        const assistenteSenha = document.getElementById('assistant-senha').value.trim();
-
-        const casalEncontrado = listaCasaisGlobal.find(c => c.nome.toLowerCase() === nomeCasal.toLowerCase());
-
-        if (!casalEncontrado) {
-            alert("Por favor, digite ou selecione um casamento válido existente.");
-            return;
+            if (mode === 'login') {
+                btnLogin.className = "py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
+                btnRegister.className = "py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
+                formTitle.textContent = "Acesso ao Sistema";
+                btnSubmit.textContent = "Entrar no Sistema";
+                casalSelectContainer.classList.remove('hidden');
+                casalInputContainer.classList.add('hidden');
+                newCoupleFields.classList.add('hidden');
+                labelCasal.textContent = "Selecione o Casal";
+                document.getElementById('casalSelect').required = true;
+                document.getElementById('novoCasalNome').required = false;
+            } else {
+                btnRegister.className = "py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#f7f4ef] text-[#382a24] transition shadow";
+                btnLogin.className = "py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#47362e] text-[#d1c4bc] transition border border-[#5d463b]";
+                formTitle.textContent = "Criar Novo Casal";
+                btnSubmit.textContent = "Registar e Entrar";
+                casalSelectContainer.classList.add('hidden');
+                casalInputContainer.classList.remove('hidden');
+                newCoupleFields.classList.remove('hidden');
+                labelCasal.textContent = "Nome do Casal";
+                document.getElementById('casalSelect').required = false;
+                document.getElementById('novoCasalNome').required = true;
+            }
         }
-        if (!assistenteNome || !assistenteSenha) {
-            alert("Preencha o nome e a senha do Assistente.");
-            return;
+
+        function updateRoleFields() {
+            const role = document.getElementById('userRole').value;
+            const label = document.getElementById('labelNomeResponsavel');
+            const input = document.getElementById('nomeResponsavel');
+            if (role === 'admin') {
+                label.textContent = "Nome do Administrador";
+                input.placeholder = "O seu nome";
+            } else {
+                label.textContent = "Nome do Assistente";
+                input.placeholder = "O seu nome de assistente";
+            }
         }
 
-        localStorage.setItem('user_role', 'assistant');
-        localStorage.setItem('casal_ativo', casalEncontrado.nome);
-        localStorage.setItem('assistente_nome', assistenteNome);
-        window.location.href = "proxima_pagina.html";
-    }
-</script>
+        function togglePassword() {
+            const input = document.getElementById('senhaAcesso');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = "fa-solid fa-eye-slash";
+            } else {
+                input.type = 'password';
+                icon.className = "fa-solid fa-eye";
+            }
+        }
 
+        async function handleAuth(e) {
+            e.preventDefault();
+            const role = document.getElementById('userRole').value;
+            const nomeResponsavel = document.getElementById('nomeResponsavel').value.trim();
+            const senhaPura = document.getElementById('senhaAcesso').value;
+
+            if (senhaPura.length < 6) {
+                showToast("A senha precisa ter pelo menos 6 caracteres.");
+                return;
+            }
+
+            // Gera o hash seguro SHA-256 da senha
+            const senhaHash = await hashPassword(senhaPura);
+
+            let casalNome = "";
+            if (currentMode === 'login') {
+                casalNome = document.getElementById('casalSelect').value;
+                if (!casalNome) {
+                    showToast("Por favor, selecione um casal.");
+                    return;
+                }
+
+                // Verifica na tabela 'casal_config' se a senha corresponde ao perfil
+                const { data, error } = await _supabase
+                    .from('casal_config')
+                    .select('*')
+                    .eq('nome', casalNome)
+                    .maybeSingle();
+
+                if (error || !data) {
+                    showToast("Casal não encontrado.");
+                    return;
+                }
+
+                // Validação segura da senha dependendo do perfil
+                let senhaArmazenada = role === 'admin' ? data.senha_admin : data.senha_assistente;
+                
+                // Se a base de dados ainda tiver senha antiga em texto simples (migração suave), converte ou valida
+                if (senhaArmazenada && senhaArmazenada !== senhaHash && senhaArmazenada !== senhaPura) {
+                    showToast("Senha incorreta. Tente novamente.");
+                    return;
+                }
+
+                // Guarda dados de sessão seguros no localStorage
+                localStorage.setItem('user_role', role);
+                localStorage.setItem('casal_ativo', casalNome);
+                if (role === 'admin') {
+                    localStorage.setItem('admin_nome', nomeResponsavel);
+                } else {
+                    localStorage.setItem('assistente_nome', nomeResponsavel);
+                }
+
+                window.location.href = "proxima_pagina.html";
+
+            } else {
+                // Modo Registo / Criação de Novo Casal
+                casalNome = document.getElementById('novoCasalNome').value.trim();
+                const dataCasamento = document.getElementById('dataCasamento').value.trim();
+                const horarioCasamento = document.getElementById('horarioCasamento').value.trim();
+
+                if (!casalNome || !dataCasamento || !horarioCasamento) {
+                    showToast("Preencha todos os campos do casamento.");
+                    return;
+                }
+
+                // Verifica se já existe
+                const { data: existente } = await _supabase.from('casal_config').select('id').eq('nome', casalNome).maybeSingle();
+                if (existente) {
+                    showToast("Já existe um casal com este nome. Escolha outro.");
+                    return;
+                }
+
+                // Salva com a senha encriptada em hash SHA-256
+                const novoRegistro = {
+                    nome: casalNome,
+                    data_casamento: dataCasamento,
+                    horario: horarioCasamento,
+                    [role === 'admin' ? 'senha_admin' : 'senha_assistente']: senhaHash
+                };
+
+                const { error: insertError } = await _supabase.from('casal_config').insert([novoRegistro]);
+
+                if (insertError) {
+                    console.error(insertError);
+                    showToast("Erro ao criar o casal na base de dados.");
+                    return;
+                }
+
+                localStorage.setItem('user_role', role);
+                localStorage.setItem('casal_ativo', casalNome);
+                if (role === 'admin') {
+                    localStorage.setItem('admin_nome', nomeResponsavel);
+                } else {
+                    localStorage.setItem('assistente_nome', nomeResponsavel);
+                }
+
+                window.location.href = "proxima_pagina.html";
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3500);
+        }
+    </script>
 </body>
 </html>
