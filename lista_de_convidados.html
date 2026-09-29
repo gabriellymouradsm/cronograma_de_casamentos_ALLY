@@ -353,19 +353,34 @@
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+                    
+                    // Converte o excel num array de objetos (usando a primeira linha como cabeçalho)
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-                    let nameColIdx = 3, classColIdx = 4, tableColIdx = 7;
+                    if (!rows || rows.length === 0) {
+                        alert("O arquivo está vazio ou formato inválido.");
+                        return;
+                    }
+
                     let newGuestsToInsert = [];
 
-                    for (let i = 4; i < rows.length; i++) {
-                        const row = rows[i];
-                        if (!row) continue;
-                        let fullName = row[nameColIdx]?.toString().trim() || "";
-                        let connection = row[classColIdx]?.toString().trim() || "";
-                        let tableNumber = row[tableColIdx]?.toString().trim() || "";
+                    rows.forEach(row => {
+                        // Converte as chaves para minúsculas para encontrar os campos independentemente de como foram nomeados no Excel
+                        const rowLower = {};
+                        Object.keys(row).forEach(k => {
+                            rowLower[k.toLowerCase().trim()] = row[k];
+                        });
 
-                        if (fullName && fullName.toLowerCase() !== "nome completo" && !fullName.toLowerCase().includes("total")) {
+                        // Procura por colunas comuns de Nome, Conexão e Mesa
+                        let fullName = rowLower['nome'] || rowLower['nome completo'] || rowLower['convidado'] || rowLower['first_name'] || Object.values(row)[0] || "";
+                        let connection = rowLower['conexao'] || rowLower['categoria'] || rowLower['parentesco'] || rowLower['tipo'] || Object.values(row)[1] || "Convidado";
+                        let tableNumber = rowLower['mesa'] || rowLower['numero da mesa'] || rowLower['table'] || Object.values(row)[2] || "Geral";
+
+                        fullName = fullName.toString().trim();
+                        connection = connection.toString().trim();
+                        tableNumber = tableNumber.toString().trim();
+
+                        if (fullName && fullName.toLowerCase() !== "nome" && !fullName.toLowerCase().includes("total")) {
                             newGuestsToInsert.push({
                                 first_name: fullName,
                                 last_name: "",
@@ -376,7 +391,7 @@
                                 casal_nome: casalAtivo
                             });
                         }
-                    }
+                    });
 
                     if (newGuestsToInsert.length > 0) {
                         await _supabase.from('convidados').insert(newGuestsToInsert);
@@ -384,10 +399,12 @@
                         event.target.value = "";
                         showToast(`${newGuestsToInsert.length} convidados importados!`);
                         switchView('list');
+                    } else {
+                        alert("Não foram encontrados convidados válidos no arquivo.");
                     }
                 } catch (err) {
                     console.error(err);
-                    alert("Erro ao ler o arquivo.");
+                    alert("Erro ao ler o arquivo Excel/CSV.");
                 }
             };
             reader.readAsArrayBuffer(file);
