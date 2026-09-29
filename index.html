@@ -196,7 +196,7 @@
 
                 <div class="pt-2">
                     <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
-                        Avançar para Registar Colaborador
+                        Criar Casal
                     </button>
                 </div>
 
@@ -209,13 +209,20 @@
         </div>
 
 
-        <!-- ================= TELA 3: REGISTAR COLABORADOR (Sem selecionar casal) ================= -->
+        <!-- ================= TELA 3: REGISTAR COLABORADOR (Independente) ================= -->
         <div id="tela-cadastro-colaborador" class="card-container text-white p-6 sm:p-8 hidden">
             <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
                 Registar Colaborador
             </h2>
 
             <form onsubmit="registarColaborador(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Selecione o Casal (Opcional ou Vincular)</label>
+                    <select id="colabCasalSelect" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                        <option value="">Nenhum / Criar depois</option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
                     <select id="cadColabRole" onchange="mudarLabelRegistarColab()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
@@ -319,8 +326,6 @@
     </div>
 
     <script>
-        let casalEmCriacao = "";
-
         document.addEventListener('DOMContentLoaded', () => {
             carregarCasaisDropdown();
         });
@@ -332,7 +337,7 @@
             document.getElementById('tela-recuperar').classList.add('hidden');
             
             document.getElementById(idTela).classList.remove('hidden');
-            if (idTela === 'tela-login' || idTela === 'tela-recuperar') {
+            if (idTela === 'tela-login' || idTela === 'tela-cadastro-colaborador' || idTela === 'tela-recuperar') {
                 carregarCasaisDropdown();
             }
         }
@@ -348,18 +353,23 @@
         async function carregarCasaisDropdown() {
             const { data, error } = await _supabase.from('casal_config').select('nome');
             const selectLogin = document.getElementById('loginCasalSelect');
+            const selectColab = document.getElementById('colabCasalSelect');
             const selectRec = document.getElementById('recCasalSelect');
             
             let opcoes = '<option value="">Selecione um casal...</option>';
+            let opcoesColab = '<option value="">Nenhum / Criar depois</option>';
+
             if (!error && data && data.length > 0) {
                 data.forEach(c => {
                     opcoes += `<option value="${c.nome}">${c.nome}</option>`;
+                    opcoesColab += `<option value="${c.nome}">${c.nome}</option>`;
                 });
             } else {
                 opcoes = '<option value="">Nenhum casal registado</option>';
             }
 
             selectLogin.innerHTML = opcoes;
+            selectColab.innerHTML = opcoesColab;
             selectRec.innerHTML = opcoes;
         }
 
@@ -414,7 +424,7 @@
             const senhaArmazenada = role === 'admin' ? data.senha_admin : data.senha_assistente;
 
             if (!senhaArmazenada) {
-                showToast("Nenhuma senha registada para este perfil. Utilize a opção de recuperação.");
+                showToast("Nenhuma senha registada para este perfil.");
                 return;
             }
 
@@ -463,24 +473,18 @@
                 return;
             }
 
-            casalEmCriacao = casalNome;
-            showToast("Casal criado com sucesso! Agora registe o colaborador.");
-            mudarTela('tela-cadastro-colaborador');
+            showToast("Casal criado com sucesso!");
+            mudarTela('tela-login');
         }
 
-        // 3. REGISTAR COLABORADOR (Grava no Supabase atrelado ao casal criado)
+        // 3. REGISTAR COLABORADOR (Independente)
         async function registarColaborador(e) {
             e.preventDefault();
+            const casalSelecionado = document.getElementById('colabCasalSelect').value;
             const role = document.getElementById('cadColabRole').value;
             const nomeResponsavel = document.getElementById('cadColabNome').value.trim();
             const senhaPura = document.getElementById('cadColabSenha').value;
             const confirmaSenha = document.getElementById('cadColabConfirmaSenha').value;
-
-            if (!casalEmCriacao) {
-                showToast("Nenhum casal selecionado. Crie um casal primeiro.");
-                mudarTela('tela-novo-casal');
-                return;
-            }
 
             if (senhaPura.length < 6) {
                 showToast("A senha precisa ter pelo menos 6 caracteres.");
@@ -493,27 +497,26 @@
             }
 
             const senhaHash = await hashPassword(senhaPura);
-            const campoAtualizar = role === 'admin' ? 'senha_admin' : 'senha_assistente';
 
-            const { error: updateError } = await _supabase
-                .from('casal_config')
-                .update({ [campoAtualizar]: senhaHash })
-                .eq('nome', casalEmCriacao);
-
-            if (updateError) {
-                showToast("Erro ao guardar as credenciais na base de dados.");
-                return;
+            // Se o usuário selecionou um casal existente, atualiza a senha nele
+            if (casalSelecionado) {
+                const campoAtualizar = role === 'admin' ? 'senha_admin' : 'senha_assistente';
+                await _supabase.from('casal_config').update({ [campoAtualizar]: senhaHash }).eq('nome', casalSelecionado);
+                localStorage.setItem('casal_ativo', casalSelecionado);
+            } else {
+                // Se não selecionou nenhum casal, guardamos apenas em cache temporário até entrar/criar o casal
+                localStorage.removeItem('casal_ativo');
             }
 
             localStorage.setItem('user_role', role);
-            localStorage.setItem('casal_ativo', casalEmCriacao);
             if (role === 'admin') {
                 localStorage.setItem('admin_nome', nomeResponsavel);
             } else {
                 localStorage.setItem('assistente_nome', nomeResponsavel);
             }
 
-            window.location.href = "proxima_pagina.html";
+            showToast("Colaborador registado com sucesso!");
+            mudarTela('tela-login');
         }
 
         // 4. RECUPERAR SENHA
