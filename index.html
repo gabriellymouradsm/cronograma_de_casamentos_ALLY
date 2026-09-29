@@ -52,7 +52,7 @@
 
         .card {
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             background-color: #3b2a24;
             border-radius: 28px;
             padding: 30px;
@@ -74,12 +74,19 @@
             margin-bottom: 20px;
         }
 
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
         .action-btn {
             width: 100%;
             padding: 14px;
             border: none;
             border-radius: 14px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
@@ -138,6 +145,15 @@
             margin-top: 15px;
             display: inline-block;
         }
+
+        .label-text {
+            display: block;
+            text-align: left;
+            font-size: 12px;
+            color: #d1c4bc;
+            margin-bottom: 4px;
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body>
@@ -147,6 +163,7 @@
         <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
     </header>
 
+    <!-- TELA INICIAL: SELECIONAR PERFIL -->
     <div class="card" id="view-role">
         <h2>Selecione o seu perfil</h2>
         <div class="btn-group">
@@ -155,88 +172,92 @@
         </div>
     </div>
 
-    <!-- TELA DO ADMINISTRADOR: ESCOLHER ENTRE CRIAR NOVO OU ACESSAR EXISTENTE -->
-    <div class="card hidden" id="view-admin-choice">
+    <!-- TELA DO ADMINISTRADOR (TELA ÚNICA) -->
+    <div class="card hidden" id="view-admin">
         <h2>Área do Administrador</h2>
-        <div class="btn-group">
-            <button class="action-btn btn-primary" onclick="mostrarTelaCriar()">✨ Criar Novo Casal</button>
-            <button class="action-btn btn-secondary" onclick="mostrarTelaSelecionar()">📂 Acessar Casal Existente</button>
+        
+        <div style="text-align: left; margin-bottom: 15px;">
+            <label class="label-text">Selecione um casal existente (opcional para Acesso):</label>
+            <select id="select-casal-admin" class="input-field" onchange="preencherDadosCasal(this)">
+                <option value="">A carregar casais...</option>
+            </select>
         </div>
+
+        <form id="form-admin" onsubmit="salvarOuAcessarAdmin(event)">
+            <label class="label-text">Nome do Casal</label>
+            <input type="text" id="admin-nome-casal" class="input-field" placeholder="Ex: Ana & João" required>
+
+            <label class="label-text">Data do Casamento</label>
+            <input type="text" id="admin-data-casal" class="input-field" placeholder="Ex: 20/10/2026" required>
+
+            <label class="label-text">Horário do Casamento</label>
+            <input type="time" id="admin-horario-casal" class="input-field" required>
+
+            <label class="label-text">Nome do Administrador</label>
+            <input type="text" id="admin-nome-adm" class="input-field" placeholder="Nome do Responsável" required>
+
+            <label class="label-text">Senha do Administrador</label>
+            <input type="password" id="admin-senha" class="input-field" placeholder="Senha de Acesso" required>
+
+            <div class="btn-row">
+                <button type="submit" name="acao" value="criar" class="action-btn btn-primary">✨ Criar Novo Casal</button>
+                <button type="button" onclick="entrarCasalExistenteAdmin()" class="action-btn btn-secondary">📂 Acessar Existente</button>
+            </div>
+        </form>
         <span class="back-link" onclick="voltarParaPerfil()">← Voltar</span>
     </div>
 
-    <!-- TELA 1: CRIAR NOVO CASAL -->
-    <div class="card hidden" id="view-criar">
-        <h2>Criar Novo Casal</h2>
-        <form onsubmit="salvarNovoCasal(event)">
-            <input type="text" id="nome-casal" class="input-field" placeholder="Nome do Casal (ex: Ana & João)" required>
-            <input type="text" id="data-casal" class="input-field" placeholder="Data (ex: 20/10/2026)" required>
-            <input type="time" id="horario-casal" class="input-field" required>
-            <button type="submit" class="action-btn btn-primary" style="margin-top: 5px;">Avançar para o Painel</button>
-        </form>
-        <span class="back-link" onclick="voltarParaAdminChoice()">← Voltar</span>
-    </div>
-
-    <!-- TELA 2: SELECIONAR CASAL JÁ EXISTENTE -->
-    <div class="card hidden" id="view-selecionar">
-        <h2>Selecionar Casal Existente</h2>
-        <div style="margin-bottom: 15px;">
-            <select id="select-casal" class="input-field">
-                <option value="">A carregar casais...</option>
-            </select>
-        </div>
-        <button class="action-btn btn-primary" onclick="entrarCasalExistente()">Entrar no Casal</button>
-        <span class="back-link" onclick="voltarParaAdminChoice()">← Voltar</span>
-    </div>
-
-    <!-- TELA DO ASSISTENTE -->
+    <!-- TELA DO ASSISTENTE (TELA ÚNICA) -->
     <div class="card hidden" id="view-assistente">
         <h2>Acesso Assistente</h2>
         <p style="font-size: 13px; color: #d1c4bc; margin-bottom: 15px;">Selecione o casamento que vai acompanhar:</p>
-        <div style="margin-bottom: 15px;">
-            <select id="select-casal-assistant" class="input-field">
+        
+        <div style="text-align: left; margin-bottom: 15px;">
+            <select id="select-casal-assistant" class="input-field" onchange="preencherDadosAssistente(this)">
                 <option value="">A carregar casais...</option>
             </select>
         </div>
-        <button class="action-btn btn-primary" onclick="entrarAssistente()">Entrar como Assistente</button>
+
+        <form onsubmit="entrarAssistente(event)">
+            <label class="label-text">Nome do Casal Selecionado</label>
+            <input type="text" id="assistant-nome-casal" class="input-field" placeholder="Selecione acima" readonly style="background-color: #eae5de; cursor: not-allowed;">
+
+            <label class="label-text">Data do Casamento</label>
+            <input type="text" id="assistant-data-casal" class="input-field" placeholder="--" readonly style="background-color: #eae5de; cursor: not-allowed;">
+
+            <label class="label-text">Horário do Casamento</label>
+            <input type="text" id="assistant-horario-casal" class="input-field" placeholder="--" readonly style="background-color: #eae5de; cursor: not-allowed;">
+
+            <label class="label-text">Nome do Assistente</label>
+            <input type="text" id="assistant-nome" class="input-field" placeholder="O seu nome" required>
+
+            <label class="label-text">Senha do Assistente</label>
+            <input type="password" id="assistant-senha" class="input-field" placeholder="Senha de Acesso" required>
+
+            <button type="submit" class="action-btn btn-primary" style="margin-top: 10px;">Entrar como Assistente</button>
+        </form>
         <span class="back-link" onclick="voltarParaPerfil()">← Voltar</span>
     </div>
 
 <script>
-    function escolherPerfil(role) {
+    let listaCasaisGlobal = [];
+
+    async function escolherPerfil(role) {
         localStorage.setItem('user_role', role);
+        document.getElementById('view-role').classList.add('hidden');
+
         if (role === 'admin') {
-            document.getElementById('view-role').classList.add('hidden');
-            document.getElementById('view-admin-choice').classList.remove('hidden');
+            document.getElementById('view-admin').classList.remove('hidden');
+            await carregarListaCasais('select-casal-admin');
         } else {
-            carregarListaCasais('select-casal-assistant');
-            document.getElementById('view-role').classList.add('hidden');
             document.getElementById('view-assistente').classList.remove('hidden');
+            await carregarListaCasais('select-casal-assistant');
         }
-    }
-
-    function mostrarTelaCriar() {
-        document.getElementById('view-admin-choice').classList.add('hidden');
-        document.getElementById('view-criar').classList.remove('hidden');
-    }
-
-    async function mostrarTelaSelecionar() {
-        document.getElementById('view-admin-choice').classList.add('hidden');
-        document.getElementById('view-selecionar').classList.remove('hidden');
-        await carregarListaCasais('select-casal');
-    }
-
-    function voltarParaAdminChoice() {
-        document.getElementById('view-criar').classList.add('hidden');
-        document.getElementById('view-selecionar').classList.add('hidden');
-        document.getElementById('view-admin-choice').classList.remove('hidden');
     }
 
     function voltarParaPerfil() {
         localStorage.clear();
-        document.getElementById('view-admin-choice').classList.add('hidden');
-        document.getElementById('view-criar').classList.add('hidden');
-        document.getElementById('view-selecionar').classList.add('hidden');
+        document.getElementById('view-admin').classList.add('hidden');
         document.getElementById('view-assistente').classList.add('hidden');
         document.getElementById('view-role').classList.remove('hidden');
     }
@@ -245,14 +266,16 @@
         const select = document.getElementById(elementId);
         select.innerHTML = '<option value="">A carregar...</option>';
 
-        const { data, error } = await _supabase.from('casal_config').select('nome, data_casamento').order('id', { ascending: false });
+        const { data, error } = await _supabase.from('casal_config').select('*').order('id', { ascending: false });
 
         if (error || !data || data.length === 0) {
             select.innerHTML = '<option value="">Nenhum casal encontrado</option>';
+            listaCasaisGlobal = [];
             return;
         }
 
-        select.innerHTML = '<option value="">Selecione um casal...</option>';
+        listaCasaisGlobal = data;
+        select.innerHTML = '<option value="">-- Selecione um casal já criado --</option>';
         data.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c.nome;
@@ -261,47 +284,94 @@
         });
     }
 
-    async function salvarNovoCasal(e) {
-        e.preventDefault();
-        const nome = document.getElementById('nome-casal').value.trim();
-        const data_casamento = document.getElementById('data-casal').value.trim();
-        const horario = document.getElementById('horario-casal').value;
+    function preencherDadosCasal(selectElem) {
+        const nomeSelecionado = selectElem.value;
+        const casal = listaCasaisGlobal.find(c => c.nome === nomeSelecionado);
+        if (casal) {
+            document.getElementById('admin-nome-casal').value = casal.nome;
+            document.getElementById('admin-data-casal').value = casal.data_casamento;
+            document.getElementById('admin-horario-casal').value = casal.horario;
+        }
+    }
 
-        if (!nome || !data_casamento || !horario) {
-            alert("Preencha todos os campos.");
+    function preencherDadosAssistente(selectElem) {
+        const nomeSelecionado = selectElem.value;
+        const casal = listaCasaisGlobal.find(c => c.nome === nomeSelecionado);
+        if (casal) {
+            document.getElementById('assistant-nome-casal').value = casal.nome;
+            document.getElementById('assistant-data-casal').value = casal.data_casamento;
+            document.getElementById('assistant-horario-casal').value = casal.horario;
+        }
+    }
+
+    async function salvarOuAcessarAdmin(e) {
+        e.preventDefault();
+        const nome = document.getElementById('admin-nome-casal').value.trim();
+        const data_casamento = document.getElementById('admin-data-casal').value.trim();
+        const horario = document.getElementById('admin-horario-casal').value;
+        const adminNome = document.getElementById('admin-nome-adm').value.trim();
+        const adminSenha = document.getElementById('admin-senha').value.trim();
+
+        if (!nome || !data_casamento || !horario || !adminNome || !adminSenha) {
+            alert("Preencha todos os campos do Administrador.");
             return;
         }
 
-        // Salva no Supabase
-        const { error } = await _supabase.from('casal_config').insert([{ nome, data_casamento, horario }]);
-        if (error) {
-            alert("Erro ao criar casal.");
-            return;
+        // Verifica se o casal já existe na base de dados
+        const { data: existente } = await _supabase.from('casal_config').select('*').eq('nome', nome).maybeSingle();
+
+        if (!existente) {
+            // Se não existe, cria um novo registo
+            const { error } = await _supabase.from('casal_config').insert([{ nome, data_casamento, horario }]);
+            if (error) {
+                alert("Erro ao criar o novo casal.");
+                return;
+            }
         }
 
         localStorage.setItem('casal_ativo', nome);
+        localStorage.setItem('admin_nome', adminNome);
         window.location.href = "proxima_pagina.html";
     }
 
-    function entrarCasalExistente() {
-        const select = document.getElementById('select-casal');
+    async function entrarCasalExistenteAdmin() {
+        const select = document.getElementById('select-casal-admin');
         const nomeCasal = select.value;
+        const adminNome = document.getElementById('admin-nome-adm').value.trim();
+        const adminSenha = document.getElementById('admin-senha').value.trim();
+
         if (!nomeCasal) {
-            alert("Por favor, selecione um casal.");
+            alert("Por favor, selecione um casal na lista acima.");
             return;
         }
+        if (!adminNome || !adminSenha) {
+            alert("Preencha o nome e a senha do Administrador para entrar.");
+            return;
+        }
+
         localStorage.setItem('casal_ativo', nomeCasal);
+        localStorage.setItem('admin_nome', adminNome);
         window.location.href = "proxima_pagina.html";
     }
 
-    function entrarAssistente() {
-        const select = document.getElementById('select-casal-assistant');
-        const nomeCasal = select.value;
+    function entrarAssistente(e) {
+        e.preventDefault();
+        const nomeCasal = document.getElementById('assistant-nome-casal').value.trim();
+        const assistenteNome = document.getElementById('assistant-nome').value.trim();
+        const assistenteSenha = document.getElementById('assistant-senha').value.trim();
+
         if (!nomeCasal) {
-            alert("Por favor, selecione o casamento que vai acompanhar.");
+            alert("Por favor, selecione um casamento na lista.");
             return;
         }
+        if (!assistenteNome || !assistenteSenha) {
+            alert("Preencha o nome e a senha do Assistente.");
+            return;
+        }
+
+        localStorage.setItem('user_role', 'assistant');
         localStorage.setItem('casal_ativo', nomeCasal);
+        localStorage.setItem('assistente_nome', assistenteNome);
         window.location.href = "proxima_pagina.html";
     }
 </script>
