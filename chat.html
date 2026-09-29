@@ -8,7 +8,16 @@
     <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
     <link rel="manifest" href="/site.webmanifest">
     
-    <title>Ally - Chat On</title>
+    <title>Ally - Notebook / Notas</title>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -18,32 +27,30 @@
         }
 
         body {
-            background-color: #f7f5f2; /* Fundo areia/off-white padronizado */
+            background-color: #f7f5f2;
             display: flex;
-            flex-direction: column; /* Alinha a logo no topo e o chat logo abaixo */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 30px 20px;
+            padding: 20px;
         }
 
-        /* Estilo do bloco da logo (Header no Topo) */
         .brand-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             width: 100%;
         }
 
         .brand-logo-img {
-            width: 50px;
+            width: 45px;
             height: auto;
             display: block;
-            margin: 0 auto 8px;
+            margin: 0 auto 6px;
         }
 
         .brand-title {
-            font-family: Georgia, serif;
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: bold;
             color: #382a23;
             margin: 0;
@@ -51,31 +58,29 @@
         }
 
         .brand-tagline {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 3px;
             color: #725a4d;
-            margin-top: 6px;
+            margin-top: 5px;
         }
 
-        /* Container do Chat */
-        #chat-container {
+        #notebook-container {
             width: 100%;
-            max-width: 420px;
-            height: 70vh;
-            background: #3b2a24; /* Marrom escuro padronizado com os outros cards */
+            max-width: 480px;
+            height: 75vh;
+            background: #3b2a24;
             border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            padding: 12px;
+            padding: 16px;
         }
 
-        /* Cabeçalho do Chat */
-        #chat-header {
+        #notebook-header {
             color: #ffffff;
-            padding: 12px 10px 15px;
+            padding: 8px 5px 15px;
             font-size: 20px;
             font-weight: bold;
             display: flex;
@@ -84,233 +89,304 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        #clear-btn {
-            background: none;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: 0.2s;
-        }
-
-        #clear-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Área das Mensagens */
-        #chat-messages {
+        #notes-list {
             flex: 1;
             padding: 15px 5px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
 
-        /* Balões de Mensagem */
-        .message {
-            background: rgba(255, 255, 255, 0.08);
+        .note-card {
+            background: rgba(255, 255, 255, 0.07);
             color: #ffffff;
-            padding: 12px 16px;
-            border-radius: 15px;
-            max-width: 85%;
-            align-self: flex-start;
-            word-wrap: break-word;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .note-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #f7f5f2;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 4px;
+        }
+
+        .note-body {
+            font-size: 13px;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            color: #eadecc;
             line-height: 1.4;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            white-space: pre-wrap;
         }
 
-        .message.sent {
-            background: rgba(255, 255, 255, 0.15);
-            align-self: flex-end;
-        }
-
-        .message img {
+        .note-media {
             max-width: 100%;
             border-radius: 10px;
-            margin-top: 8px;
+            margin-top: 5px;
+            max-height: 220px;
+            object-fit: cover;
             display: block;
         }
 
-        /* Área de Input */
-        #chat-input-area {
+        .note-footer {
             display: flex;
-            padding: 12px 5px 5px;
-            gap: 10px;
+            justify-content: space-between;
             align-items: center;
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+        }
+
+        .delete-note-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Área de Criação de Nota */
+        #note-input-area {
+            display: flex;
+            flex-direction: column;
+            padding-top: 12px;
+            gap: 8px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        #text-input {
-            flex: 1;
-            padding: 12px 18px;
-            background: rgba(0, 0, 0, 0.2);
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        #note-title-input, #note-text-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
-            border-radius: 25px;
+            border-radius: 12px;
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
             font-family: Arial, sans-serif;
         }
 
-        #text-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+        #note-title-input::placeholder, #note-text-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
 
-        /* Ícone de Clipe para Imagem */
         .file-label {
             cursor: pointer;
-            font-size: 20px;
-            padding: 5px;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 18px;
+            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #ffffff;
             transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
         }
 
         .file-label:hover {
-            color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        #file-input {
+        #media-input {
             display: none;
         }
 
-        /* Botão de Enviar */
-        #send-btn {
+        #save-note-btn {
             background: #25d366;
             color: white;
             border: none;
-            padding: 0 20px;
-            height: 42px;
-            border-radius: 25px;
+            padding: 10px 20px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             font-family: Arial, sans-serif;
             transition: 0.2s;
             box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
         }
 
-        #send-btn:hover {
+        #save-note-btn:hover {
             background: #20ba5a;
+        }
+
+        #file-name-display {
+            font-size: 11px;
+            color: #eadecc;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
 
-    <!-- LOGO CENTRALIZADA NO TOPO -->
     <header class="brand-header">
         <img src="imagens/Logotipo Monograma Elegante Preto.png" class="brand-logo-img" alt="Logo Ally">
         <h1 class="brand-title">Ally</h1>
-        <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
+        <p class="brand-tagline">NOTEBOOK DE ANOTAÇÕES</p>
     </header>
 
-    <!-- CONTAINER DO CHAT -->
-    <div id="chat-container">
-        <div id="chat-header">
-            <span>Chat On</span>
-            <button id="clear-btn" onclick="clearChat()">Limpar</button>
+    <div id="notebook-container">
+        <div id="notebook-header">
+            <span id="notebook-title">Anotações</span>
+            <a href="proxima_pagina.html" style="color: #eadecc; font-size: 12px; text-decoration: underline;">← Voltar ao Painel</a>
         </div>
 
-        <div id="chat-messages"></div>
+        <div id="notes-list"></div>
         
-        <div id="chat-input-area">
-            <label for="file-input" class="file-label">📎</label>
-            <input type="file" id="file-input" accept="image/*">
+        <div id="note-input-area">
+            <input type="text" id="note-title-input" placeholder="Título da anotação...">
+            <textarea id="note-text-input" placeholder="Escreva os detalhes, ideias ou fornecedores..." rows="2" style="resize: none;"></textarea>
             
-            <input type="text" id="text-input" placeholder="Digite uma mensagem...">
-            
-            <button id="send-btn">Enviar</button>
+            <div class="input-row">
+                <label for="media-input" class="file-label">
+                    📎 Anexar Foto/Vídeo
+                </label>
+                <input type="file" id="media-input" accept="image/*,video/*" onchange="mostrarNomeArquivo(this)">
+                <span id="file-name-display">Nenhum ficheiro</span>
+                
+                <button id="save-note-btn" onclick="handleSaveNote()" style="margin-left: auto;">Salvar Nota</button>
+            </div>
         </div>
     </div>
 
 <script>
-    const chatMessages = document.getElementById('chat-messages');
-    const textInput = document.getElementById('text-input');
-    const fileInput = document.getElementById('file-input');
-    const sendBtn = document.getElementById('send-btn');
+    const notesList = document.getElementById('notes-list');
+    const titleInput = document.getElementById('note-title-input');
+    const textInput = document.getElementById('note-text-input');
+    const mediaInput = document.getElementById('media-input');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
 
-    document.addEventListener('DOMContentLoaded', loadMessages);
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('notebook-title').innerText = `Notebook (${casalAtivo})`;
+        loadNotesFromSupabase();
+    });
 
-    function appendMessage(text, imageSrc, isSaved = false) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', 'sent');
-
-        if (text) {
-            const textElement = document.createElement('p');
-            textElement.textContent = text;
-            messageDiv.appendChild(textElement);
-        }
-
-        if (imageSrc) {
-            const imgElement = document.createElement('img');
-            imgElement.src = imageSrc;
-            messageDiv.appendChild(imgElement);
-        }
-
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        if (!isSaved) {
-            saveMessageToStorage(text, imageSrc);
+    function mostrarNomeArquivo(input) {
+        if (input.files && input.files[0]) {
+            fileNameDisplay.innerText = input.files[0].name;
+        } else {
+            fileNameDisplay.innerText = 'Nenhum ficheiro';
         }
     }
 
-    function handleSend() {
-        const text = textInput.value.trim();
-        const file = fileInput.files[0];
+    async function loadNotesFromSupabase() {
+        const { data, error } = await _supabase
+            .from('notas_notebook')
+            .select('*')
+            .eq('casal_nome', casalAtivo)
+            .order('id', { ascending: false });
 
-        if (!text && !file) return;
+        if (error) {
+            console.error("Erro ao carregar notas:", error);
+            return;
+        }
+
+        notesList.innerHTML = '';
+        if (data && data.length > 0) {
+            data.forEach(note => {
+                appendNoteToDOM(note);
+            });
+        } else {
+            notesList.innerHTML = `<p style="text-align:center;color:rgba(255,255,255,0.4);font-size:13px;padding:20px;">Nenhuma anotação guardada ainda.</p>`;
+        }
+    }
+
+    function appendNoteToDOM(note) {
+        const card = document.createElement('div');
+        card.classList.add('note-card');
+
+        let mediaHTML = '';
+        if (note.arquivo_url) {
+            if (note.tipo_arquivo === 'video') {
+                mediaHTML = `<video src="${note.arquivo_url}" controls class="note-media"></video>`;
+            } else {
+                mediaHTML = `<img src="${note.arquivo_url}" class="note-media">`;
+            }
+        }
+
+        card.innerHTML = `
+            ${note.titulo ? `<div class="note-title">${note.titulo}</div>` : ''}
+            ${note.conteudo ? `<div class="note-body">${note.conteudo}</div>` : ''}
+            ${mediaHTML}
+            <div class="note-footer">
+                <span>${new Date(note.created_at).toLocaleDateString('pt-BR')}</span>
+                <button class="delete-note-btn" onclick="deleteNote(${note.id})">🗑️ Apagar</button>
+            </div>
+        `;
+        notesList.appendChild(card);
+    }
+
+    function handleSaveNote() {
+        const title = titleInput.value.trim();
+        const text = textInput.value.trim();
+        const file = mediaInput.files[0];
+
+        if (!title && !text && !file) {
+            alert("Escreva alguma coisa ou anexe um ficheiro antes de salvar.");
+            return;
+        }
 
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                appendMessage(text, e.target.result);
+            reader.onload = async function(e) {
+                const tipo = file.type.startsWith('video') ? 'video' : 'imagem';
+                await saveNoteToSupabase(title, text, e.target.result, tipo);
             };
             reader.readAsDataURL(file);
         } else {
-            appendMessage(text, null);
+            saveNoteToSupabase(title, text, null, null);
+        }
+    }
+
+    async function saveNoteToSupabase(titulo, conteudo, arquivo_url, tipo_arquivo) {
+        const { error } = await _supabase.from('notas_notebook').insert([{
+            casal_nome: casalAtivo,
+            titulo,
+            conteudo,
+            arquivo_url,
+            tipo_arquivo
+        }]);
+
+        if (error) {
+            console.error("Erro ao salvar nota:", error);
+            alert("Erro ao guardar no banco de dados.");
+            return;
         }
 
+        titleInput.value = '';
         textInput.value = '';
-        fileInput.value = '';
+        mediaInput.value = '';
+        fileNameDisplay.innerText = 'Nenhum ficheiro';
+        loadNotesFromSupabase();
     }
 
-    function saveMessageToStorage(text, imageSrc) {
-        let messages = JSON.parse(localStorage.getItem('chat_history_dark')) || [];
-        messages.push({ text: text, imageSrc: imageSrc });
-        
-        try {
-            localStorage.setItem('chat_history_dark', JSON.stringify(messages));
-        } catch (e) {
-            alert('Limite de fotos atingido! Limpe o histórico do chat.');
+    async function deleteNote(id) {
+        if (confirm("Deseja apagar esta anotação?")) {
+            const { error } = await _supabase.from('notas_notebook').delete().eq('id', id);
+            if (!error) {
+                loadNotesFromSupabase();
+            } else {
+                alert("Erro ao apagar nota.");
+            }
         }
     }
-
-    function loadMessages() {
-        let messages = JSON.parse(localStorage.getItem('chat_history_dark')) || [];
-        messages.forEach(msg => {
-            appendMessage(msg.text, msg.imageSrc, true);
-        });
-    }
-
-    function clearChat() {
-        if (confirm('Deseja apagar as mensagens deste chat?')) {
-            localStorage.removeItem('chat_history_dark');
-            chatMessages.innerHTML = '';
-        }
-    }
-
-    sendBtn.addEventListener('click', handleSend);
-    textInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') handleSend();
-    });
 </script>
 
 </body>
