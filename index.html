@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="/cronograma_de_casamentos_ALLY/manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <title>Ally - Login</title>
+    <title>Ally - Login e Acesso</title>
 
-    <!-- Biblioteca e Conexão do Supabase -->
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
@@ -19,353 +14,297 @@
     </script>
 
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+        }
+
         body {
             background-color: #f7f5f2;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 30px 20px;
-            box-sizing: border-box;
+            padding: 20px;
         }
 
         .brand-header {
             text-align: center;
             margin-bottom: 25px;
-            width: 100%;
-        }
-
-        .brand-logo-img {
-            width: 50px;
-            height: auto;
-            display: block;
-            margin: 0 auto 8px;
         }
 
         .brand-title {
-            font-family: Georgia, serif;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             color: #382a23;
-            margin: 0;
-            line-height: 1;
         }
 
         .brand-tagline {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 3px;
             color: #725a4d;
-            margin-top: 6px;
+            margin-top: 5px;
         }
 
-        .card-formulario {
-            background-color: #3b2a22;
+        .card {
             width: 100%;
-            max-width: 625px;
-            padding: 45px 50px;
-            border-radius: 30px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            box-sizing: border-box;
+            max-width: 420px;
+            background-color: #3b2a24;
+            border-radius: 28px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             color: #ffffff;
-        }
-
-        .card-formulario h1 {
-            font-family: Georgia, serif;
-            font-size: 30px;
-            font-weight: bold;
             text-align: center;
-            margin-top: 0;
-            margin-bottom: 25px;
         }
 
-        /* Seletor de Perfil (Abas) */
-        .profile-selector {
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #faf7f2;
+        }
+
+        .btn-group {
             display: flex;
+            flex-direction: column;
             gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .profile-btn {
-            flex: 1;
-            padding: 14px;
-            background-color: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .profile-btn.active {
-            background-color: #f7f5f2;
-            color: #3b2a22;
-            border-color: #f7f5f2;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .campo-grupo {
             margin-bottom: 20px;
         }
 
-        .campo-grupo label {
-            display: block;
-            font-size: 16px;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .campo-grupo input {
+        .action-btn {
             width: 100%;
-            padding: 15px;
-            background-color: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            color: #ffffff;
-            font-size: 17px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .campo-grupo input:focus {
-            border-color: rgba(255, 255, 255, 0.8);
-        }
-
-        .campo-grupo input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .btn-enviar {
-            width: 100%;
-            padding: 16px;
-            background-color: #f7f5f2;
+            padding: 14px;
             border: none;
-            border-radius: 30px;
-            color: #3b2a22;
-            font-size: 18px;
+            border-radius: 14px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
-            margin-bottom: 18px;
+            text-transform: uppercase;
             transition: 0.2s;
         }
 
-        .btn-enviar:hover {
-            background-color: #eadecc;
-            transform: translateY(-1px);
+        .btn-primary {
+            background-color: #fcfaf7;
+            color: #3b2a24;
         }
 
-        .rodape-texto {
+        .btn-primary:hover {
+            background-color: #f2eee9;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #fcfaf7;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #3b2a24;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .input-field::placeholder {
+            color: #b5ada5;
+            font-style: italic;
+        }
+
+        select.input-field {
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .back-link {
+            color: #eadecc;
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            text-align: center;
-            margin: 0;
-        }
-
-        .hidden-section {
-            display: none;
-        }
-
-        @media (max-width: 600px) {
-            .card-formulario {
-                padding: 30px 20px;
-            }
-            .card-formulario h1 {
-                font-size: 24px;
-            }
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 15px;
+            display: inline-block;
         }
     </style>
 </head>
-
 <body>
 
     <header class="brand-header">
-        <img src="imagens/aliança 3d.jpg" class="brand-logo-img" alt="Logo Ally">
         <h1 class="brand-title">Ally</h1>
-        <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
+        <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
     </header>
 
-    <div class="card-formulario">
-
-        <h1>Acesso ao Sistema</h1>
-
-        <!-- Seletor de Perfil -->
-        <div class="profile-selector">
-            <button type="button" class="profile-btn active" id="btn-admin" onclick="selectProfile('admin')">
-                👑 Casal / Admin
-            </button>
-            <button type="button" class="profile-btn" id="btn-assistant" onclick="selectProfile('assistant')">
-                ⏱️ Assistente de Campo
-            </button>
+    <div class="card" id="view-role">
+        <h2>Selecione o seu perfil</h2>
+        <div class="btn-group">
+            <button class="action-btn btn-primary" onclick="escolherPerfil('admin')">👑 Administrador (Casal)</button>
+            <button class="action-btn btn-secondary" onclick="escolherPerfil('assistant')">📋 Assistente de Campo</button>
         </div>
-
-        <!-- CAMPO COMUM: Nome do Casal -->
-        <div class="campo-grupo">
-            <label for="nomeCasal">Primeiro nome do casal</label>
-            <input type="text" id="nomeCasal" autocomplete="off" placeholder="Digite o nome">
-        </div>
-
-        <!-- SEÇÃO EXCLUSIVA DO ADMIN (Data, Horário e Senha Mestre) -->
-        <div id="section-admin">
-            <div class="campo-grupo">
-                <label for="dataCasamento">Data do casamento</label>
-                <input type="text" id="dataCasamento" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off">
-            </div>
-
-            <div class="campo-grupo">
-                <label for="horarioCasamento">Horário</label>
-                <input type="text" id="horarioCasamento" placeholder="HH:MM" maxlength="5" autocomplete="off">
-            </div>
-
-            <div class="campo-grupo">
-                <label for="senhaAdmin">Senha de Administrador</label>
-                <input type="password" id="senhaAdmin" placeholder="Digite a senha mestre" autocomplete="off">
-            </div>
-        </div>
-
-        <!-- SEÇÃO EXCLUSIVA DO ASSISTENTE DE CAMPO (Senha da Equipe) -->
-        <div id="section-assistant" class="hidden-section">
-            <div class="campo-grupo">
-                <label for="senhaAssistant">Senha de Acesso da Equipe</label>
-                <input type="password" id="senhaAssistant" placeholder="Digite a senha fornecida pelo admin" autocomplete="off">
-            </div>
-            <p style="font-size: 13px; color: #d1c4bc; margin-bottom: 25px; line-height: 1.4;">
-                * Acesso operacional restrito para marcação de presenças e horários no dia do evento, sem permissão para excluir ou alterar cadastros principais.
-            </p>
-        </div>
-
-        <button class="btn-enviar" onclick="salvarEAvancar()">
-            Entrar no Sistema
-        </button>
-
-        <p class="rodape-texto">
-            Bem-vindo(a) ao Ally, seu espaço para organizar cada detalhe!
-        </p>
-
     </div>
 
-    <script>
-        let currentProfile = 'admin';
+    <!-- TELA DO ADMINISTRADOR: ESCOLHER ENTRE CRIAR NOVO OU ACESSAR EXISTENTE -->
+    <div class="card hidden" id="view-admin-choice">
+        <h2>Área do Administrador</h2>
+        <div class="btn-group">
+            <button class="action-btn btn-primary" onclick="mostrarTelaCriar()">✨ Criar Novo Casal</button>
+            <button class="action-btn btn-secondary" onclick="mostrarTelaSelecionar()">📂 Acessar Casal Existente</button>
+        </div>
+        <span class="back-link" onclick="voltarParaPerfil()">← Voltar</span>
+    </div>
 
-        function selectProfile(profile) {
-            currentProfile = profile;
-            const btnAdmin = document.getElementById('btn-admin');
-            const btnAssistant = document.getElementById('btn-assistant');
-            const secAdmin = document.getElementById('section-admin');
-            const secAssistant = document.getElementById('section-assistant');
+    <!-- TELA 1: CRIAR NOVO CASAL -->
+    <div class="card hidden" id="view-criar">
+        <h2>Criar Novo Casal</h2>
+        <form onsubmit="salvarNovoCasal(event)">
+            <input type="text" id="nome-casal" class="input-field" placeholder="Nome do Casal (ex: Ana & João)" required>
+            <input type="text" id="data-casal" class="input-field" placeholder="Data (ex: 20/10/2026)" required>
+            <input type="time" id="horario-casal" class="input-field" required>
+            <button type="submit" class="action-btn btn-primary" style="margin-top: 5px;">Avançar para o Painel</button>
+        </form>
+        <span class="back-link" onclick="voltarParaAdminChoice()">← Voltar</span>
+    </div>
 
-            if (profile === 'admin') {
-                btnAdmin.classList.add('active');
-                btnAssistant.classList.remove('active');
-                secAdmin.classList.remove('hidden-section');
-                secAssistant.classList.add('hidden-section');
-            } else {
-                btnAssistant.classList.add('active');
-                btnAdmin.classList.remove('active');
-                secAssistant.classList.remove('hidden-section');
-                secAdmin.classList.add('hidden-section');
-            }
+    <!-- TELA 2: SELECIONAR CASAL JÁ EXISTENTE -->
+    <div class="card hidden" id="view-selecionar">
+        <h2>Selecionar Casal Existente</h2>
+        <div style="margin-bottom: 15px;">
+            <select id="select-casal" class="input-field">
+                <option value="">A carregar casais...</option>
+            </select>
+        </div>
+        <button class="action-btn btn-primary" onclick="entrarCasalExistente()">Entrar no Casal</button>
+        <span class="back-link" onclick="voltarParaAdminChoice()">← Voltar</span>
+    </div>
+
+    <!-- TELA DO ASSISTENTE -->
+    <div class="card hidden" id="view-assistente">
+        <h2>Acesso Assistente</h2>
+        <p style="font-size: 13px; color: #d1c4bc; margin-bottom: 15px;">Selecione o casamento que vai acompanhar:</p>
+        <div style="margin-bottom: 15px;">
+            <select id="select-casal-assistant" class="input-field">
+                <option value="">A carregar casais...</option>
+            </select>
+        </div>
+        <button class="action-btn btn-primary" onclick="entrarAssistente()">Entrar como Assistente</button>
+        <span class="back-link" onclick="voltarParaPerfil()">← Voltar</span>
+    </div>
+
+<script>
+    function escolherPerfil(role) {
+        localStorage.setItem('user_role', role);
+        if (role === 'admin') {
+            document.getElementById('view-role').classList.add('hidden');
+            document.getElementById('view-admin-choice').classList.remove('hidden');
+        } else {
+            carregarListaCasais('select-casal-assistant');
+            document.getElementById('view-role').classList.add('hidden');
+            document.getElementById('view-assistente').classList.remove('hidden');
+        }
+    }
+
+    function mostrarTelaCriar() {
+        document.getElementById('view-admin-choice').classList.add('hidden');
+        document.getElementById('view-criar').classList.remove('hidden');
+    }
+
+    async function mostrarTelaSelecionar() {
+        document.getElementById('view-admin-choice').classList.add('hidden');
+        document.getElementById('view-selecionar').classList.remove('hidden');
+        await carregarListaCasais('select-casal');
+    }
+
+    function voltarParaAdminChoice() {
+        document.getElementById('view-criar').classList.add('hidden');
+        document.getElementById('view-selecionar').classList.add('hidden');
+        document.getElementById('view-admin-choice').classList.remove('hidden');
+    }
+
+    function voltarParaPerfil() {
+        localStorage.clear();
+        document.getElementById('view-admin-choice').classList.add('hidden');
+        document.getElementById('view-criar').classList.add('hidden');
+        document.getElementById('view-selecionar').classList.add('hidden');
+        document.getElementById('view-assistente').classList.add('hidden');
+        document.getElementById('view-role').classList.remove('hidden');
+    }
+
+    async function carregarListaCasais(elementId) {
+        const select = document.getElementById(elementId);
+        select.innerHTML = '<option value="">A carregar...</option>';
+
+        const { data, error } = await _supabase.from('casal_config').select('nome, data_casamento').order('id', { ascending: false });
+
+        if (error || !data || data.length === 0) {
+            select.innerHTML = '<option value="">Nenhum casal encontrado</option>';
+            return;
         }
 
-        // ==========================================
-        // MÁSCARA DA DATA
-        // ==========================================
-        document.getElementById("dataCasamento").addEventListener("input", function (e) {
-            let valor = e.target.value.replace(/\D/g, "").slice(0, 8);
-            if (valor.length >= 5) {
-                valor = valor.slice(0, 2) + "/" + valor.slice(2, 4) + "/" + valor.slice(4);
-            } else if (valor.length >= 3) {
-                valor = valor.slice(0, 2) + "/" + valor.slice(2);
-            }
-            e.target.value = valor;
+        select.innerHTML = '<option value="">Selecione um casal...</option>';
+        data.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.nome;
+            opt.textContent = `${c.nome} (${c.data_casamento})`;
+            select.appendChild(opt);
         });
+    }
 
-        // ==========================================
-        // MÁSCARA DO HORÁRIO
-        // ==========================================
-        document.getElementById("horarioCasamento").addEventListener("input", function (e) {
-            let valor = e.target.value.replace(/\D/g, "").slice(0, 4);
-            if (valor.length >= 3) {
-                valor = valor.slice(0, 2) + ":" + valor.slice(2);
-            }
-            e.target.value = valor;
-        });
+    async function salvarNovoCasal(e) {
+        e.preventDefault();
+        const nome = document.getElementById('nome-casal').value.trim();
+        const data_casamento = document.getElementById('data-casal').value.trim();
+        const horario = document.getElementById('horario-casal').value;
 
-        // ==========================================
-        // VALIDAÇÃO E LOGIN COM SUPABASE
-        // ==========================================
-        async function salvarEAvancar() {
-            const SENHA_MESTRE = "1234";     
-            const SENHA_ASSISTENTE = "0000"; 
-            const nome = document.getElementById("nomeCasal").value.trim();
-
-            if (!nome) {
-                alert("Por favor, digite o nome do casal.");
-                return;
-            }
-
-            if (currentProfile === 'admin') {
-                const data = document.getElementById("dataCasamento").value.trim();
-                const horario = document.getElementById("horarioCasamento").value.trim();
-                const senha = document.getElementById("senhaAdmin").value.trim();
-
-                if (data.length !== 10 || horario.length !== 5) {
-                    alert("Por favor, preencha a data e o horário do casamento corretamente.");
-                    return;
-                }
-
-                if (senha !== SENHA_MESTRE) {
-                    alert("Senha de Administrador incorreta!");
-                    return;
-                }
-
-                // Salva na tabela 'casal_config' do Supabase
-                const { error } = await _supabase.from('casal_config').insert([
-                    { nome: nome, data_casamento: data, horario: horario }
-                ]);
-
-                if (error) {
-                    console.error("Erro ao salvar configuração no Supabase:", error);
-                }
-
-                // Salva dados locais para controle de sessão/perfil
-                localStorage.setItem("casal_nome", nome);
-                localStorage.setItem("casal_data", data);
-                localStorage.setItem("casal_horario", horario);
-                localStorage.setItem("user_role", "admin");
-
-            } else {
-                const senha = document.getElementById("senhaAssistant").value.trim();
-
-                if (senha !== SENHA_ASSISTENTE) {
-                    alert("Senha de Assistente incorreta!");
-                    return;
-                }
-
-                localStorage.setItem("casal_nome", nome);
-                localStorage.setItem("user_role", "assistant");
-            }
-
-            window.location.href = "proxima_pagina.html";
+        if (!nome || !data_casamento || !horario) {
+            alert("Preencha todos os campos.");
+            return;
         }
-    </script>
 
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/cronograma_de_casamentos_ALLY/sw.js')
-            .then((reg) => console.log('Service Worker registrado com sucesso:', reg.scope))
-            .catch((err) => console.log('Falha ao registrar o Service Worker:', err));
-        });
-      }          
-    </script>
-    
+        // Salva no Supabase
+        const { error } = await _supabase.from('casal_config').insert([{ nome, data_casamento, horario }]);
+        if (error) {
+            alert("Erro ao criar casal.");
+            return;
+        }
+
+        localStorage.setItem('casal_ativo', nome);
+        window.location.href = "proxima_pagina.html";
+    }
+
+    function entrarCasalExistente() {
+        const select = document.getElementById('select-casal');
+        const nomeCasal = select.value;
+        if (!nomeCasal) {
+            alert("Por favor, selecione um casal.");
+            return;
+        }
+        localStorage.setItem('casal_ativo', nomeCasal);
+        window.location.href = "proxima_pagina.html";
+    }
+
+    function entrarAssistente() {
+        const select = document.getElementById('select-casal-assistant');
+        const nomeCasal = select.value;
+        if (!nomeCasal) {
+            alert("Por favor, selecione o casamento que vai acompanhar.");
+            return;
+        }
+        localStorage.setItem('casal_ativo', nomeCasal);
+        window.location.href = "proxima_pagina.html";
+    }
+</script>
+
 </body>
 </html>
