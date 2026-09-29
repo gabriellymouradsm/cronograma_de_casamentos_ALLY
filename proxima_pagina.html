@@ -259,6 +259,96 @@
             stroke-linejoin: round;
         }
 
+        /* MODAL DE SELEÇÃO DO PDF */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background-color: #3b2a22;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 30px;
+            width: 100%;
+            max-width: 420px;
+            color: #ffffff;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+
+        .modal-card h3 {
+            font-family: Georgia, serif;
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #faf7f2;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #eadecc;
+            user-select: none;
+        }
+
+        .checkbox-label input {
+            accent-color: #3b2a22;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-modal-gerar {
+            flex: 1;
+            padding: 12px;
+            background-color: #25D366;
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-modal-cancelar {
+            flex: 1;
+            padding: 12px;
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
         @media (max-width: 900px) {
             .dashboard-container { grid-template-columns: 1fr; }
         }
@@ -320,7 +410,8 @@
                     💬 Compartilhar no WhatsApp
                 </button>
 
-                <button class="btn-pdf" onclick="gerarPDF()">
+                <!-- Abre o modal de seleção do PDF -->
+                <button class="btn-pdf" onclick="abrirModalPDF()">
                     📄 Criar PDF do Cronograma
                 </button>
 
@@ -378,6 +469,37 @@
         </div>
     </div>
 
+    <!-- MODAL DE ESCOLHA DO PDF -->
+    <div class="modal-overlay" id="modalPDF">
+        <div class="modal-card">
+            <h3>Personalizar PDF</h3>
+            <p style="font-size: 13px; color: #d1c4bc; margin-bottom: 15px; text-align: center;">Selecione o que deseja incluir no documento:</p>
+            
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-cronograma" checked> Cronograma do Dia
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-checklist" checked> Check List
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-convidados" checked> Lista de Convidados
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-fornecedores" checked> Fornecedores
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-notas" checked> Notebook (Anotações)
+                </label>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal-cancelar" onclick="fecharModalPDF()">Cancelar</button>
+                <button class="btn-modal-gerar" onclick="gerarPDFPersonalizado()">Gerar PDF</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let nomeSalvo = "";
         let dataSalva = "";
@@ -385,7 +507,6 @@
         let diasFaltandoGlobal = 0;
 
         window.addEventListener("DOMContentLoaded", async function () {
-            // Puxa o nome de quem entrou (Admin ou Assistente) guardado no index.html
             const userRole = localStorage.getItem('user_role');
             const adminNome = localStorage.getItem('admin_nome');
             const assistenteNome = localStorage.getItem('assistente_nome');
@@ -399,7 +520,6 @@
                 document.getElementById("subtituloPerfil").textContent = "Assistente de Campo";
             }
 
-            // Puxa os dados do casal diretamente do Supabase com base no casal ativo
             const { data, error } = await _supabase
                 .from('casal_config')
                 .select('*')
@@ -479,75 +599,99 @@
             window.location.href = "index.html";
         }
 
-        async function gerarPDF() {
-            const { data: cronogramaData } = await _supabase.from('cronograma_dia').select('*').eq('casal_nome', nomeSalvo);
-            const { data: convidadosData } = await _supabase.from('convidados').select('*').eq('casal_nome', nomeSalvo);
-            const { data: fornecedoresData } = await _supabase.from('fornecedores').select('*').eq('casal_nome', nomeSalvo);
-            const { data: checklistData } = await _supabase.from('checklist').select('*').eq('casal_nome', nomeSalvo);
+        function abrirModalPDF() {
+            document.getElementById('modalPDF').style.display = 'flex';
+        }
 
-            const cronograma = cronogramaData || [];
-            const convidados = convidadosData || [];
-            const fornecedores = fornecedoresData || [];
-            const checklist = checklistData || [];
+        function fecharModalPDF() {
+            document.getElementById('modalPDF').style.display = 'none';
+        }
 
-            const tabelaCronograma = criarTabelaPDF(
-                cronograma, 
-                ['Horário', 'Atividade / Evento'], 
-                item => [item.time || '-', item.note ? `${item.text} (Obs: ${item.note})` : item.text || '-']
-            );
+        async function gerarPDFPersonalizado() {
+            fecharModalPDF();
 
-            const tabelaChecklist = criarTabelaPDF(
-                checklist, 
-                ['Tarefa', 'Status'], 
-                item => [item.text || '-', item.checked ? 'Concluído' : 'Pendente']
-            );
+            const incluirCronograma = document.getElementById('chk-cronograma').checked;
+            const incluirChecklist = document.getElementById('chk-checklist').checked;
+            const incluirConvidados = document.getElementById('chk-convidados').checked;
+            const incluirFornecedores = document.getElementById('chk-fornecedores').checked;
+            const incluirNotas = document.getElementById('chk-notas').checked;
 
-            const tabelaConvidados = criarTabelaPDF(
-                convidados, 
-                ['Nome do Convidado', 'Categoria', 'Confirmado'], 
-                item => [`${item.first_name} ${item.last_name || ''}`.trim(), `${item.connection} (Mesa ${item.table_number})`, item.present ? 'Sim' : 'Não']
-            );
+            // Busca apenas os dados necessários do Supabase filtrados pelo casal ativo
+            let cronograma = [], convidados = [], fornecedores = [], checklist = [], notas = [];
 
-            const tabelaFornecedores = criarTabelaPDF(
-                fornecedores, 
-                ['Serviço / Categoria', 'Nome do Fornecedor', 'Contato'], 
-                item => [item.category || '-', item.name || '-', `${item.phone ? '📞 ' + item.phone + ' ' : ''}${item.time ? '⏰ ' + item.time : ''}${item.notes ? ' | Obs: ' + item.notes : ''} (${item.status})`.trim()]
-            );
+            if (incluirCronograma) {
+                const { data } = await _supabase.from('cronograma_dia').select('*').eq('casal_nome', nomeSalvo);
+                cronograma = data || [];
+            }
+            if (incluirChecklist) {
+                const { data } = await _supabase.from('checklist').select('*').eq('casal_nome', nomeSalvo);
+                checklist = data || [];
+            }
+            if (incluirConvidados) {
+                const { data } = await _supabase.from('convidados').select('*').eq('casal_nome', nomeSalvo);
+                convidados = data || [];
+            }
+            if (incluirFornecedores) {
+                const { data } = await _supabase.from('fornecedores').select('*').eq('casal_nome', nomeSalvo);
+                fornecedores = data || [];
+            }
+            if (incluirNotas) {
+                const { data } = await _supabase.from('notas_notebook').select('*').eq('casal_nome', nomeSalvo);
+                notas = data || [];
+            }
+
+            // Monta o conteúdo dinâmico do PDF
+            let contentArray = [
+                { text: 'ALLY', style: 'brandTitle' },
+                { text: 'CRONOGRAMA & PLANEJAMENTO DE CASAMENTO', style: 'brandSubtitle' },
+                { canvas: [{ type: 'line', x1: 0, y1: 10, x2: 515, y2: 10, lineWidth: 1, lineColor: '#3b2a22' }] },
+                { text: '', margin: [0, 10] },
+
+                { text: 'Informações do Casamento', style: 'sectionTitle' },
+                {
+                    table: {
+                        widths: ['*', '*'],
+                        body: [
+                            [{ text: 'Casal: ' + (nomeSalvo || '-'), style: 'tableHeader' }, { text: 'Data: ' + (dataSalva || '-'), style: 'tableHeader' }],
+                            [{ text: 'Horário: ' + (horarioSalvo || '-'), style: 'tableHeader' }, { text: 'Dias Restantes: ' + diasFaltandoGlobal, style: 'tableHeader' }]
+                        ]
+                    },
+                    layout: 'noBorders',
+                    margin: [0, 0, 0, 20]
+                }
+            ];
+
+            let secaoIndex = 1;
+
+            if (incluirCronograma) {
+                contentArray.push({ text: `${secaoIndex++}. Cronograma do Dia`, style: 'sectionTitle' });
+                contentArray.push(criarTabelaPDF(cronograma, ['Horário', 'Atividade / Evento'], item => [item.time || '-', item.note ? `${item.text} (Obs: ${item.note})` : item.text || '-']));
+            }
+
+            if (incluirChecklist) {
+                contentArray.push({ text: `${secaoIndex++}. Check List`, style: 'sectionTitle' });
+                contentArray.push(criarTabelaPDF(checklist, ['Tarefa', 'Status'], item => [item.text || '-', item.checked ? 'Concluído' : 'Pendente']));
+            }
+
+            if (incluirConvidados) {
+                contentArray.push({ text: `${secaoIndex++}. Lista de Convidados`, style: 'sectionTitle' });
+                contentArray.push(criarTabelaPDF(convidados, ['Nome do Convidado', 'Categoria', 'Confirmado'], item => [`${item.first_name} ${item.last_name || ''}`.trim(), `${item.connection} (Mesa ${item.table_number})`, item.present ? 'Sim' : 'Não']));
+            }
+
+            if (incluirFornecedores) {
+                contentArray.push({ text: `${secaoIndex++}. Fornecedores`, style: 'sectionTitle' });
+                contentArray.push(criarTabelaPDF(fornecedores, ['Serviço / Categoria', 'Nome do Fornecedor', 'Contato'], item => [item.category || '-', item.name || '-', `${item.phone ? '📞 ' + item.phone + ' ' : ''}${item.time ? '⏰ ' + item.time : ''}${item.notes ? ' | Obs: ' + item.notes : ''} (${item.status})`.trim()]));
+            }
+
+            if (incluirNotas) {
+                contentArray.push({ text: `${secaoIndex++}. Notebook (Anotações)`, style: 'sectionTitle' });
+                contentArray.push(criarTabelaPDF(notas, ['Título', 'Conteúdo / Detalhes'], item => [item.titulo || 'Sem título', item.conteudo || '(Anexo de mídia)']));
+            }
 
             const docDefinition = {
                 pageSize: 'A4',
                 pageMargins: [40, 60, 40, 60],
-                content: [
-                    { text: 'ALLY', style: 'brandTitle' },
-                    { text: 'CRONOGRAMA & PLANEJAMENTO DE CASAMENTO', style: 'brandSubtitle' },
-                    { canvas: [{ type: 'line', x1: 0, y1: 10, x2: 515, y2: 10, lineWidth: 1, lineColor: '#3b2a22' }] },
-                    { text: '', margin: [0, 10] },
-
-                    { text: 'Informações do Casamento', style: 'sectionTitle' },
-                    {
-                        table: {
-                            widths: ['*', '*'],
-                            body: [
-                                [{ text: 'Casal: ' + (nomeSalvo || '-'), style: 'tableHeader' }, { text: 'Data: ' + (dataSalva || '-'), style: 'tableHeader' }],
-                                [{ text: 'Horário: ' + (horarioSalvo || '-'), style: 'tableHeader' }, { text: 'Dias Restantes: ' + diasFaltandoGlobal, style: 'tableHeader' }]
-                            ]
-                        },
-                        layout: 'noBorders',
-                        margin: [0, 0, 0, 20]
-                    },
-
-                    { text: '1. Cronograma do Dia', style: 'sectionTitle' },
-                    tabelaCronograma,
-
-                    { text: '2. Check List', style: 'sectionTitle' },
-                    tabelaChecklist,
-
-                    { text: '3. Lista de Convidados', style: 'sectionTitle' },
-                    tabelaConvidados,
-
-                    { text: '4. Fornecedores', style: 'sectionTitle' },
-                    tabelaFornecedores
-                ],
+                content: contentArray,
                 styles: {
                     brandTitle: { fontStyle: 'serif', fontSize: 28, bold: true, alignment: 'center', color: '#3b2a22' },
                     brandSubtitle: { fontSize: 10, alignment: 'center', color: '#725a4d', margin: [0, 2, 0, 0] },
@@ -558,7 +702,7 @@
                 defaultStyle: { fontSize: 10, color: '#333333' }
             };
 
-            pdfMake.createPdf(docDefinition).download('Cronograma_Casamento_' + (nomeSalvo || 'Ally') + '.pdf');
+            pdfMake.createPdf(docDefinition).download('Relatorio_Casamento_' + (nomeSalvo || 'Ally') + '.pdf');
         }
 
         function criarTabelaPDF(dados, cabecalhos, mapearLinha) {
