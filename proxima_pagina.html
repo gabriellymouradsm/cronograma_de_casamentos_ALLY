@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Controle - Casamento</title>
 
-
-        <!-- Configurações PWA e Ícones -->
+    <!-- Configurações PWA e Ícones -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b2a22">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -654,21 +653,36 @@
 
             let contentArray = [
                 { text: 'ALLY', style: 'brandTitle' },
-                { text: 'CRONOGRAMA & PLANEJAMENTO DE CASAMENTO', style: 'brandSubtitle' },
-                { canvas: [{ type: 'line', x1: 0, y1: 10, x2: 515, y2: 10, lineWidth: 1, lineColor: '#3b2a22' }] },
-                { text: '', margin: [0, 10] },
+                { text: 'PLANEJAMENTO & CRONOGRAMA DE CASAMENTO', style: 'brandSubtitle' },
+                { canvas: [{ type: 'line', x1: 0, y1: 10, x2: 515, y2: 10, lineWidth: 1.5, lineColor: '#3b2a22' }] },
+                { text: '', margin: [0, 5] },
 
-                { text: 'Informações do Casamento', style: 'sectionTitle' },
                 {
                     table: {
                         widths: ['*', '*'],
                         body: [
-                            [{ text: 'Casal: ' + (nomeSalvo || '-'), style: 'tableHeader' }, { text: 'Data: ' + (dataSalva || '-'), style: 'tableHeader' }],
-                            [{ text: 'Horário: ' + (horarioSalvo || '-'), style: 'tableHeader' }, { text: 'Dias Restantes: ' + diasFaltandoGlobal, style: 'tableHeader' }]
+                            [
+                                { text: 'Casal: ' + (nomeSalvo || '-'), style: 'infoBoxText' },
+                                { text: 'Data: ' + (dataSalva || '-'), style: 'infoBoxText' }
+                            ],
+                            [
+                                { text: 'Horário: ' + (horarioSalvo || '-'), style: 'infoBoxText' },
+                                { text: 'Dias Restantes: ' + diasFaltandoGlobal, style: 'infoBoxText' }
+                            ]
                         ]
                     },
-                    layout: 'noBorders',
-                    margin: [0, 0, 0, 20]
+                    layout: {
+                        fillColor: function () { return '#fcfaf7'; },
+                        hLineWidth: function () { return 0.5; },
+                        vLineWidth: function () { return 0.5; },
+                        hLineColor: function () { return '#eadecc'; },
+                        vLineColor: function () { return '#eadecc'; },
+                        paddingTop: function () { return 8; },
+                        paddingBottom: function () { return 8; },
+                        paddingLeft: function () { return 10; },
+                        paddingRight: function () { return 10; }
+                    },
+                    margin: [0, 5, 0, 15]
                 }
             ];
 
@@ -676,47 +690,69 @@
 
             if (incluirCronograma) {
                 contentArray.push({ text: `${secaoIndex++}. Cronograma do Dia`, style: 'sectionTitle' });
-                contentArray.push(criarTabelaPDF(cronograma, ['Horário', 'Atividade / Evento'], item => [item.time || '-', item.note ? `${item.text} (Obs: ${item.note})` : item.text || '-']));
+                contentArray.push(criarTabelaPDF(cronograma, ['Horário', 'Atividade / Evento'], item => [
+                    { text: item.time || '-', style: 'cellBold' }, 
+                    { text: item.note ? `${item.text} (Obs: ${item.note})` : item.text || '-', style: 'cellNormal' }
+                ], [80, 435]));
             }
 
             if (incluirChecklist) {
                 contentArray.push({ text: `${secaoIndex++}. Check List`, style: 'sectionTitle' });
-                contentArray.push(criarTabelaPDF(checklist, ['Tarefa', 'Status'], item => [item.text || '-', item.checked ? 'Concluído' : 'Pendente']));
+                contentArray.push(criarTabelaPDF(checklist, ['Tarefa', 'Status'], item => [
+                    { text: item.text || '-', style: 'cellNormal' }, 
+                    { text: item.checked ? 'Concluído' : 'Pendente', style: item.checked ? 'cellSuccess' : 'cellPending' }
+                ], [400, 115]));
             }
 
             if (incluirConvidados) {
                 contentArray.push({ text: `${secaoIndex++}. Lista de Convidados`, style: 'sectionTitle' });
-                contentArray.push(criarTabelaPDF(convidados, ['Nome do Convidado', 'Categoria', 'Confirmado'], item => [`${item.first_name} ${item.last_name || ''}`.trim(), `${item.connection} (Mesa ${item.table_number})`, item.present ? 'Sim' : 'Não']));
+                contentArray.push(criarTabelaPDF(convidados, ['Nome do Convidado', 'Categoria', 'Confirmado'], item => [
+                    { text: `${item.first_name} ${item.last_name || ''}`.trim(), style: 'cellBold' },
+                    { text: `${item.connection} (Mesa ${item.table_number})`, style: 'cellNormal' },
+                    { text: item.present ? 'Sim' : 'Não', style: item.present ? 'cellSuccess' : 'cellPending' }
+                ], [170, 245, 100]));
             }
 
             if (incluirFornecedores) {
                 contentArray.push({ text: `${secaoIndex++}. Fornecedores`, style: 'sectionTitle' });
-                contentArray.push(criarTabelaPDF(fornecedores, ['Serviço / Categoria', 'Nome do Fornecedor', 'Contato'], item => [item.category || '-', item.name || '-', `${item.phone ? '📞 ' + item.phone + ' ' : ''}${item.time ? '⏰ ' + item.time : ''}${item.notes ? ' | Obs: ' + item.notes : ''} (${item.status})`.trim()]));
+                contentArray.push(criarTabelaPDF(fornecedores, ['Serviço / Categoria', 'Nome do Fornecedor', 'Contato'], item => [
+                    { text: item.category || '-', style: 'cellBold' },
+                    { text: item.name || '-', style: 'cellNormal' },
+                    { text: `${item.phone ? item.phone : ''}${item.status ? ' (Status: ' + item.status + ')' : ''}${item.notes ? ' | Obs: ' + item.notes : ''}`.trim(), style: 'cellNormal' }
+                ], [130, 170, 215]));
             }
 
             if (incluirNotas) {
                 contentArray.push({ text: `${secaoIndex++}. Notebook (Anotações)`, style: 'sectionTitle' });
-                contentArray.push(criarTabelaPDF(notas, ['Título', 'Conteúdo / Detalhes'], item => [item.titulo || 'Sem título', item.conteudo || '(Anexo de mídia)']));
+                contentArray.push(criarTabelaPDF(notas, ['Título', 'Conteúdo / Detalhes'], item => [
+                    { text: item.titulo || 'Sem título', style: 'cellBold' },
+                    { text: item.conteudo || '(Anexo de mídia)', style: 'cellNormal' }
+                ], [130, 385]));
             }
 
             const docDefinition = {
                 pageSize: 'A4',
-                pageMargins: [40, 60, 40, 60],
+                pageMargins: [36, 40, 36, 40],
                 content: contentArray,
                 styles: {
-                    brandTitle: { fontStyle: 'serif', fontSize: 28, bold: true, alignment: 'center', color: '#3b2a22' },
-                    brandSubtitle: { fontSize: 10, alignment: 'center', color: '#725a4d', margin: [0, 2, 0, 0] },
-                    sectionTitle: { fontSize: 14, bold: true, color: '#3b2a22', margin: [0, 15, 0, 8] },
-                    tableHeader: { bold: true, fontSize: 10, color: '#ffffff', fillColor: '#3b2a22' },
-                    noData: { italic: true, color: '#888888', margin: [0, 0, 0, 15] }
+                    brandTitle: { fontStyle: 'serif', fontSize: 24, bold: true, alignment: 'center', color: '#3b2a22' },
+                    brandSubtitle: { fontSize: 8, bold: true, alignment: 'center', color: '#725a4d', margin: [0, 2, 0, 0] },
+                    sectionTitle: { fontSize: 12, bold: true, color: '#3b2a22', margin: [0, 12, 0, 6] },
+                    tableHeader: { bold: true, fontSize: 9, color: '#ffffff', fillColor: '#3b2a22' },
+                    infoBoxText: { fontSize: 10, color: '#3b2a22', bold: false },
+                    cellBold: { fontSize: 9, bold: true, color: '#2c221e' },
+                    cellNormal: { fontSize: 9, color: '#333333' },
+                    cellSuccess: { fontSize: 9, bold: true, color: '#128c7e' },
+                    cellPending: { fontSize: 9, bold: true, color: '#a83232' },
+                    noData: { italic: true, color: '#888888', margin: [0, 0, 0, 10], fontSize: 9 }
                 },
-                defaultStyle: { fontSize: 10, color: '#333333' }
+                defaultStyle: { fontSize: 9, color: '#333333' }
             };
 
             pdfMake.createPdf(docDefinition).download('Relatorio_Casamento_' + (nomeSalvo || 'Ally') + '.pdf');
         }
 
-        function criarTabelaPDF(dados, cabecalhos, mapearLinha) {
+        function criarTabelaPDF(dados, cabecalhos, mapearLinha, colWidthsArray) {
             if (!dados || dados.length === 0) {
                 return { text: 'Nenhuma informação registrada nesta seção.', style: 'noData' };
             }
@@ -730,11 +766,24 @@
             return {
                 table: {
                     headerRows: 1,
-                    widths: cabecalhos.map(() => '*'),
+                    widths: colWidthsArray || cabecalhos.map(() => '*'),
                     body: bodyTable
                 },
-                layout: 'lightHorizontalLines',
-                margin: [0, 0, 0, 15]
+                layout: {
+                    fillColor: function (rowIndex) {
+                        if (rowIndex === 0) return '#3b2a22';
+                        return (rowIndex % 2 === 0) ? '#f2eee9' : '#ffffff';
+                    },
+                    hLineWidth: function () { return 0.5; },
+                    vLineWidth: function () { return 0.5; },
+                    hLineColor: function () { return '#eadecc'; },
+                    vLineColor: function () { return '#eadecc'; },
+                    paddingTop: function () { return 6; },
+                    paddingBottom: function () { return 6; },
+                    paddingLeft: function () { return 8; },
+                    paddingRight: function () { return 8; }
+                },
+                margin: [0, 0, 0, 12]
             };
         }
     </script>
