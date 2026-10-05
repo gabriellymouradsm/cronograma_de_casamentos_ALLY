@@ -174,21 +174,28 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        .btn-compartilhar {
+        .btn-relatorios {
             width: 100%;
             padding: 15px;
-            background-color: #25D366;
+            background-color: #eadecc;
             border: none;
             border-radius: 30px;
-            color: #ffffff;
+            color: #3b2a22;
             font-size: 16px;
             font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            box-sizing: border-box;
             cursor: pointer;
             margin-bottom: 10px;
             transition: 0.2s;
         }
 
-        .btn-compartilhar:hover { transform: translateY(-2px); }
+        .btn-relatorios:hover {
+            background-color: #d8c7b3;
+            transform: translateY(-2px);
+        }
 
         .btn-pdf {
             width: 100%;
@@ -419,7 +426,7 @@
             </div>
 
             <div>
-                <a href="relatorios.html" class="btn-relatorios" style="display: block; width: 100%; padding: 15px; background-color: #25D366; border: none; border-radius: 30px; color: #ffffff; font-size: 16px; font-weight: bold; text-align: center; text-decoration: none; box-sizing: border-box; margin-bottom: 10px; transition: 0.2s;">
+                <a href="relatorios.html" class="btn-relatorios">
                     📊 Relatórios Detalhados
                 </a>
 
@@ -589,22 +596,6 @@
             document.getElementById("contadorDias").textContent = String(dias).padStart(2, "0");
             document.getElementById("contadorHoras").textContent = String(horas).padStart(2, "0");
             document.getElementById("contadorMinutos").textContent = String(minutos).padStart(2, "0");
-        }
-
-        function compartilharWhatsApp() {
-            let mensagem = "*Grande Notícia!* 🔔\n\n";
-            mensagem += "Planejamento do casamento de *" + nomeSalvo + "*\n";
-            mensagem += "🗓️ *Data:* " + dataSalva + "\n";
-            mensagem += "⏰ *Horário:* " + horarioSalvo + "\n\n";
-
-            if (diasFaltandoGlobal > 0) {
-                mensagem += "Faltam apenas *" + diasFaltandoGlobal + " dias* para essa celebração especial! ✨";
-            } else {
-                mensagem += "Chegou o momento de comemorar! 🎉";
-            }
-
-            const urlWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensagem);
-            window.open(urlWhatsApp, "_blank");
         }
 
         function editarInformacoes() {
