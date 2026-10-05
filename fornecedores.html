@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ally - Fornecedores</title>
+    <title>Ally - Gerenciamento de Convidados</title>
 
     <!-- Configurações PWA e Ícones -->
     <link rel="manifest" href="manifest.json">
@@ -14,120 +14,111 @@
     <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
     <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
 
-    <!-- Supabase e Biblioteca Excel -->
+    <!-- Biblioteca e Conexão do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Biblioteca SheetJS para Leitura de Arquivos Excel / CSV -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Georgia', serif; }
-        body { background-color: #f7f5f2; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 30px 20px; }
-        
-        .brand-header { text-align: center; margin-bottom: 25px; width: 100%; }
-        .brand-logo-rings { width: 48px; height: 48px; margin: 0 auto 6px; display: block; }
-        .brand-title { font-size: 2.2rem; font-weight: bold; color: #382a23; margin: 0; line-height: 1; }
-        .brand-tagline { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: #725a4d; margin-top: 6px; }
-
-        .suppliers-container { width: 100%; max-width: 520px; background-color: #3b2a24; border-radius: 28px; padding: 30px 25px; display: flex; flex-direction: column; align-items: center; position: relative; }
-        h2 { color: #ffffff; font-size: 26px; margin-bottom: 22px; text-align: center; }
-        
-        .excel-import-box { width: 100%; background-color: #47362e; border: 1px solid #5d463b; border-radius: 20px; padding: 15px; text-align: center; margin-bottom: 15px; }
-        .excel-btn { background-color: #d9fdd3; color: #128c7e; border: none; padding: 10px 16px; border-radius: 12px; font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        
-        .divider-text { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #b5ada5; margin: 10px 0 15px; text-align: center; width: 100%; border-bottom: 1px solid #5d463b; line-height: 0.1em; }
-        .divider-text span { background: #3b2a24; padding: 0 10px; }
-
-        .form-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 15px; }
-        .input-row { display: flex; gap: 10px; width: 100%; }
-        .input-field { padding: 12px 14px; background-color: #fcfaf7; border: none; border-radius: 12px; font-size: 14px; color: #382a23; outline: none; width: 100%; }
-        .input-half { flex: 1; }
-        
-        .action-row { display: flex; gap: 10px; width: 100%; margin-top: 5px; }
-        .btn-action { flex: 1; background-color: #fcfaf7; color: #3b2a24; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 13px; text-align: center; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-        .btn-action:hover { background-color: #f2eee9; }
-        
-        .search-input { width: 100%; padding: 11px 14px; background-color: #47362e; border: 1px solid #5d463b; border-radius: 12px; font-size: 13px; color: #ffffff; outline: none; margin-bottom: 15px; }
-        .search-input::placeholder { color: #b5ada5; }
-
-        #suppliers-list { width: 100%; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px; margin-bottom: 15px; }
-        
-        .supplier-item { background: rgba(255,255,255,0.06); padding: 12px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 8px; }
-        .supplier-name { color: #ffffff; font-size: 16px; font-weight: bold; font-family: Arial, sans-serif; }
-        .supplier-header { display: flex; justify-content: space-between; align-items: center; }
-        .supplier-category { background-color: #fcfaf7; color: #3b2a24; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .supplier-details { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #eadecc; font-family: Arial, sans-serif; }
-        .time-input-container { display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 8px; }
-        .card-time-input { background: transparent; border: none; color: #ffffff; font-size: 12px; outline: none; }
-        
-        .supplier-note-line {
-            color: #d1c4bc;
-            font-size: 13px;
-            font-family: Arial, sans-serif;
-            font-style: italic;
-            display: block;
-            margin-top: 2px;
+        :root {
+            --bg-cream: #fbf8f3;
+            --card-brown: #382a24;
+            --input-bg: #f7f4ef;
+            --input-border-focus: #a87b51;
+            --text-gold: #d4af37;
         }
 
-        .card-occurrence-box {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 6px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 6px;
+        body {
+            background-color: var(--bg-cream);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #2c221e;
         }
 
-        .card-occurrence-input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 12px;
-            color: #ffffff;
+        .font-serif-title {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .custom-input {
+            background-color: var(--input-bg);
+            color: #382a24;
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+
+        .custom-input:focus {
             outline: none;
-            font-family: Arial, sans-serif;
-            resize: vertical;
-            min-height: 34px;
+            border-color: #8b6b55;
+            box-shadow: 0 0 0 3px rgba(139, 107, 85, 0.25);
+            background-color: #ffffff;
         }
 
-        .card-occurrence-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-            font-style: italic;
+        .custom-input::placeholder {
+            color: #a0958e;
+            font-weight: 500;
         }
 
-        .save-occurrence-btn {
-            align-self: flex-end;
-            background-color: #fcfaf7;
-            color: #3b2a24;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
+        .card-container {
+            background-color: var(--card-brown);
+            box-shadow: 0 20px 40px rgba(56, 42, 36, 0.18);
+            border-radius: 28px;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-animate {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
+            display: block;
+        }
+
+        .brand-title {
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
             font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
+            color: #382a23;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
             text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 6px;
         }
 
-        .save-occurrence-btn:hover {
-            background-color: #f2eee9;
-        }
-
-        .status-badge { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold; cursor: pointer; user-select: none; }
-        .status-confirmado { background-color: #d9fdd3; color: #128c7e; }
-        .status-pendente { background-color: #fff3cd; color: #856404; }
-
-        .footer-navigation { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 10px; }
-        .clear-all-btn { background: transparent; color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.3); padding: 10px; border-radius: 12px; font-size: 13px; font-weight: bold; cursor: pointer; width: 100%; max-width: 200px; text-transform: uppercase; }
-        .clear-all-btn:hover { background-color: rgba(255, 255, 255, 0.08); color: #ffffff; }
-        .back-link { color: #eadecc; font-size: 12px; text-decoration: underline; margin-top: 15px; }
-
-        /* ===== ESTILOS DOS MODAIS CUSTOMIZADOS ===== */
+        /* ===== ESTILOS DO MODAL DE CONFIRMAÇÃO CUSTOMIZADO ===== */
         .custom-modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -174,11 +165,9 @@
             align-items: center;
             font-size: 26px;
             box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+            background-color: #fff3cd;
+            color: #856404;
         }
-        .success-theme .custom-modal-icon-circle { background-color: #d9fdd3; color: #128c7e; }
-        .error-theme .custom-modal-icon-circle { background-color: #fae1dd; color: #a83232; }
-        .warning-theme .custom-modal-icon-circle { background-color: #fff3cd; color: #856404; }
-
         .custom-modal-body {
             padding: 0 24px 26px;
         }
@@ -187,13 +176,14 @@
             font-weight: bold;
             color: #3b2a24;
             margin-bottom: 8px;
+            font-family: 'Playfair Display', Georgia, serif;
         }
         .custom-modal-message {
             color: #725a4d;
             font-size: 13px;
             line-height: 1.5;
             margin-bottom: 22px;
-            font-family: Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .custom-modal-actions {
             display: flex;
@@ -212,36 +202,18 @@
             letter-spacing: 1px;
             transition: opacity 0.2s;
         }
-        .success-theme .custom-modal-btn { background-color: #128c7e; color: #ffffff; }
-        .error-theme .custom-modal-btn { background-color: #a83232; color: #ffffff; }
-        
-        /* Botões para o Confirm */
         .btn-modal-cancel { background-color: #eadecc; color: #3b2a24; }
         .btn-modal-confirm { background-color: #a83232; color: #ffffff; }
         .custom-modal-btn:hover { opacity: 0.9; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-10 selection:bg-amber-100 selection:text-amber-900">
 
-    <!-- MODAL DE ALERTA COMUM -->
-    <div id="custom-modal" class="custom-modal-overlay">
-        <div id="modal-box" class="custom-modal-box success-theme">
-            <div class="custom-modal-header">
-                <div id="modal-icon-circle" class="custom-modal-icon-circle">✓</div>
-            </div>
-            <div class="custom-modal-body">
-                <div id="modal-title" class="custom-modal-title">Sucesso!</div>
-                <div id="modal-message" class="custom-modal-message">Mensagem aqui</div>
-                <button class="custom-modal-btn" onclick="closeCustomModal()">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE CONFIRMAÇÃO (SIM / NÃO) -->
+    <!-- MODAL DE CONFIRMAÇÃO CUSTOMIZADO -->
     <div id="custom-confirm-modal" class="custom-modal-overlay">
-        <div class="custom-modal-box warning-theme">
+        <div class="custom-modal-box">
             <div class="custom-modal-header">
-                <div class="custom-modal-icon-circle" style="background-color: #fff3cd; color: #856404;">?</div>
+                <div class="custom-modal-icon-circle">?</div>
             </div>
             <div class="custom-modal-body">
                 <div id="confirm-title" class="custom-modal-title">Confirmação</div>
@@ -264,355 +236,430 @@
         <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
     </header>
 
-    <div class="suppliers-container">
-        
-        <!-- TELA 1: FORMULÁRIO E IMPORTAÇÃO -->
-        <div id="view-form" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-            <h2>Formulário de Fornecedores</h2>
-            
-            <div class="excel-import-box" id="admin-excel-box">
-                <p style="font-size:11px;color:#d1c4bc;margin-bottom:8px;">Possui uma planilha com a lista em Excel ou CSV?</p>
-                <input type="file" id="excel-input" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleExcelUpload(event)">
-                <button type="button" class="excel-btn" onclick="document.getElementById('excel-input').click()">📥 Importar Lista (Excel / CSV)</button>
+    <main class="w-full max-w-md md:max-w-xl flex-1 flex flex-col justify-center">
+
+        <!-- VIEW 1 -->
+        <div id="view-form" class="card-container text-white p-6 sm:p-8 transition-all duration-300">
+            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
+                Formulário de Convidados
+            </h2>
+
+            <div class="mb-6 p-4 bg-[#47362e] border border-[#5d463b] rounded-2xl text-center">
+                <p class="text-xs text-[#d1c4bc] mb-2 font-medium">Possui uma planilha com a lista em Excel ou CSV?</p>
+                <input type="file" id="excel-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
+                <button type="button" onclick="triggerExcelClick()" class="inline-flex items-center gap-2 bg-[#d9fdd3] hover:bg-[#c2f7b8] text-[#128c7e] font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition shadow-md active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-file-excel text-sm"></i> IMPORTAR LISTA (EXCEL / CSV)
+                </button>
             </div>
 
-            <div class="divider-text"><span style="color:#b5ada5;">Ou cadastre manualmente</span></div>
-
-            <div class="form-grid" id="admin-form-section">
-                <div class="input-row">
-                    <input type="text" id="category-input" class="input-field input-half" placeholder="Serviço (ex: Buffet)">
-                    <input type="text" id="name-input" class="input-field input-half" placeholder="Nome do Fornecedor">
-                </div>
-                <div class="input-row">
-                    <input type="text" id="phone-input" class="input-field input-half" placeholder="Telefone / Whats">
-                    <select id="status-select" class="input-field input-half">
-                        <option value="Pendente">Status: Pendente</option>
-                        <option value="Confirmado">Status: Confirmado</option>
-                    </select>
-                </div>
-                
-                <div class="action-row">
-                    <button id="add-btn" class="btn-action" onclick="addSupplier()">Cadastrar</button>
-                    <button class="btn-action" style="background-color: #f2eee9;" onclick="switchView('list')">Acessar a Lista</button>
-                </div>
+            <div class="relative flex py-1 items-center mb-5">
+                <div class="flex-grow border-t border-[#5d463b]"></div>
+                <span class="flex-shrink mx-3 text-xs text-[#a0958e] uppercase tracking-wider font-semibold">ou cadastre manualmente</span>
+                <div class="flex-grow border-t border-[#5d463b]"></div>
             </div>
-        </div>
 
-        <!-- TELA 2: LISTAGEM DE FORNECEDORES -->
-        <div id="view-list" style="width: 100%; display: none; flex-direction: column; align-items: center;">
-            <h2>Lista de Fornecedores</h2>
-
-            <input type="text" id="search-input" class="search-input" placeholder="🔍 Buscar fornecedor..." oninput="renderSuppliers()">
-            
-            <div id="suppliers-list"></div>
-            
-            <div class="footer-navigation">
-                <button class="clear-all-btn" id="btn-clear-all" onclick="clearAll()">Limpar Todos</button>
-                <button class="btn-action" style="width: 100%; max-width: 200px; background-color: #fcfaf7;" onclick="switchView('form')">← Voltar ao Formulário</button>
-            </div>
-        </div>
-        
-        <a href="proxima_pagina.html" class="back-link">← Voltar ao Painel</a>
-    </div>
-
-<script>
-    const userRole = localStorage.getItem('user_role');
-    const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
-    let suppliers = [];
-
-    function showModal(message, type = 'success', title = '') {
-        const modal = document.getElementById('custom-modal');
-        const modalBox = document.getElementById('modal-box');
-        const msgEl = document.getElementById('modal-message');
-        const titleEl = document.getElementById('modal-title');
-        const iconEl = document.getElementById('modal-icon-circle');
-
-        msgEl.textContent = message;
-
-        if (type === 'success') {
-            modalBox.className = 'custom-modal-box success-theme';
-            titleEl.textContent = title || 'Tudo pronto!';
-            iconEl.textContent = '✓';
-        } else {
-            modalBox.className = 'custom-modal-box error-theme';
-            titleEl.textContent = title || 'Atenção';
-            iconEl.textContent = '✕';
-        }
-
-        modal.classList.add('active');
-    }
-
-    function closeCustomModal() {
-        document.getElementById('custom-modal').classList.remove('active');
-    }
-
-    // Função de confirmação customizada estilo app
-    function showConfirmModal(message, title, onConfirm) {
-        const modal = document.getElementById('custom-confirm-modal');
-        document.getElementById('confirm-title').textContent = title || 'Confirmação';
-        document.getElementById('confirm-message').textContent = message;
-
-        const okBtn = document.getElementById('confirm-ok-btn');
-        const cancelBtn = document.getElementById('confirm-cancel-btn');
-
-        // Substitui os event listeners para evitar duplicação
-        const newOkBtn = okBtn.cloneNode(true);
-        const newCancelBtn = cancelBtn.cloneNode(true);
-        okBtn.parentNode.replaceChild(newOkBtn, okBtn);
-        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
-
-        newOkBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-            if (onConfirm) onConfirm();
-        });
-
-        newCancelBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-
-        modal.classList.add('active');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        if (userRole === 'assistant') {
-            document.getElementById('admin-excel-box').style.display = 'none';
-            document.getElementById('admin-form-section').style.display = 'none';
-            document.getElementById('btn-clear-all').style.display = 'none';
-        }
-        loadSuppliersFromSupabase();
-    });
-
-    function switchView(target) {
-        const formView = document.getElementById('view-form');
-        const listView = document.getElementById('view-list');
-
-        if (target === 'list') {
-            formView.style.display = 'none';
-            listView.style.display = 'flex';
-            loadSuppliersFromSupabase();
-        } else {
-            listView.style.display = 'none';
-            formView.style.display = 'flex';
-        }
-    }
-
-    async function loadSuppliersFromSupabase() {
-        const { data } = await _supabase.from('fornecedores').select('*').eq('casal_nome', casalAtivo);
-        suppliers = data || [];
-        sortSuppliers();
-        renderSuppliers();
-        updatePDFStorage();
-    }
-
-    function sortSuppliers() {
-        suppliers.sort((a, b) => a.name.trim().localeCompare(b.name.trim(), 'pt-BR'));
-    }
-
-    function updatePDFStorage() {
-        const pdfData = suppliers.map(s => {
-            let contatoStr = `${s.phone ? '📞 ' + s.phone + ' ' : ''}${s.time ? '⏰ ' + s.time : ''} (${s.status})`;
-            if (s.notes) {
-                const linhas = s.notes.split('\n');
-                linhas.forEach(l => {
-                    if (l.trim()) contatoStr += ` \nobs: ${l.trim().replace(/^obs:\s*/i, '')}`;
-                });
-            }
-            return {
-                categoria: s.category,
-                nome: s.name,
-                contato: contatoStr.trim()
-            };
-        });
-        localStorage.setItem('fornecedores_dados', JSON.stringify(pdfData));
-    }
-
-    async function addSupplier() {
-        if (userRole === 'assistant') return;
-        const category = document.getElementById('category-input').value.trim();
-        const name = document.getElementById('name-input').value.trim();
-        const phone = document.getElementById('phone-input').value.trim();
-        const status = document.getElementById('status-select').value;
-
-        if (!category || !name) { 
-            showModal("Por favor, preencha o serviço e o nome do fornecedor.", "error", "Campos Obrigatórios"); 
-            return; 
-        }
-
-        const { error } = await _supabase.from('fornecedores').insert([{ category, name, phone, time: "", notes: "", status, casal_nome: casalAtivo }]);
-        
-        if (error) {
-            showModal("Houve um erro ao tentar cadastrar o fornecedor.", "error", "Erro no Cadastro");
-            return;
-        }
-
-        showModal("Fornecedor cadastrado com sucesso!", "success", "Sucesso!");
-        document.getElementById('category-input').value = "";
-        document.getElementById('name-input').value = "";
-        document.getElementById('phone-input').value = "";
-        loadSuppliersFromSupabase();
-    }
-
-    async function handleExcelUpload(event) {
-        if (userRole === 'assistant') return;
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            try {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                const jsonRows = XLSX.utils.sheet_to_json(worksheet);
-
-                if (jsonRows.length === 0) {
-                    showModal("O arquivo Excel selecionado está vazio.", "error", "Arquivo Vazio");
-                    return;
-                }
-
-                let importadosCount = 0;
-                for (let row of jsonRows) {
-                    const category = row['Serviço'] || row['servico'] || row['Categoria'] || row['categoria'] || '';
-                    const name = row['Nome do Fornecedor'] || row['nome'] || row['Nome'] || '';
-                    const phone = String(row['Telefone / Whats'] || row['telefone'] || row['Telefone'] || row['WhatsApp'] || '');
-                    let status = row['Status'] || row['status'] || 'Pendente';
-
-                    status = status.toLowerCase().includes('confirm') ? 'Confirmado' : 'Pendente';
-
-                    if (category.trim() && name.trim()) {
-                        await _supabase.from('fornecedores').insert([{
-                            category: category.trim(),
-                            name: name.trim(),
-                            phone: phone.trim(),
-                            time: "",
-                            notes: "",
-                            status: status,
-                            casal_nome: casalAtivo
-                        }]);
-                        importadosCount++;
-                    }
-                }
-
-                showModal(`${importadosCount} fornecedor(es) importado(s) com sucesso!`, "success", "Importação Concluída");
-                event.target.value = '';
-                loadSuppliersFromSupabase();
-            } catch (err) {
-                console.error("Erro ao ler o arquivo Excel:", err);
-                showModal("Não foi possível processar o arquivo. Verifique se o formato está correto.", "error", "Erro na Importação");
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    }
-
-    function renderSuppliers() {
-        const list = document.getElementById('suppliers-list');
-        list.innerHTML = '';
-        const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-
-        const filtered = suppliers.filter(s => s.name.toLowerCase().includes(searchTerm) || s.category.toLowerCase().includes(searchTerm));
-
-        if (filtered.length === 0) {
-            list.innerHTML = `<p style="text-align:center;color:#b5ada5;font-size:13px;padding:20px;">Nenhum fornecedor encontrado.</p>`;
-            return;
-        }
-
-        filtered.forEach(s => {
-            const item = document.createElement('div');
-            item.className = 'supplier-item';
-
-            item.innerHTML = `
-                <span class="supplier-name">${s.name}</span>
-                <div class="supplier-header"><span class="supplier-category">${s.category}</span></div>
-                <div class="supplier-details">
-                    <span>📞 ${s.phone || '-'}</span>
-                    <div class="time-input-container">
-                        <span>⏰</span>
-                        <input type="time" class="card-time-input" value="${s.time || ''}" onchange="updateTime(${s.id}, this.value)">
+            <form id="guest-form" class="space-y-4" onsubmit="handleAddGuest(event)">
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Nome Completo</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="text" id="firstName" required placeholder="Primeiro Nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                        <input type="text" id="lastName" placeholder="Último Nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
                     </div>
                 </div>
-            `;
 
-            if (s.notes) {
-                const linhasNotas = s.notes.split('\n');
-                linhasNotas.forEach(linha => {
-                    if (linha.trim() !== '') {
-                        const noteSpan = document.createElement('span');
-                        noteSpan.classList.add('supplier-note-line');
-                        const textoLimpo = linha.replace(/^obs:\s*/i, '').trim();
-                        noteSpan.textContent = `obs: ${textoLimpo}`;
-                        item.appendChild(noteSpan);
-                    }
-                });
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Conexão com o Casal</label>
+                    <input type="text" id="connection" required placeholder="Digite aqui!" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Número de Telefone</label>
+                    <input type="tel" id="phone" placeholder="Digite aqui!" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Número da Mesa</label>
+                    <input type="text" id="tableNumber" required placeholder="Digite aqui!" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                </div>
+
+                <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-xs sm:text-sm">CRIAR</button>
+                    <button type="button" onclick="switchView('list')" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-xs sm:text-sm">ACESSAR A LISTA</button>
+                </div>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <a href="proxima_pagina.html" class="text-xs text-[#d1c4bc] underline hover:text-white">← Voltar ao Painel</a>
+            </div>
+        </div>
+
+        <!-- VIEW 2 -->
+        <div id="view-list" class="card-container text-white p-6 sm:p-8 hidden transition-all duration-300">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
+                <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center sm:text-left text-[#faf7f2]">Lista de Convidados</h2>
+                <div class="flex items-center gap-2">
+                    <span id="guest-count-badge" class="bg-[#523d34] text-[#f7f4ef] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246]">0 convidados</span>
+                    <button id="btn-clear-all" onclick="clearAllGuests()" title="Apagar toda a lista" class="bg-[#523d34] hover:bg-red-900/60 text-red-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246] transition"><i class="fa-solid fa-trash-can mr-1"></i> Limpar Lista</button>
+                </div>
+            </div>
+
+            <div class="mb-4 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a0958e]"></i>
+                <input type="text" id="searchInput" oninput="renderGuests()" placeholder="Buscar por nome, conexão ou mesa..." class="w-full custom-input pl-10 pr-4 py-2.5 rounded-xl text-sm"/>
+            </div>
+
+            <div class="max-h-[360px] overflow-y-auto pr-1 space-y-3 custom-scrollbar" id="guests-container"></div>
+
+            <div id="empty-state" class="hidden text-center py-8 text-[#caa28b]">
+                <i class="fa-regular fa-address-book text-4xl mb-2 opacity-60"></i>
+                <p class="text-sm">Nenhum convidado encontrado.</p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-[#523d34]/60 flex flex-col gap-2">
+                <button type="button" id="btn-goto-form" onclick="switchView('form')" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3 px-4 rounded-xl transition shadow-md uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus text-xs"></i> Adicionar / Importar Mais
+                </button>
+                <a href="proxima_pagina.html" class="text-center text-xs text-[#d1c4bc] underline hover:text-white mt-2">← Voltar ao Painel</a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL DE EDIÇÃO -->
+    <div id="edit-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#382a24] border border-[#6d5246] rounded-2xl p-6 w-full max-w-md text-white shadow-2xl">
+            <h3 class="text-xl font-serif-title font-bold mb-4 text-[#faf7f2]">Editar Convidado</h3>
+            <form id="edit-form" onsubmit="saveEditedGuest(event)" class="space-y-3">
+                <input type="hidden" id="edit-id">
+                <div>
+                    <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Nome Completo</label>
+                    <input type="text" id="edit-name" required class="w-full custom-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Classificação</label>
+                    <input type="text" id="edit-connection" required class="w-full custom-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Número da Mesa</label>
+                    <input type="text" id="edit-table" required class="w-full custom-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div class="flex gap-2 pt-3">
+                    <button type="submit" class="flex-1 bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider">Salvar</button>
+                    <button type="button" onclick="closeEditModal()" class="flex-1 bg-[#523d34] hover:bg-[#6d5246] text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 right-5 hidden z-50 bg-[#382a24] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-[#6d5246] flex items-center gap-3 toast-animate">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">Convidado adicionado com sucesso!</span>
+    </div>
+
+    <script>
+        let guests = [];
+        const userRole = localStorage.getItem('user_role');
+        const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (userRole === 'assistant') {
+                document.getElementById('view-form').classList.add('hidden');
+                document.getElementById('view-list').classList.remove('hidden');
+                document.getElementById('btn-clear-all').style.display = 'none';
+                document.getElementById('btn-goto-form').style.display = 'none';
+            }
+            loadGuestsFromSupabase();
+        });
+
+        async function loadGuestsFromSupabase() {
+            const { data, error } = await _supabase.from('convidados').select('*').eq('casal_nome', casalAtivo);
+            if (error) {
+                console.error("Erro ao carregar convidados:", error);
+                return;
+            }
+            guests = data || [];
+            sortGuestsAlphabetically();
+            renderGuests();
+            updatePDFStorage();
+        }
+
+        function sortGuestsAlphabetically() {
+            guests.sort((a, b) => {
+                const nameA = `${a.first_name} ${a.last_name || ''}`.trim().toLowerCase();
+                const nameB = `${b.first_name} ${b.last_name || ''}`.trim().toLowerCase();
+                return nameA.localeCompare(nameB, 'pt-BR');
+            });
+        }
+
+        function updatePDFStorage() {
+            const dadosParaPDF = guests.map(g => ({
+                nome: `${g.first_name} ${g.last_name || ''}`.trim(),
+                categoria: `${g.connection} (Mesa ${g.table_number})`,
+                confirmado: g.present ? "Sim" : "Não"
+            }));
+            localStorage.setItem('convidados_dados', JSON.stringify(dadosParaPDF));
+        }
+
+        function triggerExcelClick() {
+            document.getElementById('excel-input').click();
+        }
+
+        function switchView(viewName) {
+            if (userRole === 'assistant' && viewName === 'form') return;
+            const formView = document.getElementById('view-form');
+            const listView = document.getElementById('view-list');
+
+            if (viewName === 'list') {
+                formView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                renderGuests();
+            } else {
+                listView.classList.add('hidden');
+                formView.classList.remove('hidden');
+            }
+        }
+
+        async function handleAddGuest(e) {
+            e.preventDefault();
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const connection = document.getElementById('connection').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const tableNumber = document.getElementById('tableNumber').value.trim();
+
+            if (!firstName || !connection || !tableNumber) {
+                showToast('Por favor, preencha os campos obrigatórios.');
+                return;
             }
 
-            const occurrenceBox = document.createElement('div');
-            occurrenceBox.classList.add('card-occurrence-box');
+            const { error } = await _supabase.from('convidados').insert([{
+                first_name: firstName,
+                last_name: lastName,
+                connection,
+                phone,
+                table_number: tableNumber,
+                present: false,
+                casal_nome: casalAtivo
+            }]);
 
-            const occurrenceInput = document.createElement('textarea');
-            occurrenceInput.classList.add('card-occurrence-input');
-            occurrenceInput.placeholder = 'Ocorrência fora do comum...';
+            if (error) {
+                console.error("Erro ao cadastrar convidado:", error);
+                return;
+            }
 
-            const saveOccurrenceBtn = document.createElement('button');
-            saveOccurrenceBtn.classList.add('save-occurrence-btn');
-            saveOccurrenceBtn.textContent = 'Registrar';
+            document.getElementById('guest-form').reset();
+            showToast(`Convidado ${firstName} cadastrado!`);
+            loadGuestsFromSupabase();
+        }
 
-            saveOccurrenceBtn.addEventListener('click', async () => {
-                const novoTexto = occurrenceInput.value.trim();
-                if (!novoTexto) return;
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-                const novaNotaAtualizada = s.notes ? `${s.notes}\n${novoTexto}` : novoTexto;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
-                const { error } = await _supabase
-                    .from('fornecedores')
-                    .update({ notes: novaNotaAtualizada })
-                    .eq('id', s.id);
+                    let newGuestsToInsert = [];
 
-                if (error) {
-                    showModal("Erro ao registrar ocorrência.", "error", "Erro");
-                    return;
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (!row) continue;
+
+                        let fullName = (row[0] || "").toString().trim();
+                        let connection = (row[1] || "").toString().trim();
+                        let tableNumber = (row[4] || row[2] || "").toString().trim();
+
+                        if (fullName && fullName.toLowerCase() !== "nome completo" && !fullName.toLowerCase().includes("total")) {
+                            newGuestsToInsert.push({
+                                first_name: fullName,
+                                last_name: "",
+                                connection: connection || "Convidado",
+                                phone: "-",
+                                table_number: tableNumber || "Geral",
+                                present: false,
+                                casal_nome: casalAtivo
+                            });
+                        }
+                    }
+
+                    if (newGuestsToInsert.length > 0) {
+                        await _supabase.from('convidados').insert(newGuestsToInsert);
+                        loadGuestsFromSupabase();
+                        event.target.value = "";
+                        showToast(`${newGuestsToInsert.length} convidados importados com sucesso!`);
+                        switchView('list');
+                    } else {
+                        alert("Não foram encontrados convidados válidos na planilha.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Erro ao ler o arquivo Excel/CSV.");
                 }
-                loadSuppliersFromSupabase();
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderGuests() {
+            const container = document.getElementById('guests-container');
+            const emptyState = document.getElementById('empty-state');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const countBadge = document.getElementById('guest-count-badge');
+
+            container.innerHTML = '';
+            const filteredGuests = guests.filter(g => {
+                const fullName = `${g.first_name} ${g.last_name || ''}`.trim().toLowerCase();
+                return fullName.includes(searchVal) || (g.connection || '').toLowerCase().includes(searchVal) || (g.table_number || '').toString().toLowerCase().includes(searchVal);
             });
 
-            occurrenceBox.appendChild(occurrenceInput);
-            occurrenceBox.appendChild(saveOccurrenceBtn);
-            item.appendChild(occurrenceBox);
+            countBadge.innerText = `${guests.length} ${guests.length === 1 ? 'convidado' : 'convidados'}`;
 
-            const footerCard = document.createElement('div');
-            footerCard.style.cssText = "display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:4px;";
-            footerCard.innerHTML = `
-                <span class="status-badge ${s.status === 'Confirmado' ? 'status-confirmado' : 'status-pendente'}" onclick="toggleStatus(${s.id}, '${s.status}')">${s.status}</span>
-                ${userRole !== 'assistant' ? `<button onclick="deleteSupplier(${s.id})" style="background:none;border:none;color:#ff6b6b;cursor:pointer;">🗑️</button>` : ''}
-            `;
-            item.appendChild(footerCard);
+            if (filteredGuests.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
 
-            list.appendChild(item);
-        });
-    }
+            filteredGuests.forEach(guest => {
+                const card = document.createElement('div');
+                card.className = `bg-[#47362e] border rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition ${guest.present ? 'border-emerald-500/80 bg-[#403129]' : 'border-[#5d463b]'}`;
+                
+                const nomeCompleto = `${guest.first_name} ${guest.last_name || ''}`.trim();
+                let actionButtonsHTML = `
+                    <button onclick="togglePresence(${guest.id}, ${guest.present})" class="${guest.present ? 'bg-emerald-600 text-white' : 'bg-[#382a24] text-[#d1c4bc] hover:bg-[#523d34]'} p-2 rounded-lg border border-[#6d5246] transition text-xs font-semibold px-3 flex items-center gap-1.5">
+                        <i class="fa-solid ${guest.present ? 'fa-check-to-slot' : 'fa-square'}"></i> ${guest.present ? 'Presente' : 'Marcar'}
+                    </button>
+                `;
 
-    async function updateTime(id, time) {
-        await _supabase.from('fornecedores').update({ time }).eq('id', id);
-        loadSuppliersFromSupabase();
-    }
-    async function toggleStatus(id, current) {
-        const status = current === 'Confirmado' ? 'Pendente' : 'Confirmado';
-        await _supabase.from('fornecedores').update({ status }).eq('id', id);
-        loadSuppliersFromSupabase();
-    }
-    
-    // Substituído o confirm() nativo pelo modal customizado bonito
-    function deleteSupplier(id) {
-        showConfirmModal("Deseja realmente remover este fornecedor?", "Remover Fornecedor", async () => {
-            await _supabase.from('fornecedores').delete().eq('id', id);
-            loadSuppliersFromSupabase();
-        });
-    }
+                if (userRole !== 'assistant') {
+                    actionButtonsHTML += `
+                        <button onclick="openEditModal(${guest.id})" title="Editar" class="text-[#d1c4bc] hover:text-white p-2 rounded-lg hover:bg-[#382a24] transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="confirmDeleteGuest(${guest.id}, '${nomeCompleto}')" title="Remover" class="text-[#c28d88] hover:text-red-400 p-2 rounded-lg hover:bg-[#382a24] transition"><i class="fa-regular fa-trash-can"></i></button>
+                    `;
+                }
 
-    function clearAll() {
-        showConfirmModal("Deseja realmente apagar todos os fornecedores?", "Limpar Tudo", async () => {
-            await _supabase.from('fornecedores').delete().eq('casal_nome', casalAtivo);
-            loadSuppliersFromSupabase();
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-serif-title font-bold text-lg text-[#faf7f2]">${nomeCompleto}</h3>
+                            <span class="bg-[#382a24] text-[#d4af37] text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-[#6d5246]">Mesa ${guest.table_number}</span>
+                            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full border ${guest.present ? 'bg-emerald-950 text-emerald-300 border-emerald-700' : 'bg-[#382a24] text-[#a0958e] border-[#5d463b]'}">${guest.present ? '✓ Presente' : 'Ausente'}</span>
+                        </div>
+                        <p class="text-xs text-[#d1c4bc] mt-1"><i class="fa-solid fa-heart text-[10px] mr-1 text-[#caa28b]"></i> ${guest.connection}</p>
+                    </div>
+                    <div class="flex items-center gap-1 self-end sm:self-center">${actionButtonsHTML}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function togglePresence(id, currentStatus) {
+            if (currentStatus) {
+                // Se já está presente e o usuário quer desmarcar, pede confirmação
+                const guest = guests.find(g => g.id === id);
+                const nome = guest ? `${guest.first_name} ${guest.last_name || ''}`.trim() : 'convidado';
+                showConfirmModal(`Deseja realmente desmarcar a presença de "${nome}"?`, "Desmarcar Presença", async () => {
+                    await _supabase.from('convidados').update({ present: false }).eq('id', id);
+                    loadGuestsFromSupabase();
+                    showToast('Presença desmarcada.');
+                });
+            } else {
+                // Se está ausente, marca presença diretamente sem confirmação
+                await _supabase.from('convidados').update({ present: true }).eq('id', id);
+                loadGuestsFromSupabase();
+                showToast('Presença marcada!');
+            }
+        }
+
+        function openEditModal(id) {
+            if (userRole === 'assistant') return;
+            const guest = guests.find(g => g.id === id);
+            if (!guest) return;
+            document.getElementById('edit-id').value = guest.id;
+            document.getElementById('edit-name').value = `${guest.first_name} ${guest.last_name || ''}`.trim();
+            document.getElementById('edit-connection').value = guest.connection;
+            document.getElementById('edit-table').value = guest.table_number;
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
+
+        async function saveEditedGuest(e) {
+            e.preventDefault();
+            if (userRole === 'assistant') return;
+            const id = Number(document.getElementById('edit-id').value);
+            await _supabase.from('convidados').update({
+                first_name: document.getElementById('edit-name').value.trim(),
+                connection: document.getElementById('edit-connection').value.trim(),
+                table_number: document.getElementById('edit-table').value.trim()
+            }).eq('id', id);
+            loadGuestsFromSupabase();
+            closeEditModal();
+            showToast('Atualizado com sucesso!');
+        }
+
+        function showConfirmModal(message, title, onConfirm) {
+            const modal = document.getElementById('custom-confirm-modal');
+            document.getElementById('confirm-title').textContent = title || 'Confirmação';
+            document.getElementById('confirm-message').textContent = message;
+
+            const okBtn = document.getElementById('confirm-ok-btn');
+            const cancelBtn = document.getElementById('confirm-cancel-btn');
+
+            const newOkBtn = okBtn.cloneNode(true);
+            const newCancelBtn = cancelBtn.cloneNode(true);
+            okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+            cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+            newOkBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                if (onConfirm) onConfirm();
+            });
+
+            newCancelBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            modal.classList.add('active');
+        }
+
+        async function confirmDeleteGuest(id, nome) {
+            if (userRole === 'assistant') return;
+            showConfirmModal(`Deseja realmente remover "${nome}"?`, "Remover Convidado", async () => {
+                await _supabase.from('convidados').delete().eq('id', id);
+                loadGuestsFromSupabase();
+                showToast('Removido.');
+            });
+        }
+
+        async function clearAllGuests() {
+            if (userRole === 'assistant') return;
+            showConfirmModal("Deseja realmente apagar toda a lista deste casal?", "Limpar Lista", async () => {
+                await _supabase.from('convidados').delete().eq('casal_nome', casalAtivo);
+                loadGuestsFromSupabase();
+                showToast('Lista limpa.');
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+    </script>
+
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registado com sucesso:', reg.scope))
+                .catch(err => console.log('Falha ao registar o Service Worker:', err));
         });
     }
 </script>
