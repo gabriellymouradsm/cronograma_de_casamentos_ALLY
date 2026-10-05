@@ -79,7 +79,7 @@
         #notebook-container {
             width: 100%;
             max-width: 480px;
-            height: 75vh;
+            height: 80vh;
             background: #3b2a24;
             border-radius: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
@@ -98,6 +98,32 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .whatsapp-share-btn {
+            background: #25d366;
+            color: #ffffff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .whatsapp-share-btn:hover {
+            background: #20ba5a;
         }
 
         #notes-list {
@@ -258,7 +284,12 @@
     <div id="notebook-container">
         <div id="notebook-header">
             <span id="notebook-title">Anotações</span>
-            <a href="proxima_pagina.html" style="color: #eadecc; font-size: 12px; text-decoration: underline;">← Voltar ao Painel</a>
+            <div class="header-actions">
+                <button class="whatsapp-share-btn" onclick="compartilharNotebookWhatsApp()">
+                    Enviar no WhatsApp
+                </button>
+                <a href="proxima_pagina.html" style="color: #eadecc; font-size: 12px; text-decoration: underline;">← Voltar</a>
+            </div>
         </div>
 
         <div id="notes-list"></div>
@@ -269,7 +300,7 @@
             
             <div class="input-row">
                 <label for="media-input" class="file-label">
-                    📎 Anexar Foto/Vídeo
+                    Anexar Foto/Vídeo
                 </label>
                 <input type="file" id="media-input" accept="image/*,video/*" onchange="mostrarNomeArquivo(this)">
                 <span id="file-name-display">Nenhum ficheiro</span>
@@ -286,6 +317,8 @@
     const mediaInput = document.getElementById('media-input');
     const fileNameDisplay = document.getElementById('file-name-display');
     const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
+
+    let notasCache = [];
 
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('notebook-title').innerText = `Notebook (${casalAtivo})`;
@@ -312,9 +345,10 @@
             return;
         }
 
+        notasCache = data || [];
         notesList.innerHTML = '';
-        if (data && data.length > 0) {
-            data.forEach(note => {
+        if (notasCache.length > 0) {
+            notasCache.forEach(note => {
                 appendNoteToDOM(note);
             });
         } else {
@@ -341,10 +375,37 @@
             ${mediaHTML}
             <div class="note-footer">
                 <span>${new Date(note.created_at).toLocaleDateString('pt-BR')}</span>
-                <button class="delete-note-btn" onclick="deleteNote(${note.id})">🗑️ Apagar</button>
+                <button class="delete-note-btn" onclick="deleteNote(${note.id})">Apagar</button>
             </div>
         `;
         notesList.appendChild(card);
+    }
+
+    function compartilharNotebookWhatsApp() {
+        if (notasCache.length === 0) {
+            alert("Não existem anotações no notebook para partilhar.");
+            return;
+        }
+
+        let mensagem = "*RESUMO DO NOTEBOOK — CASAMENTO*\n";
+        mensagem += "*Casal:* " + casalAtivo + "\n\n";
+        mensagem += "Olá, equipe! Seguem registradas as anotações, ideias e observações estratégicas para o nosso evento:\n\n";
+        mensagem += "────────────────────────\n";
+
+        notasCache.forEach((note) => {
+            if (note.titulo) {
+                mensagem += "*" + note.titulo + "*\n";
+            }
+            if (note.conteudo) {
+                mensagem += note.conteudo + "\n";
+            }
+            mensagem += "────────────────────────\n";
+        });
+
+        mensagem += "\n*Planejamento e organização em tempo real via Ally*";
+
+        const urlWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensagem);
+        window.open(urlWhatsApp, "_blank");
     }
 
     function handleSaveNote() {
@@ -402,7 +463,6 @@
         }
     }
 </script>
-
 
     <script>
     if ('serviceWorker' in navigator) {
