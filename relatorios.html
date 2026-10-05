@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios Detalhados - Ally</title>
+
+    <!-- Configurações PWA e Ícones -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b2a22">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ally">
+    <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        body {
+            background-color: #f7f5f2;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px 10px;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .brand-title {
+            font-family: Georgia, serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 5px;
+        }
+
+        .container-relatorio {
+            width: 100%;
+            max-width: 900px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            padding: 25px;
+            box-sizing: border-box;
+            margin-bottom: 30px;
+        }
+
+        .secao-titulo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3b2a22;
+            margin: 25px 0 10px 0;
+            border-bottom: 2px solid #3b2a22;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        table.tabela-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        table.tabela-custom th, table.tabela-custom td {
+            border: 1px solid #dcd6cd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        table.tabela-custom th {
+            background-color: #3b2a22;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .cabecalho-chegadas {
+            background-color: #c4683a !important;
+            color: #ffffff !important;
+        }
+
+        .cabecalho-tempos {
+            background-color: #d4a32e !important;
+            color: #3b2a22 !important;
+        }
+
+        .cabecalho-azul {
+            background-color: #5c93c4 !important;
+            color: #ffffff !important;
+        }
+
+        .cabecalho-cinza {
+            background-color: #7f7f7f !important;
+            color: #ffffff !important;
+        }
+
+        input.input-tabela {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #333333;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        textarea.textarea-tabela {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #333333;
+            outline: none;
+            resize: vertical;
+            min-height: 50px;
+            box-sizing: border-box;
+        }
+
+        .btn-acoes {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-salvar {
+            flex: 1;
+            padding: 14px;
+            background-color: #3b2a22;
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .btn-salvar:hover { background-color: #4a352b; }
+
+        .btn-voltar-painel {
+            flex: 1;
+            padding: 14px;
+            background-color: transparent;
+            color: #3b2a22;
+            border: 2px solid #3b2a22;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            box-sizing: border-box;
+            transition: 0.2s;
+        }
+
+        .btn-voltar-painel:hover { background-color: #f2eee9; }
+    </style>
+</head>
+<body>
+
+    <header class="brand-header">
+        <h1 class="brand-title">Ally</h1>
+        <p class="brand-tagline">RELATÓRIOS DETALHADOS DO EVENTO</p>
+    </header>
+
+    <div class="container-relatorio" id="relatorioForm">
+        
+        <!-- Bloco 1: Contagem de Convidados -->
+        <div class="secao-titulo">1. Resumo de Convidados & Público</div>
+        <table class="tabela-custom">
+            <tr>
+                <th style="width: 35%;">QUANTIDADE DE CONVIDADOS</th>
+                <td style="width: 15%;"><input type="text" class="input-tabela" id="qtd_convidados" placeholder="0"></td>
+                <th style="width: 35%;">CRIANÇAS</th>
+                <td style="width: 15%;"><input type="text" class="input-tabela" id="criancas" placeholder="0"></td>
+            </tr>
+            <tr>
+                <th>CONVIDADOS PRESENTES</th>
+                <td><input type="text" class="input-tabela" id="convidados_presentes" placeholder="0"></td>
+                <th>STAFF</th>
+                <td><input type="text" class="input-tabela" id="staff" placeholder="0"></td>
+            </tr>
+            <tr>
+                <th>CRIANÇAS PRESENTES</th>
+                <td><input type="text" class="input-tabela" id="criancas_presentes" placeholder="0"></td>
+                <th colspan="2" style="background: #f7f5f2;"></th>
+            </tr>
+        </table>
+
+        <!-- Bloco 2: Checklists Operacionais -->
+        <div class="secao-titulo">2. Checklists Operacionais</div>
+        <table class="tabela-custom">
+            <tr>
+                <th class="cabecalho-azul" style="width: 45%;">Checklist</th>
+                <th class="cabecalho-azul" style="width: 15%;">Status / Hora</th>
+                <th class="cabecalho-azul" style="width: 40%;">Observações / Detalhes</th>
+            </tr>
+            <tr>
+                <td>Check list cozinha | copa</td>
+                <td><input type="text" class="input-tabela" id="chk_cozinha_status" placeholder="Ex: OK"></td>
+                <td><input type="text" class="input-tabela" id="chk_cozinha_obs" placeholder="Detalhes..."></td>
+            </tr>
+            <tr>
+                <td>Check list confeitaria</td>
+                <td><input type="text" class="input-tabela" id="chk_confeitaria_status" placeholder="Ex: OK"></td>
+                <td><input type="text" class="input-tabela" id="chk_confeitaria_obs" placeholder="Detalhes..."></td>
+            </tr>
+            <tr>
+                <td>Check list decoração</td>
+                <td><input type="text" class="input-tabela" id="chk_decoracao_status" placeholder="Ex: OK"></td>
+                <td><input type="text" class="input-tabela" id="chk_decoracao_obs" placeholder="Detalhes..."></td>
+            </tr>
+            <tr>
+                <td>Almoço Staff</td>
+                <td><input type="text" class="input-tabela" id="almoco_staff_status" placeholder="Ex: 12:30"></td>
+                <td><input type="text" class="input-tabela" id="almoco_staff_obs" placeholder="Detalhes..."></td>
+            </tr>
+            <tr>
+                <td>Itens comestíveis</td>
+                <td><input type="text" class="input-tabela" id="itens_comestiveis_status" placeholder="Ex: Conferido"></td>
+                <td><input type="text" class="input-tabela" id="itens_comestiveis_obs" placeholder="Detalhes..."></td>
+            </tr>
+        </table>
+
+        <!-- Bloco 3: Chegadas -->
+        <div class="secao-titulo">3. Chegadas</div>
+        <table class="tabela-custom">
+            <tr>
+                <th class="cabecalho-chegadas" style="width: 25%;">CHEGADAS</th>
+                <th class="cabecalho-chegadas" style="width: 15%;">HORA</th>
+                <th class="cabecalho-chegadas" style="width: 45%;">OBSERVAÇÕES</th>
+                <th class="cabecalho-chegadas" style="width: 15%;">PREVISTO</th>
+            </tr>
+            <tbody id="tabelaChegadasBody">
+                <!-- Gerado via script -->
+            </tbody>
+        </table>
+
+        <!-- Bloco 4: Tempos e Movimentos -->
+        <div class="secao-titulo">4. Tempos e Movimentos</div>
+        <table class="tabela-custom">
+            <tr>
+                <th class="cabecalho-tempos" style="width: 35%;">TEMPOS E MOVIMENTOS</th>
+                <th class="cabecalho-tempos" style="width: 15%;">HORA</th>
+                <th class="cabecalho-tempos" style="width: 38%;">OBSERVAÇÕES</th>
+                <th class="cabecalho-tempos" style="width: 12%;">PREVISTO</th>
+            </tr>
+            <tbody id="tabelaTemposBody">
+                <!-- Gerado via script -->
+            </tbody>
+        </table>
+
+        <!-- Bloco 5: Resumo, Elogios, Histórico -->
+        <div class="secao-titulo">5. Resumo & Relatórios Finais</div>
+        
+        <table class="tabela-custom">
+            <tr>
+                <th class="cabecalho-chegadas">Resumo do Evento</th>
+            </tr>
+            <tr>
+                <td><textarea class="textarea-tabela" id="resumo_evento" placeholder="Escreva o resumo geral do evento..."></textarea></td>
+            </tr>
+            <tr>
+                <th class="cabecalho-cinza">Elogios | Comentários</th>
+            </tr>
+            <tr>
+                <td><textarea class="textarea-tabela" id="elogios" placeholder="Comentários e elogios recebidos..."></textarea></td>
+            </tr>
+            <tr>
+                <th class="cabecalho-azul">História do Casal</th>
+            </tr>
+            <tr>
+                <td><textarea class="textarea-tabela" id="historia_casal" placeholder="Detalhes sobre a história do casal..."></textarea></td>
+            </tr>
+            <tr>
+                <th class="cabecalho-azul">Noivo(a) / Observações Especiais</th>
+            </tr>
+            <tr>
+                <td><textarea class="textarea-tabela" id="observacoes_noivo" placeholder="Notas sobre os noivos..."></textarea></td>
+            </tr>
+        </table>
+
+        <div class="btn-acoes">
+            <button class="btn-salvar" onclick="salvarRelatorio()">💾 Salvar Relatório</button>
+            <a href="proxima_pagina.html" class="btn-voltar-painel">⬅ Voltar ao Painel</a>
+        </div>
+
+    </div>
+
+    <script>
+        const itensChegadas = [
+            "Noiva", "Noivo", "Beleza da noiva", "Foto", "Vídeo", 
+            "Bar", "Banda", "Totem", "Passarela", "Celebrante", 
+            "Buquê", "Doces / Bem-casados", "Outros"
+        ];
+
+        const itensTempos = [
+            "Chegada dos convidados", "Sessão de fotos externa noiva", "Passagem com celebrante", 
+            "Passagem com banda | DJ", "First look | First touch", "Orientação cortejo", 
+            "Início cerimônia", "Término cerimônia", "Coquetel", "Sessão de fotos", 
+            "Jantar salão", "Jantar casal", "Subida do casal", "Fotos na mesa do bolo", 
+            "Trend", "Retrospectiva", "Dança", "Gravata | Sapatinho", "Bolo", 
+            "Buquê", "Coquetel de pista", "Término do evento"
+        ];
+
+        let casalNome = localStorage.getItem('casal_ativo') || 'Teste';
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            carregarTabelasDinamicas();
+            await carregarDadosSupabase();
+        });
+
+        function carregarTabelasDinamicas() {
+            const tbodyChegadas = document.getElementById('tabelaChegadasBody');
+            tbodyChegadas.innerHTML = '';
+            itensChegadas.forEach((item, index) => {
+                tbodyChegadas.innerHTML += `
+                    <tr>
+                        <td><b>${item}</b></td>
+                        <td><input type="text" class="input-tabela" id="chegada_hora_${index}" placeholder="--:--"></td>
+                        <td><input type="text" class="input-tabela" id="chegada_obs_${index}" placeholder="Obs..."></td>
+                        <td><input type="text" class="input-tabela" id="chegada_prev_${index}" placeholder="--:--"></td>
+                    </tr>
+                `;
+            });
+
+            const tbodyTempos = document.getElementById('tabelaTemposBody');
+            tbodyTempos.innerHTML = '';
+            itensTempos.forEach((item, index) => {
+                tbodyTempos.innerHTML += `
+                    <tr>
+                        <td><b>${item}</b></td>
+                        <td><input type="text" class="input-tabela" id="tempo_hora_${index}" placeholder="--:--"></td>
+                        <td><input type="text" class="input-tabela" id="tempo_obs_${index}" placeholder="Obs..."></td>
+                        <td><input type="text" class="input-tabela" id="tempo_prev_${index}" placeholder="--:--"></td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function carregarDadosSupabase() {
+            const { data, error } = await _supabase
+                .from('relatorios_detalhados')
+                .select('*')
+                .eq('casal_nome', casalNome)
+                .maybeSingle();
+
+            if (!error && data && data.conteudo) {
+                const c = data.conteudo;
+                document.getElementById('qtd_convidados').value = c.qtd_convidados || '';
+                document.getElementById('criancas').value = c.criancas || '';
+                document.getElementById('convidados_presentes').value = c.convidados_presentes || '';
+                document.getElementById('staff').value = c.staff || '';
+                document.getElementById('criancas_presentes').value = c.criancas_presentes || '';
+
+                document.getElementById('chk_cozinha_status').value = c.chk_cozinha_status || '';
+                document.getElementById('chk_cozinha_obs').value = c.chk_cozinha_obs || '';
+                document.getElementById('chk_confeitaria_status').value = c.chk_confeitaria_status || '';
+                document.getElementById('chk_confeitaria_obs').value = c.chk_confeitaria_obs || '';
+                document.getElementById('chk_decoracao_status').value = c.chk_decoracao_status || '';
+                document.getElementById('chk_decoracao_obs').value = c.chk_decoracao_obs || '';
+                document.getElementById('almoco_staff_status').value = c.almoco_staff_status || '';
+                document.getElementById('almoco_staff_obs').value = c.almoco_staff_obs || '';
+                document.getElementById('itens_comestiveis_status').value = c.itens_comestiveis_status || '';
+                document.getElementById('itens_comestiveis_obs').value = c.itens_comestiveis_obs || '';
+
+                document.getElementById('resumo_evento').value = c.resumo_evento || '';
+                document.getElementById('elogios').value = c.elogios || '';
+                document.getElementById('historia_casal').value = c.historia_casal || '';
+                document.getElementById('observacoes_noivo').value = c.observacoes_noivo || '';
+
+                if (c.chegadas) {
+                    c.chegadas.forEach((val, idx) => {
+                        if(document.getElementById(`chegada_hora_${idx}`)) {
+                            document.getElementById(`chegada_hora_${idx}`).value = val.hora || '';
+                            document.getElementById(`chegada_obs_${idx}`).value = val.obs || '';
+                            document.getElementById(`chegada_prev_${idx}`).value = val.prev || '';
+                        }
+                    });
+                }
+
+                if (c.tempos) {
+                    c.tempos.forEach((val, idx) => {
+                        if(document.getElementById(`tempo_hora_${idx}`)) {
+                            document.getElementById(`tempo_hora_${idx}`).value = val.hora || '';
+                            document.getElementById(`tempo_obs_${idx}`).value = val.obs || '';
+                            document.getElementById(`tempo_prev_${idx}`).value = val.prev || '';
+                        }
+                    });
+                }
+            }
+        }
+
+        async function salvarRelatorio() {
+            let chegadasArr = [];
+            itensChegadas.forEach((item, index) => {
+                chegadasArr.push({
+                    item: item,
+                    hora: document.getElementById(`chegada_hora_${index}`).value,
+                    obs: document.getElementById(`chegada_obs_${index}`).value,
+                    prev: document.getElementById(`chegada_prev_${index}`).value
+                });
+            });
+
+            let temposArr = [];
+            itensTempos.forEach((item, index) => {
+                temposArr.push({
+                    item: item,
+                    hora: document.getElementById(`tempo_hora_${index}`).value,
+                    obs: document.getElementById(`tempo_obs_${index}`).value,
+                    prev: document.getElementById(`tempo_prev_${index}`).value
+                });
+            });
+
+            const conteudoObjeto = {
+                qtd_convidados: document.getElementById('qtd_convidados').value,
+                criancas: document.getElementById('criancas').value,
+                convidados_presentes: document.getElementById('convidados_presentes').value,
+                staff: document.getElementById('staff').value,
+                criancas_presentes: document.getElementById('criancas_presentes').value,
+                chk_cozinha_status: document.getElementById('chk_cozinha_status').value,
+                chk_cozinha_obs: document.getElementById('chk_cozinha_obs').value,
+                chk_confeitaria_status: document.getElementById('chk_confeitaria_status').value,
+                chk_confeitaria_obs: document.getElementById('chk_confeitaria_obs').value,
+                chk_decoracao_status: document.getElementById('chk_decoracao_status').value,
+                chk_decoracao_obs: document.getElementById('chk_decoracao_obs').value,
+                almoco_staff_status: document.getElementById('almoco_staff_status').value,
+                almoco_staff_obs: document.getElementById('almoco_staff_obs').value,
+                itens_comestiveis_status: document.getElementById('itens_comestiveis_status').value,
+                itens_comestiveis_obs: document.getElementById('itens_comestiveis_obs').value,
+                resumo_evento: document.getElementById('resumo_evento').value,
+                elogios: document.getElementById('elogios').value,
+                historia_casal: document.getElementById('historia_casal').value,
+                observacoes_noivo: document.getElementById('observacoes_noivo').value,
+                chegadas: chegadasArr,
+                tempos: temposArr
+            };
+
+            const { error } = await _supabase
+                .from('relatorios_detalhados')
+                .upsert({ casal_nome: casalNome, conteudo: conteudoObjeto }, { onConflict: 'casal_nome' });
+
+            if (error) {
+                alert("Erro ao salvar relatório: " + error.message);
+            } else {
+                alert("Relatório salvo com sucesso na nuvem! ✨");
+            }
+        }
+    </script>
+</body>
+</html>
