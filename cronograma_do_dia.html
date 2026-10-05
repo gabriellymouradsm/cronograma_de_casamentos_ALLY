@@ -224,6 +224,55 @@
             font-size: 13px;
             font-family: Arial, sans-serif;
             font-style: italic;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* Container do input e botão de ocorrência dentro do card */
+        .card-occurrence-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 6px;
+        }
+
+        .card-occurrence-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #ffffff;
+            outline: none;
+            font-family: Arial, sans-serif;
+            resize: vertical;
+            min-height: 34px;
+        }
+
+        .card-occurrence-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-style: italic;
+        }
+
+        .save-occurrence-btn {
+            align-self: flex-end;
+            background-color: #fcfaf7;
+            color: #3b2a24;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-transform: uppercase;
+        }
+
+        .save-occurrence-btn:hover {
+            background-color: #f2eee9;
         }
 
         .action-row {
@@ -365,10 +414,19 @@
     }
 
     function updatePDFStorage() {
-        const pdfData = scheduleItems.map(item => ({
-            horario: item.time || '-',
-            atividade: item.note ? `${item.text} (Obs: ${item.note})` : item.text || '-'
-        }));
+        const pdfData = scheduleItems.map(item => {
+            let textoAtividade = item.text;
+            if (item.note) {
+                const linhas = item.note.split('\n');
+                linhas.forEach(l => {
+                    if (l.trim()) textoAtividade += ` \nobs: ${l.trim().replace(/^obs:\s*/i, '')}`;
+                });
+            }
+            return {
+                horario: item.time || '-',
+                atividade: textoAtividade
+            };
+        });
         localStorage.setItem('cronograma_dados', JSON.stringify(pdfData));
     }
 
@@ -467,12 +525,54 @@
             itemDiv.appendChild(headerDiv);
             itemDiv.appendChild(textSpan);
 
+            // Renderiza cada observação / ocorrência separadamente em linhas verticais limpas
             if (item.note) {
-                const noteSpan = document.createElement('span');
-                noteSpan.classList.add('schedule-note');
-                noteSpan.textContent = `obs: ${item.note}`;
-                itemDiv.appendChild(noteSpan);
+                const linhasNotas = item.note.split('\n');
+                linhasNotas.forEach(linha => {
+                    if (linha.trim() !== '') {
+                        const noteSpan = document.createElement('span');
+                        noteSpan.classList.add('schedule-note');
+                        const textoLimpo = linha.replace(/^obs:\s*/i, '').trim();
+                        noteSpan.textContent = `obs: ${textoLimpo}`;
+                        itemDiv.appendChild(noteSpan);
+                    }
+                });
             }
+
+            // Caixa de texto e botão para registrar uma nova ocorrência (adicionando na linha de baixo)
+            const occurrenceBox = document.createElement('div');
+            occurrenceBox.classList.add('card-occurrence-box');
+
+            const occurrenceInput = document.createElement('textarea');
+            occurrenceInput.classList.add('card-occurrence-input');
+            occurrenceInput.placeholder = 'Ocorrência fora do comum...';
+
+            const saveOccurrenceBtn = document.createElement('button');
+            saveOccurrenceBtn.classList.add('save-occurrence-btn');
+            saveOccurrenceBtn.textContent = 'Registrar';
+
+            saveOccurrenceBtn.addEventListener('click', async () => {
+                const novoTexto = occurrenceInput.value.trim();
+                if (!novoTexto) return;
+
+                // Adiciona o novo texto em uma nova linha no campo 'note'
+                const novaNotaAtualizada = item.note ? `${item.note}\n${novoTexto}` : novoTexto;
+
+                const { error } = await _supabase
+                    .from('cronograma_dia')
+                    .update({ note: novaNotaAtualizada })
+                    .eq('id', item.id);
+
+                if (error) {
+                    alert("Erro ao registrar ocorrência.");
+                    return;
+                }
+                loadScheduleFromSupabase();
+            });
+
+            occurrenceBox.appendChild(occurrenceInput);
+            occurrenceBox.appendChild(saveOccurrenceBtn);
+            itemDiv.appendChild(occurrenceBox);
 
             listContainer.appendChild(itemDiv);
         });
@@ -486,7 +586,6 @@
         }
     }
 </script>
-
 
     <script>
     if ('serviceWorker' in navigator) {
