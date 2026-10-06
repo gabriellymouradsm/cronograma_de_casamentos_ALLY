@@ -276,18 +276,33 @@
             <form onsubmit="recuperarSenha(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
-                    <select id="recRole" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                    <select id="recRole" onchange="mudarLabelRecuperar()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
                         <option value="admin">Administrador(a) do Casamento</option>
                         <option value="assistant">Assistente de Campo</option>
                     </select>
                 </div>
 
                 <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="recLabelNome">Nome do Administrador</label>
+                    <input type="text" id="recNome" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                </div>
+
+                <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Nova Senha</label>
                     <div class="relative">
                         <input type="password" id="recNovaSenha" required placeholder="Digite a nova senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
-                        <button type="button" onclick="togglePassword('recNovaSenha', 'eyeRec')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
-                            <i class="fa-solid fa-eye" id="eyeRec"></i>
+                        <button type="button" onclick="togglePassword('recNovaSenha', 'eyeRec1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                            <i class="fa-solid fa-eye" id="eyeRec1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Confirmar Nova Senha</label>
+                    <div class="relative">
+                        <input type="password" id="recConfirmaSenha" required placeholder="Confirme a nova senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
+                        <button type="button" onclick="togglePassword('recConfirmaSenha', 'eyeRec2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                            <i class="fa-solid fa-eye" id="eyeRec2"></i>
                         </button>
                     </div>
                 </div>
@@ -361,6 +376,11 @@
         function mudarLabelRegistarColab() {
             const role = document.getElementById('cadColabRole').value;
             document.getElementById('cadColabLabelNome').textContent = role === 'admin' ? "Nome do Administrador" : "Nome do Assistente";
+        }
+
+        function mudarLabelRecuperar() {
+            const role = document.getElementById('recRole').value;
+            document.getElementById('recLabelNome').textContent = role === 'admin' ? "Nome do Administrador" : "Nome do Assistente";
         }
 
         function togglePassword(idInput, idIcon) {
@@ -485,14 +505,21 @@
             mudarTela('tela-login');
         }
 
-        // 4. ATUALIZAR SENHA (Forçando o uso de hash SHA-256)
+        // 4. ATUALIZAR SENHA (Com nome, validação e hash SHA-256)
         async function recuperarSenha(e) {
             e.preventDefault();
             const role = document.getElementById('recRole').value;
+            const nomeResponsavel = document.getElementById('recNome').value.trim();
             const novaSenha = document.getElementById('recNovaSenha').value;
+            const confirmaSenha = document.getElementById('recConfirmaSenha').value;
 
             if (novaSenha.length < 6) {
                 showToast("A nova senha precisa ter pelo menos 6 caracteres.");
+                return;
+            }
+
+            if (novaSenha !== confirmaSenha) {
+                showToast("As novas senhas não coincidem.");
                 return;
             }
 
@@ -500,7 +527,10 @@
 
             const { error: updateError } = await _supabase
                 .from('colaboradores')
-                .update({ senha_hash: senhaHash })
+                .update({ 
+                    nome: nomeResponsavel,
+                    senha_hash: senhaHash 
+                })
                 .eq('role', role);
 
             if (updateError) {
