@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ally - Acesso e Configuração</title>
 
-    <!-- Configurações PWA e Ícones -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b2a22">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -402,7 +401,6 @@
                 return;
             }
 
-            // Valida se o hash bate ou se por retrocompatibilidade a senha antiga ainda estivesse em texto simples
             if (data.senha_hash !== senhaHash && data.senha_hash !== senhaDigitada) {
                 showToast("Senha incorreta. Tente novamente.");
                 return;
@@ -452,7 +450,7 @@
             mudarTela('tela-login');
         }
 
-        // 3. REGISTAR COLABORADOR (Com hash SHA-256)
+        // 3. REGISTAR COLABORADOR (Forçando o uso de hash SHA-256)
         async function registarColaborador(e) {
             e.preventDefault();
             const role = document.getElementById('cadColabRole').value;
@@ -487,7 +485,7 @@
             mudarTela('tela-login');
         }
 
-        // 4. ATUALIZAR SENHA (Com hash SHA-256)
+        // 4. ATUALIZAR SENHA (Forçando o uso de hash SHA-256)
         async function recuperarSenha(e) {
             e.preventDefault();
             const role = document.getElementById('recRole').value;
