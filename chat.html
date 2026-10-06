@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
     <link rel="manifest" href="/site.webmanifest">
     
-    <title>Ally - Cronograma do Dia</title>
+    <title>Ally - Notebook / Notas</title>
 
         <!-- Configurações PWA e Ícones -->
     <link rel="manifest" href="manifest.json">
@@ -20,7 +20,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
 
 
-    <!-- Biblioteca e Conexão do Supabase -->
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
@@ -43,12 +43,12 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 30px 20px;
+            padding: 20px;
         }
 
         .brand-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             width: 100%;
         }
 
@@ -76,273 +76,196 @@
             margin-top: 6px;
         }
 
-        .schedule-container {
+        #notebook-container {
             width: 100%;
-            max-width: 500px;
-            min-height: 560px;
-            background-color: #3b2a24;
-            border-radius: 28px;
-            padding: 30px 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            max-width: 480px;
+            height: 80vh;
+            background: #3b2a24;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            padding: 16px;
+        }
+
+        #notebook-header {
+            color: #ffffff;
+            padding: 8px 5px 15px;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
             align-items: center;
         }
 
-        h2 {
+        .whatsapp-share-btn {
+            background: #25d366;
             color: #ffffff;
-            font-size: 26px;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
             font-weight: bold;
-            margin-bottom: 22px;
-            text-align: center;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .form-grid {
+        .whatsapp-share-btn:hover {
+            background: #20ba5a;
+        }
+
+        #notes-list {
+            flex: 1;
+            padding: 15px 5px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .note-card {
+            background: rgba(255, 255, 255, 0.07);
+            color: #ffffff;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .note-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #f7f5f2;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 4px;
+        }
+
+        .note-body {
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            color: #eadecc;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+
+        .note-media {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 5px;
+            max-height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .note-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+        }
+
+        .delete-note-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Área de Criação de Nota */
+        #note-input-area {
+            display: flex;
+            flex-direction: column;
+            padding-top: 12px;
+            gap: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .input-row {
             display: flex;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .input-field {
-            padding: 12px 14px;
-            background-color: #fcfaf7;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            color: #3b2a24;
-            outline: none;
-        }
-
-        .input-field::placeholder {
-            color: #b5ada5;
-            font-style: italic;
-        }
-
-        .input-time {
-            width: 130px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .input-activity {
-            flex: 1;
-        }
-
-        .input-note {
-            width: 100%;
-            resize: vertical;
-            min-height: 45px;
-        }
-
-        #add-btn {
-            width: 100%;
-            background-color: #fcfaf7;
-            color: #3b2a24;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-transform: uppercase;
-        }
-
-        #add-btn:hover {
-            background-color: #f2eee9;
-        }
-
-        #schedule-list {
-            width: 100%;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-            max-height: 320px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .schedule-item {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 12px 16px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            animation: fadeIn 0.2s ease;
-        }
-
-        .schedule-item.completed {
-            opacity: 0.6;
-        }
-
-        .schedule-item.completed .schedule-text {
-            text-decoration: line-through;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .schedule-header {
-            display: flex;
-            justify-content: space-between;
+            gap: 8px;
             align-items: center;
         }
 
-        .schedule-time {
-            background-color: #fcfaf7;
-            color: #3b2a24;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            font-family: Arial, sans-serif;
-        }
-
-        .schedule-text {
-            color: #ffffff;
-            font-size: 15px;
-            font-weight: bold;
-            font-family: Arial, sans-serif;
-        }
-
-        .schedule-note {
-            color: #d1c4bc;
-            font-size: 13px;
-            font-family: Arial, sans-serif;
-            font-style: italic;
-            display: block;
-            margin-top: 2px;
-        }
-
-        /* Container do input e botão de ocorrência dentro do card */
-        .card-occurrence-box {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 6px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 6px;
-        }
-
-        .card-occurrence-input {
+        #note-title-input, #note-text-input {
             width: 100%;
+            padding: 10px 14px;
             background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
-            outline: none;
-            font-family: Arial, sans-serif;
-            resize: vertical;
-            min-height: 34px;
-        }
-
-        .card-occurrence-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-            font-style: italic;
-        }
-
-        .save-occurrence-btn {
-            align-self: flex-end;
-            background-color: #fcfaf7;
-            color: #3b2a24;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-transform: uppercase;
-        }
-
-        .save-occurrence-btn:hover {
-            background-color: #f2eee9;
-        }
-
-        .action-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-badge {
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .status-concluido {
-            background-color: #d9fdd3;
-            color: #128c7e;
-        }
-
-        .status-pendente {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #ff6b6b;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 2px;
-        }
-
-        .footer-navigation {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        .clear-all-btn {
-            width: 100%;
-            max-width: 200px;
-            background-color: transparent;
-            color: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px;
             border-radius: 12px;
+            outline: none;
             font-size: 13px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .clear-all-btn:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-        }
-
-        .back-link {
-            color: #eadecc;
-            font-size: 12px;
-            text-decoration: underline;
             font-family: Arial, sans-serif;
+        }
+
+        #note-title-input::placeholder, #note-text-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .file-label {
+            cursor: pointer;
+            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #ffffff;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+        }
+
+        .file-label:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        #media-input {
+            display: none;
+        }
+
+        #save-note-btn {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+        }
+
+        #save-note-btn:hover {
+            background: #20ba5a;
+        }
+
+        #file-name-display {
+            font-size: 11px;
+            color: #eadecc;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -355,234 +278,188 @@
             <circle cx="50" cy="8" r="3" fill="#c5a059"/>
         </svg>
         <h1 class="brand-title">Ally</h1>
-        <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
+        <p class="brand-tagline">NOTEBOOK DE ANOTAÇÕES</p>
     </header>
 
-    <div class="schedule-container">
-        <h2>Cronograma do Dia</h2>
-        
-        <!-- Formulário de Cadastro (Admin Apenas) -->
-        <div class="form-grid" id="admin-form-section">
-            <div class="input-row">
-                <input type="time" id="time-input" class="input-field input-time">
-                <input type="text" id="activity-input" class="input-field input-activity" placeholder="Atividade (ex: Entrada da Noiva)">
+    <div id="notebook-container">
+        <div id="notebook-header">
+            <span id="notebook-title">Anotações</span>
+            <div class="header-actions">
+                <button class="whatsapp-share-btn" onclick="compartilharNotebookWhatsApp()">
+                    Enviar no WhatsApp
+                </button>
+                <a href="proxima_pagina.html" style="color: #eadecc; font-size: 12px; text-decoration: underline;">← Voltar</a>
             </div>
-            <textarea id="note-input" class="input-field input-note" placeholder="Observações opcionais (ex: portão principal, som...)" rows="2"></textarea>
-            <button id="add-btn" onclick="addScheduleItem()">Adicionar ao Cronograma</button>
         </div>
+
+        <div id="notes-list"></div>
         
-        <div id="schedule-list"></div>
-        
-        <div class="footer-navigation">
-            <button class="clear-all-btn" id="btn-clear-all" onclick="clearAll()">Limpar Todos</button>
-            <a href="proxima_pagina.html" class="back-link">← Voltar ao Painel</a>
+        <div id="note-input-area">
+            <input type="text" id="note-title-input" placeholder="Título da anotação...">
+            <textarea id="note-text-input" placeholder="Escreva os detalhes, ideias ou fornecedores..." rows="2" style="resize: none;"></textarea>
+            
+            <div class="input-row">
+                <label for="media-input" class="file-label">
+                    Anexar Foto/Vídeo
+                </label>
+                <input type="file" id="media-input" accept="image/*,video/*" onchange="mostrarNomeArquivo(this)">
+                <span id="file-name-display">Nenhum ficheiro</span>
+                
+                <button id="save-note-btn" onclick="handleSaveNote()" style="margin-left: auto;">Salvar Nota</button>
+            </div>
         </div>
     </div>
 
 <script>
-    const userRole = localStorage.getItem('user_role');
+    const notesList = document.getElementById('notes-list');
+    const titleInput = document.getElementById('note-title-input');
+    const textInput = document.getElementById('note-text-input');
+    const mediaInput = document.getElementById('media-input');
+    const fileNameDisplay = document.getElementById('file-name-display');
     const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
-    let scheduleItems = [];
+
+    let notasCache = [];
 
     document.addEventListener('DOMContentLoaded', () => {
-        if (userRole === 'assistant') {
-            document.getElementById('admin-form-section').style.display = 'none';
-            document.getElementById('btn-clear-all').style.display = 'none';
-        }
-        loadScheduleFromSupabase();
+        document.getElementById('notebook-title').innerText = `Notebook (${casalAtivo})`;
+        loadNotesFromSupabase();
     });
 
-    async function loadScheduleFromSupabase() {
+    function mostrarNomeArquivo(input) {
+        if (input.files && input.files[0]) {
+            fileNameDisplay.innerText = input.files[0].name;
+        } else {
+            fileNameDisplay.innerText = 'Nenhum ficheiro';
+        }
+    }
+
+    async function loadNotesFromSupabase() {
         const { data, error } = await _supabase
-            .from('cronograma_dia')
+            .from('notas_notebook')
             .select('*')
-            .eq('casal_nome', casalAtivo);
+            .eq('casal_nome', casalAtivo)
+            .order('id', { ascending: false });
 
         if (error) {
-            console.error("Erro ao carregar cronograma:", error);
+            console.error("Erro ao carregar notas:", error);
             return;
         }
 
-        scheduleItems = data || [];
-        sortSchedule();
-        renderSchedule();
-        updatePDFStorage();
+        notasCache = data || [];
+        notesList.innerHTML = '';
+        if (notasCache.length > 0) {
+            notasCache.forEach(note => {
+                appendNoteToDOM(note);
+            });
+        } else {
+            notesList.innerHTML = `<p style="text-align:center;color:rgba(255,255,255,0.4);font-size:13px;padding:20px;">Nenhuma anotação guardada ainda.</p>`;
+        }
     }
 
-    function sortSchedule() {
-        scheduleItems.sort((a, b) => (a.time || "").localeCompare(b.time || ""));
-    }
+    function appendNoteToDOM(note) {
+        const card = document.createElement('div');
+        card.classList.add('note-card');
 
-    function updatePDFStorage() {
-        const pdfData = scheduleItems.map(item => {
-            let textoAtividade = item.text;
-            if (item.note) {
-                const linhas = item.note.split('\n');
-                linhas.forEach(l => {
-                    if (l.trim()) textoAtividade += ` \nobs: ${l.trim().replace(/^obs:\s*/i, '')}`;
-                });
+        let mediaHTML = '';
+        if (note.arquivo_url) {
+            if (note.tipo_arquivo === 'video') {
+                mediaHTML = `<video src="${note.arquivo_url}" controls class="note-media"></video>`;
+            } else {
+                mediaHTML = `<img src="${note.arquivo_url}" class="note-media">`;
             }
-            return {
-                horario: item.time || '-',
-                atividade: textoAtividade
-            };
-        });
-        localStorage.setItem('cronograma_dados', JSON.stringify(pdfData));
+        }
+
+        card.innerHTML = `
+            ${note.titulo ? `<div class="note-title">${note.titulo}</div>` : ''}
+            ${note.conteudo ? `<div class="note-body">${note.conteudo}</div>` : ''}
+            ${mediaHTML}
+            <div class="note-footer">
+                <span>${new Date(note.created_at).toLocaleDateString('pt-BR')}</span>
+                <button class="delete-note-btn" onclick="deleteNote(${note.id})">Apagar</button>
+            </div>
+        `;
+        notesList.appendChild(card);
     }
 
-    async function addScheduleItem() {
-        if (userRole === 'assistant') return;
-
-        const time = document.getElementById('time-input').value;
-        const text = document.getElementById('activity-input').value.trim();
-        const note = document.getElementById('note-input').value.trim();
-
-        if (!time || !text) {
-            alert("Por favor, preencha o horário e a atividade.");
+    function compartilharNotebookWhatsApp() {
+        if (notasCache.length === 0) {
+            alert("Não existem anotações no notebook para partilhar.");
             return;
         }
 
-        const { error } = await _supabase.from('cronograma_dia').insert([{
-            time,
-            text,
-            note,
-            completed: false,
-            casal_nome: casalAtivo
+        let mensagem = "*RESUMO DO NOTEBOOK — CASAMENTO*\n";
+        mensagem += "*Casal:* " + casalAtivo + "\n\n";
+        mensagem += "Olá, equipe! Seguem registradas as anotações, ideias e observações estratégicas para o nosso evento:\n\n";
+        mensagem += "────────────────────────\n";
+
+        notasCache.forEach((note) => {
+            if (note.titulo) {
+                mensagem += "*" + note.titulo + "*\n";
+            }
+            if (note.conteudo) {
+                mensagem += note.conteudo + "\n";
+            }
+            mensagem += "────────────────────────\n";
+        });
+
+        mensagem += "\n*Planejamento e organização em tempo real via Ally*";
+
+        const urlWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensagem);
+        window.open(urlWhatsApp, "_blank");
+    }
+
+    function handleSaveNote() {
+        const title = titleInput.value.trim();
+        const text = textInput.value.trim();
+        const file = mediaInput.files[0];
+
+        if (!title && !text && !file) {
+            alert("Escreva alguma coisa ou anexe um ficheiro antes de salvar.");
+            return;
+        }
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const tipo = file.type.startsWith('video') ? 'video' : 'imagem';
+                await saveNoteToSupabase(title, text, e.target.result, tipo);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            saveNoteToSupabase(title, text, null, null);
+        }
+    }
+
+    async function saveNoteToSupabase(titulo, conteudo, arquivo_url, tipo_arquivo) {
+        const { error } = await _supabase.from('notas_notebook').insert([{
+            casal_nome: casalAtivo,
+            titulo,
+            conteudo,
+            arquivo_url,
+            tipo_arquivo
         }]);
 
         if (error) {
-            console.error("Erro ao adicionar atividade:", error);
+            console.error("Erro ao salvar nota:", error);
+            alert("Erro ao guardar no banco de dados.");
             return;
         }
 
-        document.getElementById('time-input').value = "";
-        document.getElementById('activity-input').value = "";
-        document.getElementById('note-input').value = "";
-
-        loadScheduleFromSupabase();
+        titleInput.value = '';
+        textInput.value = '';
+        mediaInput.value = '';
+        fileNameDisplay.innerText = 'Nenhum ficheiro';
+        loadNotesFromSupabase();
     }
 
-    function renderSchedule() {
-        const listContainer = document.getElementById('schedule-list');
-        listContainer.innerHTML = '';
-
-        if (scheduleItems.length === 0) {
-            listContainer.innerHTML = `<p style="text-align: center; color: #b5ada5; font-size: 13px; padding: 20px;">Nenhuma atividade cadastrada.</p>`;
-            return;
-        }
-
-        scheduleItems.forEach((item) => {
-            const itemDiv = document.createElement('div');
-            itemDiv.classList.add('schedule-item');
-            if (item.completed) itemDiv.classList.add('completed');
-
-            const headerDiv = document.createElement('div');
-            headerDiv.classList.add('schedule-header');
-
-            const timeSpan = document.createElement('span');
-            timeSpan.classList.add('schedule-time');
-            timeSpan.textContent = item.time || '--:--';
-
-            const actionRow = document.createElement('div');
-            actionRow.classList.add('action-row');
-
-            const statusSpan = document.createElement('span');
-            statusSpan.classList.add('status-badge');
-            statusSpan.textContent = item.completed ? 'Concluído' : 'Pendente';
-            statusSpan.className = `status-badge ${item.completed ? 'status-concluido' : 'status-pendente'}`;
-
-            statusSpan.addEventListener('click', async () => {
-                await _supabase
-                    .from('cronograma_dia')
-                    .update({ completed: !item.completed })
-                    .eq('id', item.id);
-                loadScheduleFromSupabase();
-            });
-
-            actionRow.appendChild(statusSpan);
-
-            if (userRole !== 'assistant') {
-                const deleteBtn = document.createElement('button');
-                deleteBtn.classList.add('delete-btn');
-                deleteBtn.innerHTML = '🗑️';
-                deleteBtn.title = 'Remover Atividade';
-                deleteBtn.addEventListener('click', async () => {
-                    if (confirm(`Deseja remover a atividade "${item.text}"?`)) {
-                        await _supabase.from('cronograma_dia').delete().eq('id', item.id);
-                        loadScheduleFromSupabase();
-                    }
-                });
-                actionRow.appendChild(deleteBtn);
+    async function deleteNote(id) {
+        if (confirm("Deseja apagar esta anotação?")) {
+            const { error } = await _supabase.from('notas_notebook').delete().eq('id', id);
+            if (!error) {
+                loadNotesFromSupabase();
+            } else {
+                alert("Erro ao apagar nota.");
             }
-
-            headerDiv.appendChild(timeSpan);
-            headerDiv.appendChild(actionRow);
-
-            const textSpan = document.createElement('span');
-            textSpan.classList.add('schedule-text');
-            textSpan.textContent = item.text;
-
-            itemDiv.appendChild(headerDiv);
-            itemDiv.appendChild(textSpan);
-
-            // Renderiza cada observação / ocorrência separadamente em linhas verticais limpas
-            if (item.note) {
-                const linhasNotas = item.note.split('\n');
-                linhasNotas.forEach(linha => {
-                    if (linha.trim() !== '') {
-                        const noteSpan = document.createElement('span');
-                        noteSpan.classList.add('schedule-note');
-                        const textoLimpo = linha.replace(/^obs:\s*/i, '').trim();
-                        noteSpan.textContent = `obs: ${textoLimpo}`;
-                        itemDiv.appendChild(noteSpan);
-                    }
-                });
-            }
-
-            // Caixa de texto e botão para registrar uma nova ocorrência (adicionando na linha de baixo)
-            const occurrenceBox = document.createElement('div');
-            occurrenceBox.classList.add('card-occurrence-box');
-
-            const occurrenceInput = document.createElement('textarea');
-            occurrenceInput.classList.add('card-occurrence-input');
-            occurrenceInput.placeholder = 'Ocorrência fora do comum...';
-
-            const saveOccurrenceBtn = document.createElement('button');
-            saveOccurrenceBtn.classList.add('save-occurrence-btn');
-            saveOccurrenceBtn.textContent = 'Registrar';
-
-            saveOccurrenceBtn.addEventListener('click', async () => {
-                const novoTexto = occurrenceInput.value.trim();
-                if (!novoTexto) return;
-
-                // Adiciona o novo texto em uma nova linha no campo 'note'
-                const novaNotaAtualizada = item.note ? `${item.note}\n${novoTexto}` : novoTexto;
-
-                const { error } = await _supabase
-                    .from('cronograma_dia')
-                    .update({ note: novaNotaAtualizada })
-                    .eq('id', item.id);
-
-                if (error) {
-                    alert("Erro ao registrar ocorrência.");
-                    return;
-                }
-                loadScheduleFromSupabase();
-            });
-
-            occurrenceBox.appendChild(occurrenceInput);
-            occurrenceBox.appendChild(saveOccurrenceBtn);
-            itemDiv.appendChild(occurrenceBox);
-
-            listContainer.appendChild(itemDiv);
-        });
-    }
-
-    async function clearAll() {
-        if (userRole === 'assistant') return;
-        if (confirm("Deseja apagar todo o cronograma deste casal?")) {
-            await _supabase.from('cronograma_dia').delete().eq('casal_nome', casalAtivo);
-            loadScheduleFromSupabase();
         }
     }
 </script>
