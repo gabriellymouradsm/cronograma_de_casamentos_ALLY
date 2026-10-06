@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ally - Gerenciamento de Convidados</title>
 
-        <!-- Configurações PWA e Ícones -->
+    <!-- Configurações PWA e Ícones -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b2a22">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,12 +13,6 @@
     <meta name="apple-mobile-web-app-title" content="Ally">
     <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
     <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
-
-
-    <link rel="apple-touch-icon" sizes="180x180" href="/imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="manifest" href="/site.webmanifest">
 
     <!-- Biblioteca e Conexão do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -123,9 +117,114 @@
             color: #725a4d;
             margin-top: 6px;
         }
+
+        /* ===== ESTILOS DO MODAL DE CONFIRMAÇÃO CUSTOMIZADO ===== */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(30, 20, 15, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-modal-box {
+            background-color: #fcfaf7;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 320px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            transform: scale(0.85);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+        .custom-modal-overlay.active .custom-modal-box {
+            transform: scale(1);
+        }
+        .custom-modal-header {
+            padding: 30px 20px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .custom-modal-icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .custom-modal-body {
+            padding: 0 24px 26px;
+        }
+        .custom-modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3b2a24;
+            margin-bottom: 8px;
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+        .custom-modal-message {
+            color: #725a4d;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 22px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-modal-actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .custom-modal-btn {
+            flex: 1;
+            border: none;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: opacity 0.2s;
+        }
+        .btn-modal-cancel { background-color: #eadecc; color: #3b2a24; }
+        .btn-modal-confirm { background-color: #a83232; color: #ffffff; }
+        .custom-modal-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-10 selection:bg-amber-100 selection:text-amber-900">
+
+    <!-- MODAL DE CONFIRMAÇÃO CUSTOMIZADO -->
+    <div id="custom-confirm-modal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div class="custom-modal-header">
+                <div class="custom-modal-icon-circle">?</div>
+            </div>
+            <div class="custom-modal-body">
+                <div id="confirm-title" class="custom-modal-title">Confirmação</div>
+                <div id="confirm-message" class="custom-modal-message">Deseja realmente prosseguir?</div>
+                <div class="custom-modal-actions">
+                    <button class="custom-modal-btn btn-modal-cancel" id="confirm-cancel-btn">Cancelar</button>
+                    <button class="custom-modal-btn btn-modal-confirm" id="confirm-ok-btn">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <header class="brand-header">
         <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -362,20 +461,15 @@
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    // Lê a primeira folha do arquivo Excel ("Lista de convidados ")
                     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    
-                    // Converte extraindo em formato de matriz crua (linhas e colunas por índice)
                     const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
                     let newGuestsToInsert = [];
 
-                    // Como o teu modelo tem o cabeçalho na linha 0, começamos a ler a partir da linha 1
                     for (let i = 1; i < rows.length; i++) {
                         const row = rows[i];
                         if (!row) continue;
 
-                        // Índice 0: Nome Completo, Índice 1: Classificação, Índice 4: Mesa (baseado no teu modelo)
                         let fullName = (row[0] || "").toString().trim();
                         let connection = (row[1] || "").toString().trim();
                         let tableNumber = (row[4] || row[2] || "").toString().trim();
@@ -465,8 +559,21 @@
         }
 
         async function togglePresence(id, currentStatus) {
-            await _supabase.from('convidados').update({ present: !currentStatus }).eq('id', id);
-            loadGuestsFromSupabase();
+            if (currentStatus) {
+                // Se já está presente e o usuário quer desmarcar, pede confirmação
+                const guest = guests.find(g => g.id === id);
+                const nome = guest ? `${guest.first_name} ${guest.last_name || ''}`.trim() : 'convidado';
+                showConfirmModal(`Deseja realmente desmarcar a presença de "${nome}"?`, "Desmarcar Presença", async () => {
+                    await _supabase.from('convidados').update({ present: false }).eq('id', id);
+                    loadGuestsFromSupabase();
+                    showToast('Presença desmarcada.');
+                });
+            } else {
+                // Se está ausente, marca presença diretamente sem confirmação
+                await _supabase.from('convidados').update({ present: true }).eq('id', id);
+                loadGuestsFromSupabase();
+                showToast('Presença marcada!');
+            }
         }
 
         function openEditModal(id) {
@@ -496,22 +603,47 @@
             showToast('Atualizado com sucesso!');
         }
 
+        function showConfirmModal(message, title, onConfirm) {
+            const modal = document.getElementById('custom-confirm-modal');
+            document.getElementById('confirm-title').textContent = title || 'Confirmação';
+            document.getElementById('confirm-message').textContent = message;
+
+            const okBtn = document.getElementById('confirm-ok-btn');
+            const cancelBtn = document.getElementById('confirm-cancel-btn');
+
+            const newOkBtn = okBtn.cloneNode(true);
+            const newCancelBtn = cancelBtn.cloneNode(true);
+            okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+            cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+            newOkBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                if (onConfirm) onConfirm();
+            });
+
+            newCancelBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            modal.classList.add('active');
+        }
+
         async function confirmDeleteGuest(id, nome) {
             if (userRole === 'assistant') return;
-            if (confirm(`Remover "${nome}"?`)) {
+            showConfirmModal(`Deseja realmente remover "${nome}"?`, "Remover Convidado", async () => {
                 await _supabase.from('convidados').delete().eq('id', id);
                 loadGuestsFromSupabase();
                 showToast('Removido.');
-            }
+            });
         }
 
         async function clearAllGuests() {
             if (userRole === 'assistant') return;
-            if (confirm("Apagar toda a lista deste casal?")) {
+            showConfirmModal("Deseja realmente apagar toda a lista deste casal?", "Limpar Lista", async () => {
                 await _supabase.from('convidados').delete().eq('casal_nome', casalAtivo);
                 loadGuestsFromSupabase();
                 showToast('Lista limpa.');
-            }
+            });
         }
 
         function showToast(msg) {
