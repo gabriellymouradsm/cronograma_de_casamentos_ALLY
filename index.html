@@ -332,6 +332,14 @@
             }
         }
 
+        async function hashPassword(senha) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(senha);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         async function carregarCasaisDropdown() {
             const { data, error } = await _supabase.from('casal_config').select('nome');
             const listaLogin = document.getElementById('listaCasaisLogin');
@@ -368,7 +376,7 @@
             }
         }
 
-        // 1. FAZER LOGIN (Consulta direta na tabela 'colaboradores' usando a coluna 'senha_hash')
+        // 1. FAZER LOGIN (Validando com SHA-256)
         async function fazerLogin(e) {
             e.preventDefault();
             const casalNome = document.getElementById('loginCasalInput').value.trim();
@@ -381,7 +389,8 @@
                 return;
             }
 
-            // Verifica na tabela de colaboradores se existe o registo correspondente ao role
+            const senhaHash = await hashPassword(senhaDigitada);
+
             const { data, error } = await _supabase
                 .from('colaboradores')
                 .select('*')
@@ -393,8 +402,8 @@
                 return;
             }
 
-            // Valida se a senha digitada confere exatamente com a coluna `senha_hash` do banco
-            if (data.senha_hash !== senhaDigitada) {
+            // Valida se o hash bate ou se por retrocompatibilidade a senha antiga ainda estivesse em texto simples
+            if (data.senha_hash !== senhaHash && data.senha_hash !== senhaDigitada) {
                 showToast("Senha incorreta. Tente novamente.");
                 return;
             }
@@ -443,7 +452,7 @@
             mudarTela('tela-login');
         }
 
-        // 3. REGISTAR COLABORADOR
+        // 3. REGISTAR COLABORADOR (Com hash SHA-256)
         async function registarColaborador(e) {
             e.preventDefault();
             const role = document.getElementById('cadColabRole').value;
@@ -461,10 +470,12 @@
                 return;
             }
 
+            const senhaHash = await hashPassword(senhaPura);
+
             const { error: insertError } = await _supabase.from('colaboradores').upsert([{
                 role: role,
                 nome: nomeResponsavel,
-                senha_hash: senhaPura
+                senha_hash: senhaHash
             }], { onConflict: 'role' });
 
             if (insertError) {
@@ -472,10 +483,11 @@
                 return;
             }
 
+            showToast("Colaborador registado com sucesso!");
             mudarTela('tela-login');
         }
 
-        // 4. ATUALIZAR SENHA
+        // 4. ATUALIZAR SENHA (Com hash SHA-256)
         async function recuperarSenha(e) {
             e.preventDefault();
             const role = document.getElementById('recRole').value;
@@ -486,9 +498,11 @@
                 return;
             }
 
+            const senhaHash = await hashPassword(novaSenha);
+
             const { error: updateError } = await _supabase
                 .from('colaboradores')
-                .update({ senha_hash: novaSenha })
+                .update({ senha_hash: senhaHash })
                 .eq('role', role);
 
             if (updateError) {
