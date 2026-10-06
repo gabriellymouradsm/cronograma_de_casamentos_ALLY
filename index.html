@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ally - Acesso e Configuração</title>
 
-        <!-- Configurações PWA e Ícones -->
+    <!-- Configurações PWA e Ícones -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b2a22">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,11 +13,6 @@
     <meta name="apple-mobile-web-app-title" content="Ally">
     <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
     <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
-
-
-    <link rel="apple-touch-icon" sizes="180x180" href="imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
 
     <!-- Biblioteca e Conexão do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -218,7 +213,7 @@
         </div>
 
 
-        <!-- ================= TELA 3: REGISTAR COLABORADOR (Independente) ================= -->
+        <!-- ================= TELA 3: REGISTAR COLABORADOR ================= -->
         <div id="tela-cadastro-colaborador" class="card-container text-white p-6 sm:p-8 hidden">
             <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
                 Registar Colaborador
@@ -276,16 +271,10 @@
         <!-- ================= TELA 4: RECUPERAR SENHA ================= -->
         <div id="tela-recuperar" class="card-container text-white p-6 sm:p-8 hidden">
             <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
-                Recuperar Senha
+                Atualizar Senha
             </h2>
 
             <form onsubmit="recuperarSenha(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Selecione o Casal</label>
-                    <input type="text" id="recCasalInput" list="listaCasaisRec" required placeholder="Digite o nome do casal..." class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium"/>
-                    <datalist id="listaCasaisRec"></datalist>
-                </div>
-
                 <div>
                     <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
                     <select id="recRole" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
@@ -338,23 +327,14 @@
             document.getElementById('tela-recuperar').classList.add('hidden');
             
             document.getElementById(idTela).classList.remove('hidden');
-            if (idTela === 'tela-login' || idTela === 'tela-recuperar') {
+            if (idTela === 'tela-login') {
                 carregarCasaisDropdown();
             }
-        }
-
-        async function hashPassword(senha) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(senha);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
         async function carregarCasaisDropdown() {
             const { data, error } = await _supabase.from('casal_config').select('nome');
             const listaLogin = document.getElementById('listaCasaisLogin');
-            const listaRec = document.getElementById('listaCasaisRec');
             
             let opcoes = '';
             if (!error && data && data.length > 0) {
@@ -364,7 +344,6 @@
             }
 
             listaLogin.innerHTML = opcoes;
-            listaRec.innerHTML = opcoes;
         }
 
         function mudarLabelLogin() {
@@ -389,35 +368,33 @@
             }
         }
 
-        // 1. FAZER LOGIN
+        // 1. FAZER LOGIN (Consulta direta na tabela 'colaboradores' usando a coluna 'senha_hash')
         async function fazerLogin(e) {
             e.preventDefault();
             const casalNome = document.getElementById('loginCasalInput').value.trim();
             const role = document.getElementById('loginRole').value;
             const nomeResponsavel = document.getElementById('loginNome').value.trim();
-            const senhaPura = document.getElementById('loginSenha').value;
+            const senhaDigitada = document.getElementById('loginSenha').value;
 
-            if (senhaPura.length < 6) {
-                showToast("A senha precisa ter pelo menos 6 caracteres.");
+            if (!casalNome) {
+                showToast("Por favor, selecione ou digite o nome do casal.");
                 return;
             }
 
-            const senhaHash = await hashPassword(senhaPura);
-
-            // Verifica na tabela de colaboradores se existe o registo correspondente
+            // Verifica na tabela de colaboradores se existe o registo correspondente ao role
             const { data, error } = await _supabase
                 .from('colaboradores')
                 .select('*')
                 .eq('role', role)
-                .eq('nome', nomeResponsavel)
                 .maybeSingle();
 
             if (error || !data) {
-                showToast("Colaborador não encontrado. Verifique o nome e perfil.");
+                showToast("Colaborador não encontrado na base de dados.");
                 return;
             }
 
-            if (data.senha_hash !== senhaHash && data.senha_hash !== senhaPura) {
+            // Valida se a senha digitada confere exatamente com a coluna `senha_hash` do banco
+            if (data.senha_hash !== senhaDigitada) {
                 showToast("Senha incorreta. Tente novamente.");
                 return;
             }
@@ -425,9 +402,9 @@
             localStorage.setItem('user_role', role);
             localStorage.setItem('casal_ativo', casalNome);
             if (role === 'admin') {
-                localStorage.setItem('admin_nome', nomeResponsavel);
+                localStorage.setItem('admin_nome', nomeResponsavel || data.nome);
             } else {
-                localStorage.setItem('assistente_nome', nomeResponsavel);
+                localStorage.setItem('assistente_nome', nomeResponsavel || data.nome);
             }
 
             window.location.href = "proxima_pagina.html";
@@ -466,7 +443,7 @@
             mudarTela('tela-login');
         }
 
-        // 3. REGISTAR COLABORADOR (Independente, guarda na tabela 'colaboradores' e volta para o login)
+        // 3. REGISTAR COLABORADOR
         async function registarColaborador(e) {
             e.preventDefault();
             const role = document.getElementById('cadColabRole').value;
@@ -480,47 +457,39 @@
             }
 
             if (senhaPura !== confirmaSenha) {
-                showToast("As senhas não coincidem. Verifique e tente novamente.");
+                showToast("As senhas não coincidem.");
                 return;
             }
 
-            const senhaHash = await hashPassword(senhaPura);
-
-            // Insere na tabela independente de colaboradores
-            const { error: insertError } = await _supabase.from('colaboradores').insert([{
+            const { error: insertError } = await _supabase.from('colaboradores').upsert([{
                 role: role,
                 nome: nomeResponsavel,
-                senha_hash: senhaHash
-            }]);
+                senha_hash: senhaPura
+            }], { onConflict: 'role' });
 
             if (insertError) {
-                showToast("Erro ao guardar as credenciais na base de dados.");
+                showToast("Erro ao guardar as credenciais.");
                 return;
             }
 
-            showToast("Colaborador registado com sucesso!");
             mudarTela('tela-login');
         }
 
-        // 4. RECUPERAR SENHA
+        // 4. ATUALIZAR SENHA
         async function recuperarSenha(e) {
             e.preventDefault();
-            const casalNome = document.getElementById('recCasalInput').value.trim();
             const role = document.getElementById('recRole').value;
-            const senhaPura = document.getElementById('recNovaSenha').value;
+            const novaSenha = document.getElementById('recNovaSenha').value;
 
-            if (senhaPura.length < 6) {
+            if (novaSenha.length < 6) {
                 showToast("A nova senha precisa ter pelo menos 6 caracteres.");
                 return;
             }
 
-            const senhaHash = await hashPassword(senhaPura);
-            const campoAtualizar = role === 'admin' ? 'senha_admin' : 'senha_assistente';
-
             const { error: updateError } = await _supabase
-                .from('casal_config')
-                .update({ [campoAtualizar]: senhaHash })
-                .eq('nome', casalNome);
+                .from('colaboradores')
+                .update({ senha_hash: novaSenha })
+                .eq('role', role);
 
             if (updateError) {
                 showToast("Erro ao atualizar a senha.");
@@ -538,16 +507,5 @@
             setTimeout(() => toast.classList.add('hidden'), 3500);
         }
     </script>
-
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then(reg => console.log('Service Worker registado com sucesso:', reg.scope))
-                .catch(err => console.log('Falha ao registar o Service Worker:', err));
-        });
-    }
-</script>
-
 </body>
 </html>
