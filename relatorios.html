@@ -31,7 +31,7 @@
             background-color: #f7f5f2;
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
-            padding: 15px 5px;
+            padding: 10px;
             color: #333333;
             display: flex;
             flex-direction: column;
@@ -41,14 +41,14 @@
 
         .brand-header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             width: 100%;
-            padding: 0 10px;
+            padding: 0 5px;
         }
 
         .brand-title {
             font-family: Georgia, serif;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #382a23;
             margin: 0;
@@ -56,27 +56,28 @@
         }
 
         .brand-tagline {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #725a4d;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
         .container-relatorio {
             width: 100%;
             max-width: 950px;
             background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 12px;
             box-sizing: border-box;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         @media(min-width: 768px) {
             .container-relatorio {
                 padding: 25px;
+                border-radius: 16px;
             }
             .brand-title {
                 font-size: 2rem;
@@ -84,12 +85,12 @@
         }
 
         .secao-titulo {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             color: #3b2a22;
-            margin: 20px 0 10px 0;
+            margin: 15px 0 8px 0;
             border-bottom: 2px solid #3b2a22;
-            padding-bottom: 5px;
+            padding-bottom: 4px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -97,37 +98,34 @@
         @media(min-width: 768px) {
             .secao-titulo {
                 font-size: 16px;
+                margin: 20px 0 10px 0;
             }
         }
 
-        /* Container de rolagem suave para tabelas em dispositivos móveis */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 15px;
-            border-radius: 8px;
-        }
-
+        /* Tabelas fluidas idênticas ao tablet com colgroup proporcional */
         table.tabela-custom {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
-            min-width: 500px;
+            font-size: 11px;
+            table-layout: fixed;
+            margin-bottom: 12px;
         }
 
         @media(min-width: 768px) {
             table.tabela-custom {
                 font-size: 14px;
-                min-width: 100%;
+                margin-bottom: 15px;
             }
         }
 
         table.tabela-custom th, table.tabela-custom td {
             border: 1px solid #dcd6cd;
-            padding: 8px 10px;
+            padding: 6px 4px;
             text-align: left;
-            vertical-align: top;
+            vertical-align: middle;
+            word-break: break-word;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         @media(min-width: 768px) {
@@ -140,7 +138,8 @@
             background-color: #3b2a22;
             color: #ffffff;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 10px;
+            text-transform: uppercase;
         }
 
         @media(min-width: 768px) {
@@ -173,17 +172,18 @@
             width: 100%;
             border: none;
             background: transparent;
-            font-size: 13px;
+            font-size: 11px;
             color: #333333;
             outline: none;
-            resize: vertical;
-            min-height: 26px;
-            line-height: 1.4;
+            resize: none;
+            min-height: 20px;
+            line-height: 1.2;
             font-family: 'Helvetica Neue', Arial, sans-serif;
             box-sizing: border-box;
-            overflow-y: hidden;
             word-break: break-word;
             white-space: pre-wrap;
+            padding: 0;
+            margin: 0;
         }
 
         @media(min-width: 768px) {
@@ -194,23 +194,23 @@
         }
 
         textarea.input-tabela:focus {
-            background-color: rgba(92, 147, 196, 0.05);
-            border-radius: 4px;
+            background-color: rgba(92, 147, 196, 0.08);
+            border-radius: 3px;
         }
 
         textarea.textarea-tabela {
             width: 100%;
             border: none;
             background: transparent;
-            font-size: 13px;
+            font-size: 11px;
             color: #333333;
             outline: none;
             resize: vertical;
-            min-height: 80px;
-            padding: 6px;
+            min-height: 60px;
+            padding: 4px;
             box-sizing: border-box;
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.5;
+            line-height: 1.4;
             word-break: break-word;
             white-space: pre-wrap;
         }
@@ -218,14 +218,15 @@
         @media(min-width: 768px) {
             textarea.textarea-tabela {
                 font-size: 14px;
+                min-height: 80px;
                 padding: 8px;
             }
         }
 
         .btn-acoes {
             display: flex;
-            gap: 12px;
-            margin-top: 25px;
+            gap: 10px;
+            margin-top: 20px;
             flex-direction: column;
         }
 
@@ -237,11 +238,11 @@
 
         .btn-acao-custom {
             flex: 1;
-            padding: 12px 16px;
+            padding: 11px 14px;
             border-radius: 25px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             text-align: center;
             text-decoration: none;
             display: inline-flex;
@@ -296,8 +297,8 @@
             background-color: #fffaf5;
             width: 100%;
             max-width: 400px;
-            border-radius: 24px;
-            padding: 25px 20px;
+            border-radius: 20px;
+            padding: 22px 18px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             text-align: center;
             box-sizing: border-box;
@@ -310,34 +311,33 @@
         }
 
         .modal-icon-container {
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             background-color: #f7ecd7;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px auto;
+            margin: 0 auto 12px auto;
             color: #b08d4b;
-            font-size: 24px;
+            font-size: 22px;
             font-family: Georgia, serif;
             font-weight: bold;
         }
 
         .modal-titulo {
             font-family: Georgia, serif;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #382a23;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .modal-mensagem {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #725a4d;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             line-height: 1.4;
-            padding: 0 5px;
         }
 
         .modal-botoes {
@@ -347,10 +347,10 @@
 
         .modal-btn {
             flex: 1;
-            padding: 11px 15px;
+            padding: 10px 14px;
             border-radius: 25px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             border: none;
             transition: 0.2s;
@@ -387,107 +387,120 @@
         
         <!-- Bloco 1: Contagem de Convidados -->
         <div class="secao-titulo">1. Resumo de Convidados & Público</div>
-        <div class="table-responsive">
-            <table class="tabela-custom" style="min-width: 320px;">
-                <tr>
-                    <th style="width: 35%;">QUANTIDADE DE CONVIDADOS</th>
-                    <td style="width: 15%;"><textarea class="input-tabela" id="qtd_convidados" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
-                    <th style="width: 35%;">CRIANÇAS</th>
-                    <td style="width: 15%;"><textarea class="input-tabela" id="criancas" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
-                </tr>
-                <tr>
-                    <th>CONVIDADOS PRESENTES</th>
-                    <td><textarea class="input-tabela" id="convidados_presentes" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
-                    <th>STAFF</th>
-                    <td><textarea class="input-tabela" id="staff" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
-                </tr>
-                <tr>
-                    <th>CRIANÇAS PRESENTES</th>
-                    <td><textarea class="input-tabela" id="criancas_presentes" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
-                    <th colspan="2" style="background: #f7f5f2;"></th>
-                </tr>
-            </table>
-        </div>
+        <table class="tabela-custom">
+            <colgroup>
+                <col style="width: 35%;">
+                <col style="width: 15%;">
+                <col style="width: 35%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <tr>
+                <th>QTD. CONV.</th>
+                <td><textarea class="input-tabela" id="qtd_convidados" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
+                <th>CRIANÇAS</th>
+                <td><textarea class="input-tabela" id="criancas" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+            <tr>
+                <th>PRESENTES</th>
+                <td><textarea class="input-tabela" id="convidados_presentes" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
+                <th>STAFF</th>
+                <td><textarea class="input-tabela" id="staff" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+            <tr>
+                <th>CRIANÇAS PRES.</th>
+                <td><textarea class="input-tabela" id="criancas_presentes" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
+                <th colspan="2" style="background: #f7f5f2; border: none;"></th>
+            </tr>
+        </table>
 
         <!-- Bloco 2: Checklists Operacionais -->
         <div class="secao-titulo">2. Checklists Operacionais</div>
-        <div class="table-responsive">
-            <table class="tabela-custom">
-                <tr>
-                    <th class="cabecalho-azul" style="width: 35%;">Checklist</th>
-                    <th class="cabecalho-azul" style="width: 25%;">Status / Hora</th>
-                    <th class="cabecalho-azul" style="width: 40%;">Observações / Detalhes</th>
-                </tr>
-                <tr>
-                    <td><b>Check list cozinha | copa</b></td>
-                    <td><textarea class="input-tabela" id="chk_cozinha_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
-                    <td><textarea class="input-tabela" id="chk_cozinha_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
-                </tr>
-                <tr>
-                    <td><b>Check list confeitaria</b></td>
-                    <td><textarea class="input-tabela" id="chk_confeitaria_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
-                    <td><textarea class="input-tabela" id="chk_confeitaria_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
-                </tr>
-                <tr>
-                    <td><b>Check list decoração</b></td>
-                    <td><textarea class="input-tabela" id="chk_decoracao_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
-                    <td><textarea class="input-tabela" id="chk_decoracao_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
-                </tr>
-                <tr>
-                    <td><b>Almoço Staff</b></td>
-                    <td><textarea class="input-tabela" id="almoco_staff_status" placeholder="Ex: 12:30" rows="1" oninput="autoResize(this)"></textarea></td>
-                    <td><textarea class="input-tabela" id="almoco_staff_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
-                </tr>
-                <tr>
-                    <td><b>Itens comestíveis</b></td>
-                    <td><textarea class="input-tabela" id="itens_comestiveis_status" placeholder="Ex: Conferido" rows="1" oninput="autoResize(this)"></textarea></td>
-                    <td><textarea class="input-tabela" id="itens_comestiveis_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
-                </tr>
-            </table>
-        </div>
+        <table class="tabela-custom">
+            <colgroup>
+                <col style="width: 38%;">
+                <col style="width: 24%;">
+                <col style="width: 38%;">
+            </colgroup>
+            <tr>
+                <th class="cabecalho-azul">Checklist</th>
+                <th class="cabecalho-azul">Status / Hora</th>
+                <th class="cabecalho-azul">Detalhes</th>
+            </tr>
+            <tr>
+                <td><b>Cozinha | copa</b></td>
+                <td><textarea class="input-tabela" id="chk_cozinha_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="chk_cozinha_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+            <tr>
+                <td><b>Confeitaria</b></td>
+                <td><textarea class="input-tabela" id="chk_confeitaria_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="chk_confeitaria_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+            <tr>
+                <td><b>Decoração</b></td>
+                <td><textarea class="input-tabela" id="chk_decoracao_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="chk_decoracao_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+            <tr>
+                <td><b>Almoço Staff</b></td>
+                <td><textarea class="input-tabela" id="almoco_staff_status" placeholder="Ex: 12:30" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="almoco_staff_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+            <tr>
+                <td><b>Itens comestíveis</b></td>
+                <td><textarea class="input-tabela" id="itens_comestiveis_status" placeholder="Ex: Conf." rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="itens_comestiveis_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+        </table>
 
         <!-- Bloco 3: Chegadas -->
         <div class="secao-titulo">3. Chegadas</div>
-        <div class="table-responsive">
-            <table class="tabela-custom">
-                <tr>
-                    <th class="cabecalho-chegadas" style="width: 28%;">CHEGADAS</th>
-                    <th class="cabecalho-chegadas" style="width: 14%;">HORA</th>
-                    <th class="cabecalho-chegadas" style="width: 44%;">OBSERVAÇÕES</th>
-                    <th class="cabecalho-chegadas" style="width: 14%;">PREVISTO</th>
-                </tr>
-                <tbody id="tabelaChegadasBody"></tbody>
-            </table>
-        </div>
+        <table class="tabela-custom">
+            <colgroup>
+                <col style="width: 32%;">
+                <col style="width: 15%;">
+                <col style="width: 38%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <tr>
+                <th class="cabecalho-chegadas">CHEGADA</th>
+                <th class="cabecalho-chegadas">HORA</th>
+                <th class="cabecalho-chegadas">OBS</th>
+                <th class="cabecalho-chegadas">PREV</th>
+            </tr>
+            <tbody id="tabelaChegadasBody"></tbody>
+        </table>
 
         <!-- Bloco 4: Tempos e Movimentos -->
         <div class="secao-titulo">4. Tempos e Movimentos</div>
-        <div class="table-responsive">
-            <table class="tabela-custom">
-                <tr>
-                    <th class="cabecalho-tempos" style="width: 32%;">TEMPOS E MOVIMENTOS</th>
-                    <th class="cabecalho-tempos" style="width: 14%;">HORA</th>
-                    <th class="cabecalho-tempos" style="width: 40%;">OBSERVAÇÕES</th>
-                    <th class="cabecalho-tempos" style="width: 14%;">PREVISTO</th>
-                </tr>
-                <tbody id="tabelaTemposBody"></tbody>
-            </table>
-        </div>
+        <table class="tabela-custom">
+            <colgroup>
+                <col style="width: 32%;">
+                <col style="width: 15%;">
+                <col style="width: 38%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <tr>
+                <th class="cabecalho-tempos">ATIVIDADE</th>
+                <th class="cabecalho-tempos">HORA</th>
+                <th class="cabecalho-tempos">OBS</th>
+                <th class="cabecalho-tempos">PREV</th>
+            </tr>
+            <tbody id="tabelaTemposBody"></tbody>
+        </table>
 
         <!-- Bloco 5: Resumo, Elogios, Histórico -->
         <div class="secao-titulo">5. Resumo & Relatórios Finais</div>
-        <div class="table-responsive">
-            <table class="tabela-custom">
-                <tr><th class="cabecalho-chegadas">Resumo do Evento</th></tr>
-                <tr><td><textarea class="textarea-tabela" id="resumo_evento" placeholder="Escreva o resumo geral do evento..."></textarea></td></tr>
-                <tr><th class="cabecalho-cinza">Elogios | Comentários</th></tr>
-                <tr><td><textarea class="textarea-tabela" id="elogios" placeholder="Comentários e elogios recebidos..."></textarea></td></tr>
-                <tr><th class="cabecalho-azul">História do Casal</th></tr>
-                <tr><td><textarea class="textarea-tabela" id="historia_casal" placeholder="Detalhes sobre a história do casal..."></textarea></td></tr>
-                <tr><th class="cabecalho-azul">Noivo(a) / Observações Especiais</th></tr>
-                <tr><td><textarea class="textarea-tabela" id="observacoes_noivo" placeholder="Notas sobre os noivos..."></textarea></td></tr>
-            </table>
-        </div>
+        <table class="tabela-custom">
+            <tr><th class="cabecalho-chegadas">Resumo do Evento</th></tr>
+            <tr><td><textarea class="textarea-tabela" id="resumo_evento" placeholder="Escreva o resumo geral..."></textarea></td></tr>
+            <tr><th class="cabecalho-cinza">Elogios | Comentários</th></tr>
+            <tr><td><textarea class="textarea-tabela" id="elogios" placeholder="Comentários recebidos..."></textarea></td></tr>
+            <tr><th class="cabecalho-azul">História do Casal</th></tr>
+            <tr><td><textarea class="textarea-tabela" id="historia_casal" placeholder="Detalhes da história..."></textarea></td></tr>
+            <tr><th class="cabecalho-azul">Noivo(a) / Observações Especiais</th></tr>
+            <tr><td><textarea class="textarea-tabela" id="observacoes_noivo" placeholder="Notas especiais..."></textarea></td></tr>
+        </table>
 
         <div class="btn-acoes">
             <button class="btn-acao-custom btn-salvar" onclick="salvarRelatorio()">💾 Salvar Relatório</button>
@@ -502,7 +515,7 @@
         <div class="modal-card">
             <div class="modal-icon-container">?</div>
             <div class="modal-titulo">Baixar Relatório em PDF</div>
-            <div class="modal-mensagem" id="modalMensagemTexto">Deseja realmente gerar e baixar o relatório detalhado do evento para o casal?</div>
+            <div class="modal-mensagem" id="modalMensagemTexto">Deseja realmente gerar e baixar o relatório detalhado do evento?</div>
             <div class="modal-botoes">
                 <button class="modal-btn modal-btn-cancelar" onclick="fecharModalPDF()">CANCELAR</button>
                 <button class="modal-btn modal-btn-confirmar" onclick="confirmarBaixarPDF()">CONFIRMAR</button>
@@ -510,12 +523,12 @@
         </div>
     </div>
 
-    <!-- Notificação Toast para Salvar Relatório -->
-    <div id="toastNotificacao" style="position: fixed; bottom: 20px; right: 20px; left: 20px; max-width: 380px; margin: 0 auto; background-color: #3b2a22; color: #ffffff; padding: 14px 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px; z-index: 9999; opacity: 0; transform: translateY(20px); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; font-size: 13px; border-left: 5px solid #d4a32e; box-sizing: border-box;">
-        <span style="font-size: 20px;">✨</span>
+    <!-- Notificação Toast -->
+    <div id="toastNotificacao" style="position: fixed; bottom: 20px; right: 15px; left: 15px; max-width: 360px; margin: 0 auto; background-color: #3b2a22; color: #ffffff; padding: 12px 18px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; z-index: 9999; opacity: 0; transform: translateY(20px); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; font-size: 12px; border-left: 5px solid #d4a32e; box-sizing: border-box;">
+        <span style="font-size: 18px;">✨</span>
         <div>
             <div style="font-weight: bold;">Sucesso!</div>
-            <div id="toastTexto" style="font-size: 11px; color: #e5ded6;">Relatório salvo com sucesso.</div>
+            <div id="toastTexto" style="font-size: 10px; color: #e5ded6;">Relatório salvo com sucesso.</div>
         </div>
     </div>
 
