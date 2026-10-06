@@ -127,116 +127,124 @@
         .clear-all-btn:hover { background-color: rgba(255, 255, 255, 0.08); color: #ffffff; }
         .back-link { color: #eadecc; font-size: 12px; text-decoration: underline; margin-top: 15px; }
 
-        /* ===== MODAL COM A PALETA DE CORES EXATA DO APLICATIVO ===== */
-        .custom-modal-overlay {
+        /* ===== ESTILO IDÊNTICO AO MODAL DE CONFIRMAÇÃO DO CONVIDADO (IMAGEM 3) ===== */
+        .modal-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(30, 20, 15, 0.65);
-            backdrop-filter: blur(4px);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             z-index: 9999;
             opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 15px;
+            box-sizing: border-box;
         }
-        .custom-modal-overlay.active {
+
+        .modal-overlay.ativo {
             opacity: 1;
-            visibility: visible;
+            pointer-events: auto;
         }
-        .custom-modal-box {
-            background-color: #fcfaf7; /* Fundo creme/bege padrão do app */
-            border-radius: 28px;
-            width: 90%;
-            max-width: 320px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-            transform: scale(0.85);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+        .modal-card {
+            background-color: #fffaf5;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 22px 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             text-align: center;
+            box-sizing: border-box;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
         }
-        .custom-modal-overlay.active .custom-modal-box {
+
+        .modal-overlay.ativo .modal-card {
             transform: scale(1);
         }
-        .custom-modal-header {
-            padding: 30px 20px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .custom-modal-icon-circle {
-            width: 64px;
-            height: 64px;
+
+        .modal-icon-container {
+            width: 50px;
+            height: 50px;
+            background-color: #f7ecd7;
             border-radius: 50%;
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-size: 28px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
-        }
-        /* Cores de sucesso e erro usando a identidade do app */
-        .success-theme .custom-modal-icon-circle {
-            background-color: #d9fdd3;
-            color: #128c7e;
-        }
-        .error-theme .custom-modal-icon-circle {
-            background-color: #fae1dd;
-            color: #a83232;
-        }
-        .custom-modal-body {
-            padding: 0 24px 24px;
-        }
-        .custom-modal-title {
-            font-size: 18px;
+            justify-content: center;
+            margin: 0 auto 12px auto;
+            color: #b08d4b;
+            font-size: 22px;
+            font-family: Georgia, serif;
             font-weight: bold;
-            color: #3b2a24; /* Marrom escuro institucional do Ally */
-            margin-bottom: 8px;
         }
-        .custom-modal-message {
-            color: #725a4d; /* Marrom claro secundário do app */
-            font-size: 13px;
-            line-height: 1.5;
-            margin-bottom: 22px;
-            font-family: Arial, sans-serif;
-        }
-        .custom-modal-btn {
-            width: 100%;
-            border: none;
-            padding: 12px;
-            border-radius: 14px;
-            font-size: 13px;
+
+        .modal-titulo {
+            font-family: Georgia, serif;
+            font-size: 1.1rem;
             font-weight: bold;
+            color: #382a23;
+            margin-bottom: 6px;
+        }
+
+        .modal-mensagem {
+            font-size: 0.8rem;
+            color: #725a4d;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .modal-botoes {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 12px;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: opacity 0.2s;
+            border: none;
+            transition: 0.2s;
+            text-align: center;
         }
-        .success-theme .custom-modal-btn {
-            background-color: #128c7e;
+
+        .modal-btn-cancelar {
+            background-color: #eadecc;
+            color: #3b2a22;
+        }
+
+        .modal-btn-cancelar:hover {
+            background-color: #d8c7b3;
+        }
+
+        .modal-btn-confirmar {
+            background-color: #a83838;
             color: #ffffff;
         }
-        .error-theme .custom-modal-btn {
-            background-color: #a83232;
-            color: #ffffff;
-        }
-        .custom-modal-btn:hover {
-            opacity: 0.9;
+
+        .modal-btn-confirmar:hover {
+            background-color: #922f2f;
         }
     </style>
 </head>
 <body>
 
-    <!-- MODAL COM CORES PERSONALIZADAS DO APP -->
-    <div id="custom-modal" class="custom-modal-overlay">
-        <div id="modal-box" class="custom-modal-box success-theme">
-            <div class="custom-modal-header">
-                <div id="modal-icon-circle" class="custom-modal-icon-circle">✓</div>
-            </div>
-            <div class="custom-modal-body">
-                <div id="modal-title" class="custom-modal-title">Sucesso!</div>
-                <div id="modal-message" class="custom-modal-message">Mensagem aqui</div>
-                <button class="custom-modal-btn" onclick="closeCustomModal()">OK</button>
+    <!-- MODAL DE CONFIRMAÇÃO ELEGANTE -->
+    <div class="modal-overlay" id="modalConfirmacao">
+        <div class="modal-card">
+            <div class="modal-icon-container">?</div>
+            <div class="modal-titulo" id="modalTituloText">Confirmação</div>
+            <div class="modal-mensagem" id="modalMensagemText">Deseja realmente realizar esta ação?</div>
+            <div class="modal-botoes">
+                <button class="modal-btn modal-btn-cancelar" onclick="fecharModalConfirmacao()">CANCELAR</button>
+                <button class="modal-btn modal-btn-confirmar" id="modalBtnConfirmar" onclick="executarAcaoConfirmada()">CONFIRMAR</button>
             </div>
         </div>
     </div>
@@ -294,7 +302,7 @@
             <div id="suppliers-list"></div>
             
             <div class="footer-navigation">
-                <button class="clear-all-btn" id="btn-clear-all" onclick="clearAll()">Limpar Todos</button>
+                <button class="clear-all-btn" id="btn-clear-all" onclick="confirmarLimparTodos()">Limpar Todos</button>
                 <button class="btn-action" style="width: 100%; max-width: 200px; background-color: #fcfaf7;" onclick="switchView('form')">← Voltar ao Formulário</button>
             </div>
         </div>
@@ -306,32 +314,25 @@
     const userRole = localStorage.getItem('user_role');
     const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
     let suppliers = [];
+    let funcaoCallbackPendente = null;
 
-    function showModal(message, type = 'success', title = '') {
-        const modal = document.getElementById('custom-modal');
-        const modalBox = document.getElementById('modal-box');
-        const msgEl = document.getElementById('modal-message');
-        const titleEl = document.getElementById('modal-title');
-        const iconEl = document.getElementById('modal-icon-circle');
-
-        msgEl.textContent = message;
-
-        if (type === 'success') {
-            modalBox.className = 'custom-modal-box success-theme';
-            titleEl.textContent = title || 'Tudo pronto!';
-            iconEl.textContent = '✓';
-        } else {
-            modalBox.className = 'custom-modal-box error-theme';
-            titleEl.textContent = title || 'Atenção';
-            iconEl.textContent = '✕';
-        }
-
-        modal.classList.add('active');
+    function abrirModalConfirmacao(titulo, mensagem, callback) {
+        document.getElementById('modalTituloText').textContent = titulo;
+        document.getElementById('modalMensagemText').textContent = mensagem;
+        funcaoCallbackPendente = callback;
+        document.getElementById('modalConfirmacao').classList.add('ativo');
     }
 
-    function closeCustomModal() {
-        const modal = document.getElementById('custom-modal');
-        modal.classList.remove('active');
+    function fecharModalConfirmacao() {
+        document.getElementById('modalConfirmacao').classList.remove('ativo');
+        funcaoCallbackPendente = null;
+    }
+
+    function executarAcaoConfirmada() {
+        if (funcaoCallbackPendente) {
+            funcaoCallbackPendente();
+        }
+        fecharModalConfirmacao();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -395,18 +396,17 @@
         const status = document.getElementById('status-select').value;
 
         if (!category || !name) { 
-            showModal("Por favor, preencha o serviço e o nome do fornecedor.", "error", "Campos Obrigatórios"); 
+            alert("Por favor, preencha o serviço e o nome do fornecedor."); 
             return; 
         }
 
         const { error } = await _supabase.from('fornecedores').insert([{ category, name, phone, time: "", notes: "", status, casal_nome: casalAtivo }]);
         
         if (error) {
-            showModal("Houve um erro ao tentar cadastrar o fornecedor.", "error", "Erro no Cadastro");
+            alert("Houve um erro ao tentar cadastrar o fornecedor.");
             return;
         }
 
-        showModal("Fornecedor cadastrado com sucesso!", "success", "Sucesso!");
         document.getElementById('category-input').value = "";
         document.getElementById('name-input').value = "";
         document.getElementById('phone-input').value = "";
@@ -428,7 +428,7 @@
                 const jsonRows = XLSX.utils.sheet_to_json(worksheet);
 
                 if (jsonRows.length === 0) {
-                    showModal("O arquivo Excel selecionado está vazio.", "error", "Arquivo Vazio");
+                    alert("O arquivo Excel selecionado está vazio.");
                     return;
                 }
 
@@ -455,12 +455,12 @@
                     }
                 }
 
-                showModal(`${importadosCount} fornecedor(es) importado(s) com sucesso!`, "success", "Importação Concluída");
+                alert(`${importadosCount} fornecedor(es) importado(s) com sucesso!`);
                 event.target.value = '';
                 loadSuppliersFromSupabase();
             } catch (err) {
                 console.error("Erro ao ler o arquivo Excel:", err);
-                showModal("Não foi possível processar o arquivo. Verifique se o formato está correto.", "error", "Erro na Importação");
+                alert("Não foi possível processar o arquivo. Verifique se o formato está correto.");
             }
         };
         reader.readAsArrayBuffer(file);
@@ -530,7 +530,7 @@
                     .eq('id', s.id);
 
                 if (error) {
-                    showModal("Erro ao registrar ocorrência.", "error", "Erro");
+                    alert("Erro ao registrar ocorrência.");
                     return;
                 }
                 loadSuppliersFromSupabase();
@@ -544,7 +544,7 @@
             footerCard.style.cssText = "display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:4px;";
             footerCard.innerHTML = `
                 <span class="status-badge ${s.status === 'Confirmado' ? 'status-confirmado' : 'status-pendente'}" onclick="toggleStatus(${s.id}, '${s.status}')">${s.status}</span>
-                ${userRole !== 'assistant' ? `<button onclick="deleteSupplier(${s.id})" style="background:none;border:none;color:#ff6b6b;cursor:pointer;">🗑️</button>` : ''}
+                ${userRole !== 'assistant' ? `<button onclick="deletarFornecedor(${s.id}, '${s.name}')" style="background:none;border:none;color:#ff6b6b;cursor:pointer;">🗑️</button>` : ''}
             `;
             item.appendChild(footerCard);
 
@@ -561,17 +561,19 @@
         await _supabase.from('fornecedores').update({ status }).eq('id', id);
         loadSuppliersFromSupabase();
     }
-    async function deleteSupplier(id) {
-        if (confirm("Remover fornecedor?")) {
+    
+    function deletarFornecedor(id, nome) {
+        abrirModalConfirmacao("Remover Fornecedor", `Deseja realmente remover o fornecedor "${nome}"?`, async () => {
             await _supabase.from('fornecedores').delete().eq('id', id);
             loadSuppliersFromSupabase();
-        }
+        });
     }
-    async function clearAll() {
-        if (confirm("Apagar todos os fornecedores?")) {
+
+    function confirmarLimparTodos() {
+        abrirModalConfirmacao("Limpar Todos", "Deseja realmente apagar todos os fornecedores?", async () => {
             await _supabase.from('fornecedores').delete().eq('casal_nome', casalAtivo);
             loadSuppliersFromSupabase();
-        }
+        });
     }
 </script>
 
