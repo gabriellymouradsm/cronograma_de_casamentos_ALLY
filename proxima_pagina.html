@@ -23,6 +23,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
+    <!-- FontAwesome Icons para os ícones dos quadrados -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         body {
             background-color: #f7f5f2;
@@ -167,87 +170,47 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        .btn-relatorios {
-            width: 100%;
-            padding: 15px;
-            background-color: #eadecc;
-            border: none;
-            border-radius: 30px;
-            color: #3b2a22;
-            font-size: 16px;
-            font-weight: bold;
+        /* Grade de 4 quadrados (2x2) */
+        .grid-atalhos {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-quadrado {
+            background-color: #f7f4ef;
+            color: #382a24;
+            border-radius: 18px;
+            padding: 16px 10px;
             text-align: center;
-            text-decoration: none;
-            display: block;
-            box-sizing: border-box;
-            cursor: pointer;
-            margin-bottom: 10px;
-            transition: 0.2s;
-        }
-
-        .btn-relatorios:hover {
-            background-color: #d8c7b3;
-            transform: translateY(-2px);
-        }
-
-        .btn-pdf {
-            width: 100%;
-            padding: 15px;
-            background-color: #eadecc;
-            border: none;
-            border-radius: 30px;
-            color: #3b2a22;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 10px;
-            transition: 0.2s;
-        }
-
-        .btn-pdf:hover {
-            background-color: #d8c7b3;
-            transform: translateY(-2px);
-        }
-
-        .btn-perfil {
-            width: 100%;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 30px;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            margin-bottom: 10px;
-            transition: 0.2s;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-sizing: border-box;
-        }
-
-        .btn-perfil:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-voltar {
-            width: 100%;
-            padding: 13px;
-            background-color: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            color: #ffffff;
-            font-size: 15px;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            border: 1px solid rgba(139, 107, 85, 0.15);
             cursor: pointer;
-            transition: 0.2s;
+            box-sizing: border-box;
+            width: 100%;
         }
 
-        .btn-voltar:hover { background-color: rgba(255, 255, 255, 0.08); }
+        .btn-quadrado:hover {
+            background-color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .btn-quadrado i {
+            font-size: 20px;
+            color: #725a4d;
+        }
 
         .coluna-modulos {
             display: flex;
@@ -443,21 +406,26 @@
                 </div>
             </div>
 
-            <div>
-                <a href="relatorios.html" class="btn-relatorios" id="btnRelatoriosDetalhados">
-                    📊 Relatórios Detalhados
+            <!-- Grade de 4 Quadrados (2x2) -->
+            <div class="grid-atalhos">
+                <a href="relatorios.html" class="btn-quadrado" id="btnRelatoriosDetalhados">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Relatórios</span>
                 </a>
 
-                <button class="btn-pdf" onclick="abrirModalPDF()">
-                    📄 Criar PDF do Cronograma
+                <button class="btn-quadrado" onclick="abrirModalPDF()">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Criar PDF</span>
                 </button>
 
-                <a href="perfil.html" class="btn-perfil">
-                    👤 Meu Perfil
+                <a href="perfil.html" class="btn-quadrado">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Meu Perfil</span>
                 </a>
 
-                <button class="btn-voltar" onclick="editarInformacoes()">
-                    Trocar / Voltar
+                <button class="btn-quadrado" onclick="editarInformacoes()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Trocar / Voltar</span>
                 </button>
             </div>
         </div>
