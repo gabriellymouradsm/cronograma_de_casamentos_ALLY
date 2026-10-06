@@ -62,7 +62,7 @@
 
         .container-relatorio {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             background: #ffffff;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.1);
@@ -91,8 +91,9 @@
 
         table.tabela-custom th, table.tabela-custom td {
             border: 1px solid #dcd6cd;
-            padding: 8px 12px;
+            padding: 10px 12px;
             text-align: left;
+            vertical-align: top;
         }
 
         table.tabela-custom th {
@@ -122,14 +123,27 @@
             color: #ffffff !important;
         }
 
-        input.input-tabela {
+        /* Textarea expansível e com quebra de linha automática para substituir os inputs rígidos */
+        textarea.input-tabela {
             width: 100%;
             border: none;
             background: transparent;
             font-size: 14px;
             color: #333333;
             outline: none;
+            resize: vertical;
+            min-height: 28px;
+            line-height: 1.5;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             box-sizing: border-box;
+            overflow-y: hidden;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        textarea.input-tabela:focus {
+            background-color: rgba(92, 147, 196, 0.05);
+            border-radius: 4px;
         }
 
         textarea.textarea-tabela {
@@ -140,14 +154,19 @@
             color: #333333;
             outline: none;
             resize: vertical;
-            min-height: 50px;
+            min-height: 80px;
+            padding: 8px;
             box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            word-break: break-word;
+            white-space: pre-wrap;
         }
 
         .btn-acoes {
             display: flex;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 25px;
             flex-direction: column;
         }
 
@@ -198,19 +217,19 @@
         <table class="tabela-custom">
             <tr>
                 <th style="width: 35%;">QUANTIDADE DE CONVIDADOS</th>
-                <td style="width: 15%;"><input type="text" class="input-tabela" id="qtd_convidados" placeholder="0"></td>
+                <td style="width: 15%;"><textarea class="input-tabela" id="qtd_convidados" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
                 <th style="width: 35%;">CRIANÇAS</th>
-                <td style="width: 15%;"><input type="text" class="input-tabela" id="criancas" placeholder="0"></td>
+                <td style="width: 15%;"><textarea class="input-tabela" id="criancas" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
             </tr>
             <tr>
                 <th>CONVIDADOS PRESENTES</th>
-                <td><input type="text" class="input-tabela" id="convidados_presentes" placeholder="0"></td>
+                <td><textarea class="input-tabela" id="convidados_presentes" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
                 <th>STAFF</th>
-                <td><input type="text" class="input-tabela" id="staff" placeholder="0"></td>
+                <td><textarea class="input-tabela" id="staff" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
             </tr>
             <tr>
                 <th>CRIANÇAS PRESENTES</th>
-                <td><input type="text" class="input-tabela" id="criancas_presentes" placeholder="0"></td>
+                <td><textarea class="input-tabela" id="criancas_presentes" placeholder="0" rows="1" oninput="autoResize(this)"></textarea></td>
                 <th colspan="2" style="background: #f7f5f2;"></th>
             </tr>
         </table>
@@ -219,34 +238,34 @@
         <div class="secao-titulo">2. Checklists Operacionais</div>
         <table class="tabela-custom">
             <tr>
-                <th class="cabecalho-azul" style="width: 45%;">Checklist</th>
-                <th class="cabecalho-azul" style="width: 15%;">Status / Hora</th>
+                <th class="cabecalho-azul" style="width: 35%;">Checklist</th>
+                <th class="cabecalho-azul" style="width: 25%;">Status / Hora</th>
                 <th class="cabecalho-azul" style="width: 40%;">Observações / Detalhes</th>
             </tr>
             <tr>
-                <td>Check list cozinha | copa</td>
-                <td><input type="text" class="input-tabela" id="chk_cozinha_status" placeholder="Ex: OK"></td>
-                <td><input type="text" class="input-tabela" id="chk_cozinha_obs" placeholder="Detalhes..."></td>
+                <td><b>Check list cozinha | copa</b></td>
+                <td><textarea class="input-tabela" id="chk_cozinha_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="chk_cozinha_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
             </tr>
             <tr>
-                <td>Check list confeitaria</td>
-                <td><input type="text" class="input-tabela" id="chk_confeitaria_status" placeholder="Ex: OK"></td>
-                <td><input type="text" class="input-tabela" id="chk_confeitaria_obs" placeholder="Detalhes..."></td>
+                <td><b>Check list confeitaria</b></td>
+                <td><textarea class="input-tabela" id="chk_confeitaria_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="chk_confeitaria_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
             </tr>
             <tr>
-                <td>Check list decoração</td>
-                <td><input type="text" class="input-tabela" id="chk_decoracao_status" placeholder="Ex: OK"></td>
-                <td><input type="text" class="input-tabela" id="chk_decoracao_obs" placeholder="Detalhes..."></td>
+                <td><b>Check list decoração</b></td>
+                <td><textarea class="input-tabela" id="chk_decoracao_status" placeholder="Ex: OK" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="chk_decoracao_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
             </tr>
             <tr>
-                <td>Almoço Staff</td>
-                <td><input type="text" class="input-tabela" id="almoco_staff_status" placeholder="Ex: 12:30"></td>
-                <td><input type="text" class="input-tabela" id="almoco_staff_obs" placeholder="Detalhes..."></td>
+                <td><b>Almoço Staff</b></td>
+                <td><textarea class="input-tabela" id="almoco_staff_status" placeholder="Ex: 12:30" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="almoco_staff_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
             </tr>
             <tr>
-                <td>Itens comestíveis</td>
-                <td><input type="text" class="input-tabela" id="itens_comestiveis_status" placeholder="Ex: Conferido"></td>
-                <td><input type="text" class="input-tabela" id="itens_comestiveis_obs" placeholder="Detalhes..."></td>
+                <td><b>Itens comestíveis</b></td>
+                <td><textarea class="input-tabela" id="itens_comestiveis_status" placeholder="Ex: Conferido" rows="1" oninput="autoResize(this)"></textarea></td>
+                <td><textarea class="input-tabela" id="itens_comestiveis_obs" placeholder="Detalhes..." rows="1" oninput="autoResize(this)"></textarea></td>
             </tr>
         </table>
 
@@ -254,10 +273,10 @@
         <div class="secao-titulo">3. Chegadas</div>
         <table class="tabela-custom">
             <tr>
-                <th class="cabecalho-chegadas" style="width: 25%;">CHEGADAS</th>
-                <th class="cabecalho-chegadas" style="width: 15%;">HORA</th>
-                <th class="cabecalho-chegadas" style="width: 45%;">OBSERVAÇÕES</th>
-                <th class="cabecalho-chegadas" style="width: 15%;">PREVISTO</th>
+                <th class="cabecalho-chegadas" style="width: 28%;">CHEGADAS</th>
+                <th class="cabecalho-chegadas" style="width: 14%;">HORA</th>
+                <th class="cabecalho-chegadas" style="width: 44%;">OBSERVAÇÕES</th>
+                <th class="cabecalho-chegadas" style="width: 14%;">PREVISTO</th>
             </tr>
             <tbody id="tabelaChegadasBody"></tbody>
         </table>
@@ -266,10 +285,10 @@
         <div class="secao-titulo">4. Tempos e Movimentos</div>
         <table class="tabela-custom">
             <tr>
-                <th class="cabecalho-tempos" style="width: 35%;">TEMPOS E MOVIMENTOS</th>
-                <th class="cabecalho-tempos" style="width: 15%;">HORA</th>
-                <th class="cabecalho-tempos" style="width: 38%;">OBSERVAÇÕES</th>
-                <th class="cabecalho-tempos" style="width: 12%;">PREVISTO</th>
+                <th class="cabecalho-tempos" style="width: 32%;">TEMPOS E MOVIMENTOS</th>
+                <th class="cabecalho-tempos" style="width: 14%;">HORA</th>
+                <th class="cabecalho-tempos" style="width: 40%;">OBSERVAÇÕES</th>
+                <th class="cabecalho-tempos" style="width: 14%;">PREVISTO</th>
             </tr>
             <tbody id="tabelaTemposBody"></tbody>
         </table>
@@ -326,6 +345,11 @@
             await carregarDadosSupabase();
         });
 
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
         function carregarTabelasDinamicas() {
             const tbodyChegadas = document.getElementById('tabelaChegadasBody');
             tbodyChegadas.innerHTML = '';
@@ -333,9 +357,9 @@
                 tbodyChegadas.innerHTML += `
                     <tr>
                         <td><b>${item}</b></td>
-                        <td><input type="text" class="input-tabela" id="chegada_hora_${index}" placeholder="--:--"></td>
-                        <td><input type="text" class="input-tabela" id="chegada_obs_${index}" placeholder="Obs..."></td>
-                        <td><input type="text" class="input-tabela" id="chegada_prev_${index}" placeholder="--:--"></td>
+                        <td><textarea class="input-tabela" id="chegada_hora_${index}" placeholder="--:--" rows="1" oninput="autoResize(this)"></textarea></td>
+                        <td><textarea class="input-tabela" id="chegada_obs_${index}" placeholder="Obs..." rows="1" oninput="autoResize(this)"></textarea></td>
+                        <td><textarea class="input-tabela" id="chegada_prev_${index}" placeholder="--:--" rows="1" oninput="autoResize(this)"></textarea></td>
                     </tr>
                 `;
             });
@@ -346,9 +370,9 @@
                 tbodyTempos.innerHTML += `
                     <tr>
                         <td><b>${item}</b></td>
-                        <td><input type="text" class="input-tabela" id="tempo_hora_${index}" placeholder="--:--"></td>
-                        <td><input type="text" class="input-tabela" id="tempo_obs_${index}" placeholder="Obs..."></td>
-                        <td><input type="text" class="input-tabela" id="tempo_prev_${index}" placeholder="--:--"></td>
+                        <td><textarea class="input-tabela" id="tempo_hora_${index}" placeholder="--:--" rows="1" oninput="autoResize(this)"></textarea></td>
+                        <td><textarea class="input-tabela" id="tempo_obs_${index}" placeholder="Obs..." rows="1" oninput="autoResize(this)"></textarea></td>
+                        <td><textarea class="input-tabela" id="tempo_prev_${index}" placeholder="--:--" rows="1" oninput="autoResize(this)"></textarea></td>
                     </tr>
                 `;
             });
@@ -404,6 +428,9 @@
                         }
                     });
                 }
+
+                // Ajustar altura de todos os textareas carregados
+                document.querySelectorAll('textarea.input-tabela').forEach(ta => autoResize(ta));
             }
         }
 
