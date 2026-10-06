@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Controle - Casamento</title>
 
-    <!-- Configurações PWA e Ícones -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b2a22">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,7 +17,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
     <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
 
-    <!-- Biblioteca e Conexão do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
@@ -26,7 +24,6 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
-    <!-- BIBLIOTECA PDFMAKE PARA GERAÇÃO DO PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
@@ -426,7 +423,7 @@
             </div>
 
             <div>
-                <a href="relatorios.html" class="btn-relatorios">
+                <a href="relatorios.html" class="btn-relatorios" id="btnRelatoriosDetalhados">
                     📊 Relatórios Detalhados
                 </a>
 
@@ -488,7 +485,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE ESCOLHA DO PDF -->
     <div class="modal-overlay" id="modalPDF">
         <div class="modal-card">
             <h3>Personalizar PDF</h3>
@@ -537,6 +533,10 @@
             } else if (userRole === 'assistant' && assistenteNome) {
                 document.getElementById("tituloNomeUsuario").textContent = assistenteNome;
                 document.getElementById("subtituloPerfil").textContent = "Assistente de Campo";
+                const btnRelatorios = document.getElementById('btnRelatoriosDetalhados');
+                if (btnRelatorios) {
+                    btnRelatorios.style.display = 'none';
+                }
             }
 
             const { data, error } = await _supabase
