@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ally - Meu Perfil</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b2a22">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ally">
+    <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
+
+    <!-- Biblioteca e Conexão do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        body {
+            background-color: #f7f5f2;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
+            display: block;
+        }
+
+        .brand-title {
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 6px;
+        }
+
+        .perfil-card-wrapper {
+            width: 100%;
+            max-width: 440px;
+            background: #3b2a24;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            padding: 28px;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+
+        .perfil-header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 12px;
+            font-family: Georgia, serif;
+        }
+
+        .perfil-header-nav span {
+            font-size: 18px;
+            font-weight: bold;
+            color: #f7f5f2;
+        }
+
+        .perfil-header-nav a {
+            background: none;
+            border: none;
+            color: #eadecc;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .perfil-avatar-container {
+            width: 80px;
+            height: 80px;
+            background-color: #f7ecd7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            color: #b08d4b;
+            font-size: 32px;
+            font-weight: bold;
+            border: 3px solid #eadecc;
+            font-family: Georgia, serif;
+        }
+
+        .cargo-fixo {
+            text-align: center;
+            font-size: 13px;
+            color: #eadecc;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #c5a059;
+        }
+
+        .btn-salvar-perfil {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-salvar-perfil:hover {
+            background: #20ba5a;
+        }
+
+        .feedback-msg {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 12px;
+            color: #25d366;
+            display: none;
+        }
+
+        .error-msg {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 12px;
+            color: #ff5c5c;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="brand-header">
+        <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
+        <h1 class="brand-title">Ally</h1>
+        <p class="brand-tagline">CRONOGRAMA DE CASAMENTO</p>
+    </header>
+
+    <div class="perfil-card-wrapper">
+        <div class="perfil-header-nav">
+            <span>Meu Perfil</span>
+            <a href="proxima_pagina.html">← Voltar ao Painel</a>
+        </div>
+
+        <div class="perfil-avatar-container" id="avatarInicial">A</div>
+        <div class="cargo-fixo" id="textoCargoFixo">Administrador(a)</div>
+
+        <div class="form-group">
+            <label for="inputNome">Seu Nome</label>
+            <input type="text" id="inputNome" placeholder="Digite seu nome...">
+        </div>
+
+        <div class="form-group">
+            <label for="inputSenhaAtual">Senha Atual</label>
+            <input type="password" id="inputSenhaAtual" placeholder="Digite a senha atual...">
+        </div>
+
+        <div class="form-group">
+            <label for="inputNovaSenha">Nova Senha (opcional)</label>
+            <input type="password" id="inputNovaSenha" placeholder="Digite a nova senha...">
+        </div>
+
+        <button class="btn-salvar-perfil" onclick="salvarPerfil()">Guardar Alterações</button>
+        <div class="feedback-msg" id="msgSucesso">Perfil atualizado com sucesso!</div>
+        <div class="error-msg" id="msgErro">Erro ao atualizar perfil.</div>
+    </div>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", function () {
+            const userRole = localStorage.getItem('user_role') || 'admin';
+            const adminNome = localStorage.getItem('admin_nome') || '';
+            const assistenteNome = localStorage.getItem('assistente_nome') || '';
+            
+            let nomeAtual = userRole === 'admin' ? (adminNome || 'Administrador') : (assistenteNome || 'Assistente');
+
+            document.getElementById('inputNome').value = nomeAtual;
+            document.getElementById('avatarInicial').textContent = nomeAtual.charAt(0).toUpperCase();
+
+            if (userRole === 'admin') {
+                document.getElementById('textoCargoFixo').textContent = "Administrador(a)";
+            } else {
+                document.getElementById('textoCargoFixo').textContent = "Assistente de Campo";
+            }
+        });
+
+        async function salvarPerfil() {
+            const novoNome = document.getElementById('inputNome').value.trim();
+            const senhaAtual = document.getElementById('inputSenhaAtual').value;
+            const novaSenha = document.getElementById('inputNovaSenha').value;
+            const userRole = localStorage.getItem('user_role') || 'admin';
+            const casalAtivo = localStorage.getItem('casal_ativo');
+
+            if (!novoNome) {
+                alert("Por favor, preencha o seu nome.");
+                return;
+            }
+
+            // Atualiza o nome localmente para refletir no painel imediatamente
+            if (userRole === 'admin') {
+                localStorage.setItem('admin_nome', novoNome);
+            } else {
+                localStorage.setItem('assistente_nome', novoNome);
+            }
+
+            document.getElementById('avatarInicial').textContent = novoNome.charAt(0).toUpperCase();
+
+            // Se o usuário preencheu uma nova senha, salvamos na tabela existente (casal_config)
+            if (novaSenha) {
+                if (!senhaAtual) {
+                    document.getElementById('msgErro').textContent = "Digite a senha atual para alterar a senha.";
+                    document.getElementById('msgErro').style.display = 'block';
+                    return;
+                }
+
+                const campoSenha = userRole === 'admin' ? 'senha_admin' : 'senha_assistente';
+                
+                const { error } = await _supabase
+                    .from('casal_config')
+                    .update({ [campoSenha]: novaSenha })
+                    .eq('nome', casalAtivo);
+
+                if (error) {
+                    document.getElementById('msgErro').textContent = "Erro ao atualizar a senha no banco de dados.";
+                    document.getElementById('msgErro').style.display = 'block';
+                    return;
+                }
+            }
+
+            document.getElementById('msgErro').style.display = 'none';
+            const msg = document.getElementById('msgSucesso');
+            msg.style.display = 'block';
+            
+            document.getElementById('inputSenhaAtual').value = '';
+            document.getElementById('inputNovaSenha').value = '';
+
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
