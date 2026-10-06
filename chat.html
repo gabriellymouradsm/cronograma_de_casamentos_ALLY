@@ -267,9 +267,128 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
+        /* ===== ESTILO IDÊNTICO AO MODAL DE CONFIRMAÇÃO DO ALLY ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .modal-overlay.ativo {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: #fffaf5;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 22px 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            text-align: center;
+            box-sizing: border-box;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.ativo .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-icon-container {
+            width: 50px;
+            height: 50px;
+            background-color: #f7ecd7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px auto;
+            color: #b08d4b;
+            font-size: 22px;
+            font-family: Georgia, serif;
+            font-weight: bold;
+        }
+
+        .modal-titulo {
+            font-family: Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #382a23;
+            margin-bottom: 6px;
+        }
+
+        .modal-mensagem {
+            font-size: 0.8rem;
+            color: #725a4d;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .modal-botoes {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .modal-btn-cancelar {
+            background-color: #eadecc;
+            color: #3b2a22;
+        }
+
+        .modal-btn-cancelar:hover {
+            background-color: #d8c7b3;
+        }
+
+        .modal-btn-confirmar {
+            background-color: #a83838;
+            color: #ffffff;
+        }
+
+        .modal-btn-confirmar:hover {
+            background-color: #922f2f;
+        }
     </style>
 </head>
 <body>
+
+    <!-- MODAL DE CONFIRMAÇÃO ELEGANTE -->
+    <div class="modal-overlay" id="modalConfirmacao">
+        <div class="modal-card">
+            <div class="modal-icon-container">?</div>
+            <div class="modal-titulo" id="modalTituloText">Confirmação</div>
+            <div class="modal-mensagem" id="modalMensagemText">Deseja realmente realizar esta ação?</div>
+            <div class="modal-botoes">
+                <button class="modal-btn modal-btn-cancelar" onclick="fecharModalConfirmacao()">CANCELAR</button>
+                <button class="modal-btn modal-btn-confirmar" id="modalBtnConfirmar" onclick="executarAcaoConfirmada()">CONFIRMAR</button>
+            </div>
+        </div>
+    </div>
 
     <header class="brand-header">
         <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -317,8 +436,28 @@
     const mediaInput = document.getElementById('media-input');
     const fileNameDisplay = document.getElementById('file-name-display');
     const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
+    let funcaoCallbackPendente = null;
 
     let notasCache = [];
+
+    function abrirModalConfirmacao(titulo, mensagem, callback) {
+        document.getElementById('modalTituloText').textContent = titulo;
+        document.getElementById('modalMensagemText').textContent = mensagem;
+        funcaoCallbackPendente = callback;
+        document.getElementById('modalConfirmacao').classList.add('ativo');
+    }
+
+    function fecharModalConfirmacao() {
+        document.getElementById('modalConfirmacao').classList.remove('ativo');
+        funcaoCallbackPendente = null;
+    }
+
+    function executarAcaoConfirmada() {
+        if (funcaoCallbackPendente) {
+            funcaoCallbackPendente();
+        }
+        fecharModalConfirmacao();
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('notebook-title').innerText = `Notebook (${casalAtivo})`;
@@ -375,7 +514,7 @@
             ${mediaHTML}
             <div class="note-footer">
                 <span>${new Date(note.created_at).toLocaleDateString('pt-BR')}</span>
-                <button class="delete-note-btn" onclick="deleteNote(${note.id})">Apagar</button>
+                <button class="delete-note-btn" onclick="confirmarDeletarNota(${note.id})">Apagar</button>
             </div>
         `;
         notesList.appendChild(card);
@@ -452,15 +591,15 @@
         loadNotesFromSupabase();
     }
 
-    async function deleteNote(id) {
-        if (confirm("Deseja apagar esta anotação?")) {
+    function confirmarDeletarNota(id) {
+        abrirModalConfirmacao("Apagar Nota", "Deseja realmente apagar esta anotação?", async () => {
             const { error } = await _supabase.from('notas_notebook').delete().eq('id', id);
             if (!error) {
                 loadNotesFromSupabase();
             } else {
                 alert("Erro ao apagar nota.");
             }
-        }
+        });
     }
 </script>
 
