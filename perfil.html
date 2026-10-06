@@ -232,6 +232,11 @@
             <input type="password" id="inputNovaSenha" placeholder="Digite a nova senha...">
         </div>
 
+        <div class="form-group">
+            <label for="inputConfirmaSenha">Confirmar Nova Senha</label>
+            <input type="password" id="inputConfirmaSenha" placeholder="Confirme a nova senha...">
+        </div>
+
         <button class="btn-salvar-perfil" onclick="salvarPerfil()">Guardar Alterações</button>
         <div class="feedback-msg" id="msgSucesso">Perfil atualizado com sucesso!</div>
         <div class="error-msg" id="msgErro">Erro ao atualizar perfil.</div>
@@ -270,6 +275,10 @@
             const novoNome = document.getElementById('inputNome').value.trim();
             const senhaAtual = document.getElementById('inputSenhaAtual').value;
             const novaSenha = document.getElementById('inputNovaSenha').value;
+            const confirmaSenha = document.getElementById('inputConfirmaSenha').value;
+
+            document.getElementById('msgErro').style.display = 'none';
+            document.getElementById('msgSucesso').style.display = 'none';
 
             if (!novoNome) {
                 alert("Por favor, preencha o seu nome.");
@@ -278,9 +287,21 @@
 
             let dadosAtualizacao = { nome: novoNome };
 
-            if (novaSenha) {
+            if (novaSenha || confirmaSenha) {
                 if (!senhaAtual) {
                     document.getElementById('msgErro').textContent = "Digite a senha atual para confirmar a alteração.";
+                    document.getElementById('msgErro').style.display = 'block';
+                    return;
+                }
+
+                if (novaSenha !== confirmaSenha) {
+                    document.getElementById('msgErro').textContent = "As novas senhas não coincidem.";
+                    document.getElementById('msgErro').style.display = 'block';
+                    return;
+                }
+
+                if (novaSenha.length < 6) {
+                    document.getElementById('msgErro').textContent = "A nova senha deve ter pelo menos 6 caracteres.";
                     document.getElementById('msgErro').style.display = 'block';
                     return;
                 }
@@ -327,13 +348,13 @@
             nomeOriginal = novoNome;
 
             document.getElementById('avatarInicial').textContent = novoNome.charAt(0).toUpperCase();
-            document.getElementById('msgErro').style.display = 'none';
             
             const msg = document.getElementById('msgSucesso');
             msg.style.display = 'block';
             
             document.getElementById('inputSenhaAtual').value = '';
             document.getElementById('inputNovaSenha').value = '';
+            document.getElementById('inputConfirmaSenha').value = '';
 
             setTimeout(() => {
                 msg.style.display = 'none';
