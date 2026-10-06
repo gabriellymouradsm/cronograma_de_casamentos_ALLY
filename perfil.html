@@ -233,20 +233,22 @@
         </div>
 
         <button class="btn-salvar-perfil" onclick="salvarPerfil()">Guardar Alterações</button>
-        <div class="feedback-msg" id="msgSucesso">Perfil atualizado com sucesso!</div>
+        <div class="feedback-msg" id="msgSucesso">Perfil atualizado com sucesso no banco de dados!</div>
         <div class="error-msg" id="msgErro">Erro ao atualizar perfil.</div>
     </div>
 
     <script>
+        let nomeOriginal = "";
+
         window.addEventListener("DOMContentLoaded", function () {
             const userRole = localStorage.getItem('user_role') || 'admin';
             const adminNome = localStorage.getItem('admin_nome') || '';
             const assistenteNome = localStorage.getItem('assistente_nome') || '';
             
-            let nomeAtual = userRole === 'admin' ? (adminNome || 'Administrador') : (assistenteNome || 'Assistente');
+            nomeOriginal = userRole === 'admin' ? (adminNome || 'Administrador') : (assistenteNome || 'Assistente');
 
-            document.getElementById('inputNome').value = nomeAtual;
-            document.getElementById('avatarInicial').textContent = nomeAtual.charAt(0).toUpperCase();
+            document.getElementById('inputNome').value = nomeOriginal;
+            document.getElementById('avatarInicial').textContent = nomeOriginal.charAt(0).toUpperCase();
 
             if (userRole === 'admin') {
                 document.getElementById('textoCargoFixo').textContent = "Administrador(a)";
@@ -260,45 +262,48 @@
             const senhaAtual = document.getElementById('inputSenhaAtual').value;
             const novaSenha = document.getElementById('inputNovaSenha').value;
             const userRole = localStorage.getItem('user_role') || 'admin';
-            const casalAtivo = localStorage.getItem('casal_ativo');
 
             if (!novoNome) {
                 alert("Por favor, preencha o seu nome.");
                 return;
             }
 
-            // Atualiza o nome localmente para refletir no painel imediatamente
+            // Montamos o objeto de dados que será atualizado no banco
+            let dadosAtualizacao = { nome: novoNome };
+
+            // Se o usuário preencheu uma nova senha, validamos se informou a senha atual
+            if (novaSenha) {
+                if (!senhaAtual) {
+                    document.getElementById('msgErro').textContent = "Digite a senha atual para confirmar a alteração.";
+                    document.getElementById('msgErro').style.display = 'block';
+                    return;
+                }
+                dadosAtualizacao.senha = novaSenha; // Altere para o nome exato da coluna de senha na sua tabela colaboradores, ex: senha ou password
+            }
+
+            // Executa o UPDATE na tabela colaboradores com base no nome original cadastrado
+            const { error } = await _supabase
+                .from('colaboradores')
+                .update(dadosAtualizacao)
+                .eq('nome', nomeOriginal);
+
+            if (error) {
+                document.getElementById('msgErro').textContent = "Erro ao atualizar na tabela colaboradores: " + error.message;
+                document.getElementById('msgErro').style.display = 'block';
+                return;
+            }
+
+            // Atualiza também os dados locais salvos no navegador
             if (userRole === 'admin') {
                 localStorage.setItem('admin_nome', novoNome);
             } else {
                 localStorage.setItem('assistente_nome', novoNome);
             }
+            nomeOriginal = novoNome;
 
             document.getElementById('avatarInicial').textContent = novoNome.charAt(0).toUpperCase();
-
-            // Se o usuário preencheu uma nova senha, salvamos na tabela existente (casal_config)
-            if (novaSenha) {
-                if (!senhaAtual) {
-                    document.getElementById('msgErro').textContent = "Digite a senha atual para alterar a senha.";
-                    document.getElementById('msgErro').style.display = 'block';
-                    return;
-                }
-
-                const campoSenha = userRole === 'admin' ? 'senha_admin' : 'senha_assistente';
-                
-                const { error } = await _supabase
-                    .from('casal_config')
-                    .update({ [campoSenha]: novaSenha })
-                    .eq('nome', casalAtivo);
-
-                if (error) {
-                    document.getElementById('msgErro').textContent = "Erro ao atualizar a senha no banco de dados.";
-                    document.getElementById('msgErro').style.display = 'block';
-                    return;
-                }
-            }
-
             document.getElementById('msgErro').style.display = 'none';
+            
             const msg = document.getElementById('msgSucesso');
             msg.style.display = 'block';
             
