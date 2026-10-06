@@ -22,6 +22,10 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
+    <!-- PDFMAKE PARA GERAÇÃO DO PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
     <style>
         body {
             background-color: #f7f5f2;
@@ -144,47 +148,46 @@
             display: flex;
             gap: 15px;
             margin-top: 20px;
+            flex-direction: column;
         }
 
-        .btn-salvar {
-            flex: 1;
-            padding: 14px;
-            background-color: #3b2a22;
-            color: #ffffff;
-            border: none;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 15px;
-            transition: 0.2s;
+        @media(min-width: 600px) {
+            .btn-acoes {
+                flex-direction: row;
+            }
         }
 
-        .btn-salvar:hover { background-color: #4a352b; }
-
-        .btn-voltar-painel {
+        .btn-acao-custom {
             flex: 1;
             padding: 14px;
-            background-color: transparent;
-            color: #3b2a22;
-            border: 2px solid #3b2a22;
             border-radius: 25px;
             font-weight: bold;
             cursor: pointer;
             font-size: 15px;
             text-align: center;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             box-sizing: border-box;
             transition: 0.2s;
+            border: none;
         }
 
+        .btn-salvar { background-color: #3b2a22; color: #ffffff; }
+        .btn-salvar:hover { background-color: #4a352b; }
+
+        .btn-pdf { background-color: #eadecc; color: #3b2a22; }
+        .btn-pdf:hover { background-color: #d8c7b3; }
+
+        .btn-voltar-painel { background-color: transparent; color: #3b2a22; border: 2px solid #3b2a22; }
         .btn-voltar-painel:hover { background-color: #f2eee9; }
     </style>
 </head>
 <body>
 
     <header class="brand-header">
-        <h1 class="brand-title">Ally</h1>
+        <h1 class="brand-title" id="tituloHeader">Ally</h1>
         <p class="brand-tagline">RELATÓRIOS DETALHADOS DO EVENTO</p>
     </header>
 
@@ -256,9 +259,7 @@
                 <th class="cabecalho-chegadas" style="width: 45%;">OBSERVAÇÕES</th>
                 <th class="cabecalho-chegadas" style="width: 15%;">PREVISTO</th>
             </tr>
-            <tbody id="tabelaChegadasBody">
-                <!-- Gerado via script -->
-            </tbody>
+            <tbody id="tabelaChegadasBody"></tbody>
         </table>
 
         <!-- Bloco 4: Tempos e Movimentos -->
@@ -270,44 +271,26 @@
                 <th class="cabecalho-tempos" style="width: 38%;">OBSERVAÇÕES</th>
                 <th class="cabecalho-tempos" style="width: 12%;">PREVISTO</th>
             </tr>
-            <tbody id="tabelaTemposBody">
-                <!-- Gerado via script -->
-            </tbody>
+            <tbody id="tabelaTemposBody"></tbody>
         </table>
 
         <!-- Bloco 5: Resumo, Elogios, Histórico -->
         <div class="secao-titulo">5. Resumo & Relatórios Finais</div>
-        
         <table class="tabela-custom">
-            <tr>
-                <th class="cabecalho-chegadas">Resumo do Evento</th>
-            </tr>
-            <tr>
-                <td><textarea class="textarea-tabela" id="resumo_evento" placeholder="Escreva o resumo geral do evento..."></textarea></td>
-            </tr>
-            <tr>
-                <th class="cabecalho-cinza">Elogios | Comentários</th>
-            </tr>
-            <tr>
-                <td><textarea class="textarea-tabela" id="elogios" placeholder="Comentários e elogios recebidos..."></textarea></td>
-            </tr>
-            <tr>
-                <th class="cabecalho-azul">História do Casal</th>
-            </tr>
-            <tr>
-                <td><textarea class="textarea-tabela" id="historia_casal" placeholder="Detalhes sobre a história do casal..."></textarea></td>
-            </tr>
-            <tr>
-                <th class="cabecalho-azul">Noivo(a) / Observações Especiais</th>
-            </tr>
-            <tr>
-                <td><textarea class="textarea-tabela" id="observacoes_noivo" placeholder="Notas sobre os noivos..."></textarea></td>
-            </tr>
+            <tr><th class="cabecalho-chegadas">Resumo do Evento</th></tr>
+            <tr><td><textarea class="textarea-tabela" id="resumo_evento" placeholder="Escreva o resumo geral do evento..."></textarea></td></tr>
+            <tr><th class="cabecalho-cinza">Elogios | Comentários</th></tr>
+            <tr><td><textarea class="textarea-tabela" id="elogios" placeholder="Comentários e elogios recebidos..."></textarea></td></tr>
+            <tr><th class="cabecalho-azul">História do Casal</th></tr>
+            <tr><td><textarea class="textarea-tabela" id="historia_casal" placeholder="Detalhes sobre a história do casal..."></textarea></td></tr>
+            <tr><th class="cabecalho-azul">Noivo(a) / Observações Especiais</th></tr>
+            <tr><td><textarea class="textarea-tabela" id="observacoes_noivo" placeholder="Notas sobre os noivos..."></textarea></td></tr>
         </table>
 
         <div class="btn-acoes">
-            <button class="btn-salvar" onclick="salvarRelatorio()">💾 Salvar Relatório</button>
-            <a href="proxima_pagina.html" class="btn-voltar-painel">⬅ Voltar ao Painel</a>
+            <button class="btn-acao-custom btn-salvar" onclick="salvarRelatorio()">💾 Salvar Relatório</button>
+            <button class="btn-acao-custom btn-pdf" onclick="baixarPDFRelatorio()">📄 Baixar PDF</button>
+            <a href="proxima_pagina.html" class="btn-acao-custom btn-voltar-painel">⬅ Voltar ao Painel</a>
         </div>
 
     </div>
@@ -328,9 +311,17 @@
             "Buquê", "Coquetel de pista", "Término do evento"
         ];
 
-        let casalNome = localStorage.getItem('casal_ativo') || 'Teste';
+        let casalNome = localStorage.getItem('casal_ativo') || 'Casal';
+        let dataCasamento = localStorage.getItem('data_casamento_relatorio') || '-';
 
         window.addEventListener('DOMContentLoaded', async () => {
+            if (casalNome && casalNome !== 'Casal') {
+                document.getElementById('tituloHeader').textContent = "Ally — " + casalNome;
+                const { data } = await _supabase.from('casal_config').select('data_casamento').eq('nome', casalNome).maybeSingle();
+                if (data && data.data_casamento) {
+                    dataCasamento = data.data_casamento;
+                }
+            }
             carregarTabelasDinamicas();
             await carregarDadosSupabase();
         });
@@ -416,7 +407,7 @@
             }
         }
 
-        async function salvarRelatorio() {
+        function coletarDadosFormulario() {
             let chegadasArr = [];
             itensChegadas.forEach((item, index) => {
                 chegadasArr.push({
@@ -437,7 +428,7 @@
                 });
             });
 
-            const conteudoObjeto = {
+            return {
                 qtd_convidados: document.getElementById('qtd_convidados').value,
                 criancas: document.getElementById('criancas').value,
                 convidados_presentes: document.getElementById('convidados_presentes').value,
@@ -460,7 +451,10 @@
                 chegadas: chegadasArr,
                 tempos: temposArr
             };
+        }
 
+        async function salvarRelatorio() {
+            const conteudoObjeto = coletarDadosFormulario();
             const { error } = await _supabase
                 .from('relatorios_detalhados')
                 .upsert({ casal_nome: casalNome, conteudo: conteudoObjeto }, { onConflict: 'casal_nome' });
@@ -470,6 +464,156 @@
             } else {
                 alert("Relatório salvo com sucesso na nuvem! ✨");
             }
+        }
+
+        async function baixarPDFRelatorio() {
+            const c = coletarDadosFormulario();
+
+            let contentArray = [
+                { text: 'ALLY', style: 'brandTitle' },
+                { text: 'RELATÓRIO DETALHADO DO EVENTO', style: 'brandSubtitle' },
+                { canvas: [{ type: 'line', x1: 0, y1: 8, x2: 515, y2: 8, lineWidth: 1.5, lineColor: '#3b2a22' }] },
+                { text: '', margin: [0, 5] },
+
+                {
+                    table: {
+                        widths: ['*', '*'],
+                        body: [
+                            [
+                                { text: 'Casal / Evento: ' + casalNome, style: 'infoBoxText' },
+                                { text: 'Data do Casamento: ' + dataCasamento, style: 'infoBoxText' }
+                            ]
+                        ]
+                    },
+                    layout: {
+                        fillColor: function () { return '#fcfaf7'; },
+                        hLineWidth: function () { return 0.5; },
+                        vLineWidth: function () { return 0.5; },
+                        hLineColor: function () { return '#eadecc'; },
+                        vLineColor: function () { return '#eadecc'; },
+                        paddingTop: function () { return 6; },
+                        paddingBottom: function () { return 6; },
+                        paddingLeft: function () { return 8; },
+                        paddingRight: function () { return 8; }
+                    },
+                    margin: [0, 5, 0, 15]
+                },
+
+                { text: '1. Resumo de Convidados & Público', style: 'sectionTitle' },
+                {
+                    table: {
+                        widths: ['*', '*', '*', '*'],
+                        body: [
+                            [
+                                { text: 'Qtd. Convidados', style: 'tableHeader' },
+                                { text: c.qtd_convidados || '-', style: 'cellNormal' },
+                                { text: 'Crianças', style: 'tableHeader' },
+                                { text: c.criancas || '-', style: 'cellNormal' }
+                            ],
+                            [
+                                { text: 'Presentes', style: 'tableHeader' },
+                                { text: c.convidados_presentes || '-', style: 'cellNormal' },
+                                { text: 'Staff', style: 'tableHeader' },
+                                { text: c.staff || '-', style: 'cellNormal' }
+                            ]
+                        ]
+                    },
+                    layout: 'lightHorizontalLines',
+                    margin: [0, 0, 0, 10]
+                },
+
+                { text: '2. Checklists Operacionais', style: 'sectionTitle' },
+                {
+                    table: {
+                        widths: ['35%', '25%', '40%'],
+                        body: [
+                            [
+                                { text: 'Checklist', style: 'tableHeader' },
+                                { text: 'Status / Hora', style: 'tableHeader' },
+                                { text: 'Observações', style: 'tableHeader' }
+                            ],
+                            [{ text: 'Cozinha | Copa', style: 'cellBold' }, { text: c.chk_cozinha_status || '-', style: 'cellNormal' }, { text: c.chk_cozinha_obs || '-', style: 'cellNormal' }],
+                            [{ text: 'Confeitaria', style: 'cellBold' }, { text: c.chk_confeitaria_status || '-', style: 'cellNormal' }, { text: c.chk_confeitaria_obs || '-', style: 'cellNormal' }],
+                            [{ text: 'Decoração', style: 'cellBold' }, { text: c.chk_decoracao_status || '-', style: 'cellNormal' }, { text: c.chk_decoracao_obs || '-', style: 'cellNormal' }],
+                            [{ text: 'Almoço Staff', style: 'cellBold' }, { text: c.almoco_staff_status || '-', style: 'cellNormal' }, { text: c.almoco_staff_obs || '-', style: 'cellNormal' }],
+                            [{ text: 'Itens Comestíveis', style: 'cellBold' }, { text: c.itens_comestiveis_status || '-', style: 'cellNormal' }, { text: c.itens_comestiveis_obs || '-', style: 'cellNormal' }]
+                        ]
+                    },
+                    layout: 'lightHorizontalLines',
+                    margin: [0, 0, 0, 10]
+                },
+
+                { text: '3. Chegadas', style: 'sectionTitle' },
+                criarTabelaPDFDinamica(c.chegadas, ['Chegada', 'Hora', 'Observações', 'Previsto']),
+
+                { text: '4. Tempos e Movimentos', style: 'sectionTitle' },
+                criarTabelaPDFDinamica(c.tempos, ['Atividade', 'Hora', 'Observações', 'Previsto']),
+
+                { text: '5. Resumos & Relatórios Finais', style: 'sectionTitle' },
+                { text: 'Resumo do Evento:', bold: true, fontSize: 10, color: '#3b2a22', margin: [0, 5, 0, 2] },
+                { text: c.resumo_evento || 'Nenhum resumo registrado.', fontSize: 9, margin: [0, 0, 0, 8] },
+                { text: 'Elogios | Comentários:', bold: true, fontSize: 10, color: '#3b2a22', margin: [0, 5, 0, 2] },
+                { text: c.elogios || 'Nenhum comentário registrado.', fontSize: 9, margin: [0, 0, 0, 8] },
+                { text: 'História do Casal:', bold: true, fontSize: 10, color: '#3b2a22', margin: [0, 5, 0, 2] },
+                { text: c.historia_casal || 'Não informado.', fontSize: 9, margin: [0, 0, 0, 8] },
+                { text: 'Observações Especiais:', bold: true, fontSize: 10, color: '#3b2a22', margin: [0, 5, 0, 2] },
+                { text: c.observacoes_noivo || 'Não informado.', fontSize: 9, margin: [0, 0, 0, 8] }
+            ];
+
+            const docDefinition = {
+                pageSize: 'A4',
+                pageMargins: [36, 40, 36, 40],
+                content: contentArray,
+                styles: {
+                    brandTitle: { fontStyle: 'serif', fontSize: 22, bold: true, alignment: 'center', color: '#3b2a22' },
+                    brandSubtitle: { fontSize: 8, bold: true, alignment: 'center', color: '#725a4d', margin: [0, 2, 0, 0] },
+                    sectionTitle: { fontSize: 11, bold: true, color: '#3b2a22', margin: [0, 10, 0, 4] },
+                    tableHeader: { bold: true, fontSize: 8, color: '#ffffff', fillColor: '#3b2a22' },
+                    infoBoxText: { fontSize: 9, color: '#3b2a22', bold: false },
+                    cellBold: { fontSize: 8, bold: true, color: '#2c221e' },
+                    cellNormal: { fontSize: 8, color: '#333333' }
+                },
+                defaultStyle: { fontSize: 9, color: '#333333' }
+            };
+
+            pdfMake.createPdf(docDefinition).download('Relatorio_Detalhado_' + casalNome.replace(/\s+/g, '_') + '.pdf');
+        }
+
+        function criarTabelaPDFDinamica(dados, cabecalhos) {
+            if (!dados || dados.length === 0) {
+                return { text: 'Nenhum registro.', italic: true, fontSize: 8, margin: [0, 0, 0, 10] };
+            }
+            const bodyTable = [cabecalhos.map(h => ({ text: h, style: 'tableHeader' }))];
+            dados.forEach(item => {
+                bodyTable.push([
+                    { text: item.item || '-', style: 'cellBold' },
+                    { text: item.hora || '-', style: 'cellNormal' },
+                    { text: item.obs || '-', style: 'cellNormal' },
+                    { text: item.prev || '-', style: 'cellNormal' }
+                ]);
+            });
+            return {
+                table: {
+                    headerRows: 1,
+                    widths: ['35%', '15%', '35%', '15%'],
+                    body: bodyTable
+                },
+                layout: {
+                    fillColor: function (rowIndex) {
+                        if (rowIndex === 0) return '#3b2a22';
+                        return (rowIndex % 2 === 0) ? '#f9f6f0' : '#ffffff';
+                    },
+                    hLineWidth: function () { return 0.5; },
+                    vLineWidth: function () { return 0.5; },
+                    hLineColor: function () { return '#eadecc'; },
+                    vLineColor: function () { return '#eadecc'; },
+                    paddingTop: function () { return 4; },
+                    paddingBottom: function () { return 4; },
+                    paddingLeft: function () { return 6; },
+                    paddingRight: function () { return 6; }
+                },
+                margin: [0, 0, 0, 10]
+            };
         }
     </script>
 </body>
