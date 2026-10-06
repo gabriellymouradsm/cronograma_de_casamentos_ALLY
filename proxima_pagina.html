@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Controle - Casamento</title>
+    <title>Ally - Painel de Controle</title>
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b2a22">
@@ -12,10 +12,6 @@
     <meta name="apple-mobile-web-app-title" content="Ally">
     <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
     <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
-
-    <link rel="apple-touch-icon" sizes="180x180" href="imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="imagens/Logotipo Monograma Elegante Preto.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="imagens/Logotipo Monograma Elegante Preto.png">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -213,6 +209,32 @@
             transform: translateY(-2px);
         }
 
+        .btn-perfil {
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 30px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn-perfil:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
         .btn-voltar {
             width: 100%;
             padding: 13px;
@@ -272,7 +294,6 @@
             stroke-linejoin: round;
         }
 
-        /* MODAL DE SELEÇÃO DO PDF */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -431,6 +452,10 @@
                     📄 Criar PDF do Cronograma
                 </button>
 
+                <a href="perfil.html" class="btn-perfil">
+                    👤 Meu Perfil
+                </a>
+
                 <button class="btn-voltar" onclick="editarInformacoes()">
                     Trocar / Voltar
                 </button>
@@ -522,10 +547,14 @@
         let diasFaltandoGlobal = 0;
 
         window.addEventListener("DOMContentLoaded", async function () {
+            carregarDadosUsuario();
+            carregarDadosCasal();
+        });
+
+        function carregarDadosUsuario() {
             const userRole = localStorage.getItem('user_role');
             const adminNome = localStorage.getItem('admin_nome');
             const assistenteNome = localStorage.getItem('assistente_nome');
-            const casalAtivo = localStorage.getItem('casal_ativo');
 
             if (userRole === 'admin' && adminNome) {
                 document.getElementById("tituloNomeUsuario").textContent = adminNome;
@@ -533,11 +562,16 @@
             } else if (userRole === 'assistant' && assistenteNome) {
                 document.getElementById("tituloNomeUsuario").textContent = assistenteNome;
                 document.getElementById("subtituloPerfil").textContent = "Assistente de Campo";
+                
                 const btnRelatorios = document.getElementById('btnRelatoriosDetalhados');
                 if (btnRelatorios) {
                     btnRelatorios.style.display = 'none';
                 }
             }
+        }
+
+        async function carregarDadosCasal() {
+            const casalAtivo = localStorage.getItem('casal_ativo');
 
             const { data, error } = await _supabase
                 .from('casal_config')
@@ -560,7 +594,7 @@
                 alert("Nenhum dado encontrado para este casal. Voltando ao início.");
                 window.location.href = "index.html";
             }
-        });
+        }
 
         function atualizarCronometro() {
             if (!dataSalva || !horarioSalvo) return;
@@ -778,16 +812,5 @@
             };
         }
     </script>
-
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then(reg => console.log('Service Worker registado com sucesso:', reg.scope))
-                .catch(err => console.log('Falha ao registar o Service Worker:', err));
-        });
-    }
-</script>
-
 </body>
 </html>
