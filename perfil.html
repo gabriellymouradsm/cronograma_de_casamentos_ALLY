@@ -233,7 +233,7 @@
         </div>
 
         <button class="btn-salvar-perfil" onclick="salvarPerfil()">Guardar Alterações</button>
-        <div class="feedback-msg" id="msgSucesso">Perfil atualizado com sucesso no banco de dados!</div>
+        <div class="feedback-msg" id="msgSucesso">Perfil atualizado com sucesso!</div>
         <div class="error-msg" id="msgErro">Erro ao atualizar perfil.</div>
     </div>
 
@@ -262,38 +262,48 @@
             const senhaAtual = document.getElementById('inputSenhaAtual').value;
             const novaSenha = document.getElementById('inputNovaSenha').value;
             const userRole = localStorage.getItem('user_role') || 'admin';
+            const casalAtivo = localStorage.getItem('casal_ativo');
 
             if (!novoNome) {
                 alert("Por favor, preencha o seu nome.");
                 return;
             }
 
-            // Montamos o objeto de dados que será atualizado no banco
-            let dadosAtualizacao = { nome: novoNome };
-
-            // Se o usuário preencheu uma nova senha, validamos se informou a senha atual
+            // Se o usuário preencheu uma nova senha, validamos a senha atual e fazemos o update na tabela `casal_config`
             if (novaSenha) {
                 if (!senhaAtual) {
                     document.getElementById('msgErro').textContent = "Digite a senha atual para confirmar a alteração.";
                     document.getElementById('msgErro').style.display = 'block';
                     return;
                 }
-                dadosAtualizacao.senha = novaSenha; // Altere para o nome exato da coluna de senha na sua tabela colaboradores, ex: senha ou password
+
+                const campoSenha = userRole === 'admin' ? 'senha_admin' : 'senha_assistente';
+                
+                const { error: errSenha } = await _supabase
+                    .from('casal_config')
+                    .update({ [campoSenha]: novaSenha })
+                    .eq('nome', casalAtivo);
+
+                if (errSenha) {
+                    document.getElementById('msgErro').textContent = "Erro ao atualizar senha: " + errSenha.message;
+                    document.getElementById('msgErro').style.display = 'block';
+                    return;
+                }
             }
 
-            // Executa o UPDATE na tabela colaboradores com base no nome original cadastrado
-            const { error } = await _supabase
+            // Atualiza o nome na tabela `colaboradores` apenas fazendo o UPDATE (sem inserir novo registro)
+            const { error: errColab } = await _supabase
                 .from('colaboradores')
-                .update(dadosAtualizacao)
+                .update({ nome: novoNome })
                 .eq('nome', nomeOriginal);
 
-            if (error) {
-                document.getElementById('msgErro').textContent = "Erro ao atualizar na tabela colaboradores: " + error.message;
+            if (errColab) {
+                document.getElementById('msgErro').textContent = "Erro ao atualizar nome no banco: " + errColab.message;
                 document.getElementById('msgErro').style.display = 'block';
                 return;
             }
 
-            // Atualiza também os dados locais salvos no navegador
+            // Atualiza os dados locais salvos no navegador
             if (userRole === 'admin') {
                 localStorage.setItem('admin_nome', novoNome);
             } else {
