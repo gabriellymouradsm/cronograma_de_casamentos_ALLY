@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Escolhas do Casal - Ally</title>
+
+    <!-- Configurações PWA e Ícones -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b2a22">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ally">
+    <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f7f5f2;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 0 5px;
+        }
+
+        .brand-title {
+            font-family: Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+            word-break: break-word;
+        }
+
+        .brand-tagline {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #725a4d;
+            margin-top: 4px;
+        }
+
+        .container-relatorio {
+            width: 100%;
+            max-width: 950px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 12px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        @media(min-width: 768px) {
+            .container-relatorio {
+                padding: 25px;
+                border-radius: 16px;
+            }
+            .brand-title {
+                font-size: 2rem;
+            }
+        }
+
+        .secao-titulo {
+            font-size: 12px;
+            font-weight: bold;
+            color: #3b2a22;
+            margin: 18px 0 8px 0;
+            border-bottom: 2px solid #3b2a22;
+            padding-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media(min-width: 768px) {
+            .secao-titulo {
+                font-size: 15px;
+                margin: 22px 0 10px 0;
+            }
+        }
+
+        table.tabela-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            table-layout: fixed;
+            margin-bottom: 12px;
+        }
+
+        @media(min-width: 768px) {
+            table.tabela-custom {
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+        }
+
+        table.tabela-custom th, table.tabela-custom td {
+            border: 1px solid #dcd6cd;
+            padding: 6px 6px;
+            text-align: left;
+            vertical-align: middle;
+            word-break: break-word;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        @media(min-width: 768px) {
+            table.tabela-custom th, table.tabela-custom td {
+                padding: 10px 12px;
+            }
+        }
+
+        table.tabela-custom th {
+            background-color: #3b2a22;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        @media(min-width: 768px) {
+            table.tabela-custom th {
+                font-size: 12px;
+            }
+        }
+
+        .cabecalho-chegadas {
+            background-color: #c4683a !important;
+            color: #ffffff !important;
+        }
+
+        .cabecalho-tempos {
+            background-color: #d4a32e !important;
+            color: #3b2a22 !important;
+        }
+
+        .cabecalho-azul {
+            background-color: #5c93c4 !important;
+            color: #ffffff !important;
+        }
+
+        .cabecalho-cinza {
+            background-color: #7f7f7f !important;
+            color: #ffffff !important;
+        }
+
+        textarea.input-tabela, select.select-tabela {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 11px;
+            color: #333333;
+            outline: none;
+            resize: none;
+            min-height: 22px;
+            line-height: 1.2;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            box-sizing: border-box;
+            word-break: break-word;
+            white-space: pre-wrap;
+            padding: 0;
+            margin: 0;
+        }
+
+        @media(min-width: 768px) {
+            textarea.input-tabela, select.select-tabela {
+                font-size: 13px;
+                min-height: 26px;
+            }
+        }
+
+        textarea.textarea-tabela {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 11px;
+            color: #333333;
+            outline: none;
+            resize: vertical;
+            min-height: 50px;
+            padding: 4px;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.4;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        @media(min-width: 768px) {
+            textarea.textarea-tabela {
+                font-size: 13px;
+                min-height: 70px;
+            }
+        }
+
+        .opt-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            padding: 4px 0;
+        }
+
+        @media(min-width: 600px) {
+            .opt-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .opt-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #333;
+            background: #fcfaf7;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #eadecc;
+            cursor: pointer;
+        }
+
+        .opt-item input[type="checkbox"], .opt-item input[type="radio"] {
+            accent-color: #3b2a22;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Área de Upload de Fotos de Referência */
+        .upload-container {
+            border: 2px dashed #3b2a22;
+            background-color: #fcfaf7;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .upload-container:hover {
+            background-color: #f4eee6;
+        }
+
+        .upload-icon {
+            font-size: 24px;
+            color: #725a4d;
+            margin-bottom: 5px;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .preview-card {
+            position: relative;
+            width: 100%;
+            height: 90px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #dcd6cd;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .preview-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(168, 56, 56, 0.85);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-acoes {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-direction: column;
+        }
+
+        @media(min-width: 600px) {
+            .btn-acoes {
+                flex-direction: row;
+            }
+        }
+
+        .btn-acao-custom {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            transition: 0.2s;
+            border: none;
+        }
+
+        .btn-salvar { background-color: #3b2a22; color: #ffffff; }
+        .btn-salvar:hover { background-color: #4a352b; }
+
+        .btn-voltar-painel { background-color: transparent; color: #3b2a22; border: 2px solid #3b2a22; }
+        .btn-voltar-painel:hover { background-color: #f2eee9; }
+
+        .badge-espaco {
+            display: inline-block;
+            background-color: #725a4d;
+            color: #ffffff;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="brand-header">
+        <h1 class="brand-title" id="tituloHeader">Ally — Villa Vezzane</h1>
+        <p class="brand-tagline">FORMULÁRIO DE ESCOLHAS DO CASAL</p>
+        <span class="badge-espaco" id="badgeEspaco">Villa Vezzane</span>
+    </header>
+
+    <div class="container-relatorio">
+
+        <!-- BLOCO 1: INFORMAÇÕES GERAIS -->
+        <div class="secao-titulo"><i class="fa-solid fa-ring"></i> 1. Informações Gerais do Evento</div>
+        <table class="tabela-custom">
+            <colgroup>
+                <col style="width: 35%;">
+                <col style="width: 15%;">
+                <col style="width: 35%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <tr>
+                <th>NOME DO CASAL</th>
+                <td colspan="3"><textarea class="input-tabela" id="form_casal_nome" rows="1" readonly></textarea></td>
+            </tr>
+            <tr>
+                <th>QTD. CONVIDADOS</th>
+                <td><textarea class="input-tabela" id="form_qtd_convidados" placeholder="000+00" rows="1" oninput="autoResize(this)"></textarea></td>
+                <th>HORA NO CONVITE</th>
+                <td><textarea class="input-tabela" id="form_horario_convite" placeholder="00h00" rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+            <tr>
+                <th>TEMPO DE EVENTO</th>
+                <td><textarea class="input-tabela" id="form_tempo_evento" placeholder="Ex: 6 horas" rows="1" oninput="autoResize(this)"></textarea></td>
+                <th>DATA CASAMENTO</th>
+                <td><textarea class="input-tabela" id="form_data_casamento" placeholder="DD/MM/AAAA" rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+        </table>
+
+        <!-- BLOCO 2: SELEÇÃO DO CARDÁPIO CONTRATADO -->
+        <div class="secao-titulo"><i class="fa-solid fa-utensils"></i> 2. Escolha do Cardápio & Gastronomia</div>
+        <table class="tabela-custom">
+            <tr>
+                <th class="cabecalho-chegadas" style="width: 40%;">CARDÁPIO CONTRATADO</th>
+                <td>
+                    <select id="selectCardapio" class="select-tabela" onchange="alternarCardapioExibido()">
+                        <option value="veneza">Menu Veneza</option>
+                        <option value="napoles">Menu Nápoles</option>
+                        <option value="napoles2">Menu Nápoles 2</option>
+                        <option value="toscana">Menu Toscana</option>
+                        <option value="florenca">Menu Florença</option>
+                        <option value="florenca2">Menu Florença 2</option>
+                        <option value="roma">Menu Roma</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <!-- ÁREA DINÂMICA DO MENU SELECIONADO -->
+        <div id="containerMenuDinamico"></div>
+
+        <!-- BLOCO 3: DECORAÇÃO & MOVELARIA + FOTOS DE REFERÊNCIA -->
+        <div class="secao-titulo"><i class="fa-solid fa-wand-magic-sparkles"></i> 3. Decoração, Movelaria & Fotos de Referência</div>
+        
+        <table class="tabela-custom">
+            <tr>
+                <th class="cabecalho-azul" colspan="2">Fundo da Cerimônia (Estrutura)</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="opt-grid">
+                        <label class="opt-item"><input type="radio" name="fundo_cerimonia" value="Quadrado"> Quadrado</label>
+                        <label class="opt-item"><input type="radio" name="fundo_cerimonia" value="Triangulo"> Triângulo com 2 arranjos</label>
+                        <label class="opt-item"><input type="radio" name="fundo_cerimonia" value="Nenhum"> Nenhum</label>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="cabecalho-azul" colspan="2">Cor do Tapete da Passarela</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="opt-grid">
+                        <label class="opt-item"><input type="radio" name="cor_tapete" value="Verde"> Verde</label>
+                        <label class="opt-item"><input type="radio" name="cor_tapete" value="Bege"> Bege</label>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="cabecalho-azul" colspan="2">Arranjos da Cerimônia (Estilo)</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="opt-grid">
+                        <label class="opt-item"><input type="radio" name="estilo_arranjos" value="100% Branco"> 100% Branco</label>
+                        <label class="opt-item"><input type="radio" name="estilo_arranjos" value="Mix Branco e Samambaias"> Mix Branco e Samambaias</label>
+                        <label class="opt-item"><input type="radio" name="estilo_arranjos" value="Boho Neutro com Branco"> Boho Neutro com Branco</label>
+                        <label class="opt-item"><input type="radio" name="estilo_arranjos" value="Boho com Samambaias"> Boho com Samambaias</label>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="cabecalho-azul" colspan="2">Dobradura dos Guardanapos</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="opt-grid">
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Envelope"> Envelope</label>
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Pata"> Pata</label>
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Concha"> Concha</label>
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Nó"> Nó</label>
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Embaixo do Prato"> Embaixo do Prato</label>
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Flor Alta"> Flor Alta</label>
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Botão de Flor"> Botão de Flor</label>
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Chapéu de Bispo"> Chapéu de Bispo</label>
+                        <label class="opt-item"><input type="radio" name="dobradura_guardanapo" value="Coração"> Coração</label>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="cabecalho-azul" colspan="2">Modelo do Bolo Cenográfico</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="opt-grid">
+                        <label class="opt-item"><input type="radio" name="bolo_cenografico" value="Bolo Boho"> Bolo Boho (Flores no tom)</label>
+                        <label class="opt-item"><input type="radio" name="bolo_cenografico" value="Bolo Faixas"> Bolo Faixas</label>
+                        <label class="opt-item"><input type="radio" name="bolo_cenografico" value="Clássico Liso"> Clássico Liso</label>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="cabecalho-azul" colspan="2">Posicionamento da Mesa do Bolo</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="opt-grid">
+                        <label class="opt-item"><input type="radio" name="posicao_mesa_bolo" value="Dentro do Salão"> Dentro do Salão</label>
+                        <label class="opt-item"><input type="radio" name="posicao_mesa_bolo" value="Na Parte Externa (Janela)"> Na Parte Externa (Janela)</label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- CAMPO DE UPLOAD DE FOTOS DE REFERÊNCIA -->
+        <div class="secao-titulo"><i class="fa-solid fa-camera"></i> Fotos de Inspiração & Referências da Decoração</div>
+        <p style="font-size: 11px; color: #666; margin-bottom: 6px;">
+            Anexe fotos de inspiração para a mesa do bolo, buquê ou arranjos (retiradas do @villavezzane ou Pinterest):
+        </p>
+
+        <div class="upload-container" onclick="document.getElementById('inputFotosDecor').click()">
+            <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <div style="font-size: 12px; font-weight: bold; color: #3b2a22;">Clique aqui para selecionar fotos</div>
+            <div style="font-size: 10px; color: #725a4d;">(Formatos suportados: JPG, PNG - Máx. 5 fotos)</div>
+            <input type="file" id="inputFotosDecor" multiple accept="image/*" style="display: none;" onchange="processarFotosDecor(this)">
+        </div>
+
+        <div class="preview-grid" id="gridPreviewFotos"></div>
+
+        <!-- BLOCO 4: CERIMÔNIA, CORTEJO & SOM -->
+        <div class="secao-titulo"><i class="fa-solid fa-music"></i> 4. Cerimônia, Cortejo & Som</div>
+        <table class="tabela-custom">
+            <tr>
+                <th>NOME DO CELEBRANTE</th>
+                <td><textarea class="input-tabela" id="form_celebrante_nome" placeholder="Nome do Celebrante ou Religioso" rows="1" oninput="autoResize(this)"></textarea></td>
+            </tr>
+            <tr>
+                <th class="cabecalho-chegadas" colspan="2">Itens para Entrada no Cortejo</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="opt-grid">
+                        <label class="opt-item"><input type="checkbox" id="chk_lapelas"> Flor de Lapela (Noivo / Padrinhos / Pais)</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_placa"> Placa ou Flâmula (Pajem / Daminha)</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_minibuque"> Mini Buquê (Damas / Madrinhas)</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_votos"> Votos Pessoais</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_porta_aliancas"> Porta-Alianças</label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- BLOCO 5: SUÍTE & ACOMPANHANTES -->
+        <div class="secao-titulo"><i class="fa-solid fa-bed"></i> 5. Utilização da Suíte no Dia do Evento</div>
+        <table class="tabela-custom">
+            <tr>
+                <th class="cabecalho-tempos">Regras de Acompanhantes na Suíte</th>
+            </tr>
+            <tr>
+                <td style="font-size: 11px; color: #555; background: #fcfaf7;">
+                    <b>Villa Vezzane:</b> Permitido até 10 acompanhantes para a noiva e 1 acompanhante para o noivo na suíte pré-cerimônia.
+                </td>
+            </tr>
+            <tr>
+                <th>LISTA DE ACOMPANHANTES AUTORIZADOS</th>
+            </tr>
+            <tr>
+                <td><textarea class="textarea-tabela" id="form_lista_suite" placeholder="Digite os nomes dos acompanhantes da noiva e do noivo que utilizarão a suíte..."></textarea></td>
+            </tr>
+        </table>
+
+        <!-- BLOCO 6: OBSERVAÇÕES FINAIS -->
+        <div class="secao-titulo"><i class="fa-solid fa-heart"></i> 6. Observações Especiais do Casal</div>
+        <table class="tabela-custom">
+            <tr>
+                <th class="cabecalho-cinza">Recomendações, Surpresas & Detalhes Adicionais</th>
+            </tr>
+            <tr>
+                <td><textarea class="textarea-tabela" id="form_observacoes_finais" placeholder="Escreva aqui qualquer observação importante para a equipe de assessoria..."></textarea></td>
+            </tr>
+        </table>
+
+        <div class="btn-acoes">
+            <button class="btn-acao-custom btn-salvar" onclick="salvarFormularioCasal()">💾 Salvar e Enviar Respostas no Ally</button>
+            <a href="proxima_pagina.html" class="btn-acao-custom btn-voltar-painel">⬅ Voltar ao Painel</a>
+        </div>
+
+    </div>
+
+    <!-- Notificação Toast -->
+    <div id="toastNotificacao" style="position: fixed; bottom: 20px; right: 15px; left: 15px; max-width: 360px; margin: 0 auto; background-color: #3b2a22; color: #ffffff; padding: 12px 18px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; z-index: 9999; opacity: 0; transform: translateY(20px); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; font-size: 12px; border-left: 5px solid #d4a32e; box-sizing: border-box;">
+        <span style="font-size: 18px;">✨</span>
+        <div>
+            <div style="font-weight: bold;">Sucesso!</div>
+            <div id="toastTexto" style="font-size: 10px; color: #e5ded6;">Suas respostas foram salvas com sucesso.</div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const casalNome = urlParams.get('casal') || localStorage.getItem('casal_ativo') || 'Casal';
+        let fotosDecorBase64 = [];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('form_casal_nome').value = casalNome;
+            document.getElementById('tituloHeader').textContent = "Ally — " + casalNome;
+            
+            alternarCardapioExibido();
+            await carregarFormularioSupabase();
+        });
+
+        function autoResize(textarea) {
+            if (!textarea) return;
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        function mostrarNotificacao(mensagem) {
+            const toast = document.getElementById('toastNotificacao');
+            document.getElementById('toastTexto').textContent = mensagem;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            toast.style.pointerEvents = 'auto';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.pointerEvents = 'none';
+            }, 4000);
+        }
+
+        // ALTERNÂNCIA DINÂMICA DOS CARDÁPIOS DAS PLANILHAS VEZZANE
+        function alternarCardapioExibido() {
+            const menu = document.getElementById('selectCardapio').value;
+            const container = document.getElementById('containerMenuDinamico');
+
+            if (menu === 'veneza') {
+                container.innerHTML = `
+                    <table class="tabela-custom">
+                        <tr><th class="cabecalho-chegadas">Coquetel de Boas-Vindas (Canapés à Francesa - Escolher 3 opções)</th></tr>
+                        <tr><td>
+                            <div class="opt-grid">
+                                <label class="opt-item"><input type="checkbox" name="veneza_pates" value="Atum"> Atum</label>
+                                <label class="opt-item"><input type="checkbox" name="veneza_pates" value="Frango"> Frango</label>
+                                <label class="opt-item"><input type="checkbox" name="veneza_pates" value="Berinjela"> Berinjela</label>
+                                <label class="opt-item"><input type="checkbox" name="veneza_pates" value="Tomate Seco"> Tomate Seco</label>
+                                <label class="opt-item"><input type="checkbox" name="veneza_pates" value="Azeitona Preta"> Azeitona Preta</label>
+                                <label class="opt-item"><input type="checkbox" name="veneza_pates" value="Queijo"> Queijo</label>
+                            </div>
+                        </td></tr>
+                        <tr><th class="cabecalho-azul">Jantar Prato Principal (Escolher 2 opções)</th></tr>
+                        <tr><td>
+                            <div class="opt-grid">
+                                <label class="opt-item"><input type="checkbox" name="veneza_pratos" value="Maminha ao molho madeira"> Maminha ao molho madeira</label>
+                                <label class="opt-item"><input type="checkbox" name="veneza_pratos" value="Lombo Suíno"> Lombo Suíno</label>
+                                <label class="opt-item"><input type="checkbox" name="veneza_pratos" value="Filé de Frango ao molho da casa"> Filé de Frango ao molho da casa</label>
+                            </div>
+                        </td></tr>
+                        <tr><th class="cabecalho-cinza">Bolo (Escolher 1 opção)</th></tr>
+                        <tr><td>
+                            <div class="opt-grid">
+                                <label class="opt-item"><input type="radio" name="veneza_bolo" value="Red Velvet com Frutas Vermelhas ao Vinho"> Red Velvet com Frutas Vermelhas</label>
+                                <label class="opt-item"><input type="radio" name="veneza_bolo" value="Massa Branca com Limão Siciliano"> Massa Branca com Limão Siciliano</label>
+                                <label class="opt-item"><input type="radio" name="veneza_bolo" value="Massa Branca com Doce de Leite e Nozes"> Massa Branca com Doce de Leite e Nozes</label>
+                                <label class="opt-item"><input type="radio" name="veneza_bolo" value="Massa de Chocolate com Mousse Belga"> Massa de Chocolate com Mousse Belga</label>
+                            </div>
+                        </td></tr>
+                    </table>
+                `;
+            } else if (menu === 'napoles' || menu === 'napoles2') {
+                container.innerHTML = `
+                    <table class="tabela-custom">
+                        <tr><th class="cabecalho-chegadas">Salgados do Coquetel (Escolher 3 opções)</th></tr>
+                        <tr><td>
+                            <div class="opt-grid">
+                                <label class="opt-item"><input type="checkbox" name="napoles_salgados" value="Croquetas de cupim"> Croquetas de cupim</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_salgados" value="Croquetas de feijoada"> Croquetas de feijoada</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_salgados" value="Bolinho de tapioca"> Bolinho de tapioca</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_salgados" value="Bolinho de queijo"> Bolinho de queijo</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_salgados" value="Coxinha de frango"> Coxinha de frango</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_salgados" value="Kibe tradicional"> Kibe tradicional</label>
+                            </div>
+                        </td></tr>
+                        <tr><th class="cabecalho-azul">Pizzas Salgadas (Escolher 5 opções)</th></tr>
+                        <tr><td>
+                            <div class="opt-grid">
+                                <label class="opt-item"><input type="checkbox" name="napoles_pizzas" value="Atum"> Atum</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_pizzas" value="Bauru"> Bauru</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_pizzas" value="Frango com Catupiry"> Frango com Catupiry</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_pizzas" value="Calabresa"> Calabresa</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_pizzas" value="Muçarela"> Muçarela</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_pizzas" value="Marguerita"> Marguerita</label>
+                                <label class="opt-item"><input type="checkbox" name="napoles_pizzas" value="Iscas Mignon com Queijo"> Iscas Mignon com Queijo</label>
+                            </div>
+                        </td></tr>
+                    </table>
+                `;
+            } else if (menu === 'toscana') {
+                container.innerHTML = `
+                    <table class="tabela-custom">
+                        <tr><th class="cabecalho-chegadas">Opção de Massa do Fogão (Escolher 1 opção e o Molho)</th></tr>
+                        <tr><td>
+                            <div class="opt-grid">
+                                <label class="opt-item"><input type="radio" name="toscana_massa" value="Nhoque de batata"> Nhoque de batata</label>
+                                <label class="opt-item"><input type="radio" name="toscana_massa" value="Ravióli de muçarela"> Ravióli de muçarela</label>
+                                <label class="opt-item"><input type="radio" name="toscana_massa" value="Capelete de carne"> Capelete de carne</label>
+                            </div>
+                            <div style="margin-top: 8px; font-weight: bold; font-size: 11px;">Molho:</div>
+                            <div class="opt-grid">
+                                <label class="opt-item"><input type="radio" name="toscana_molho" value="Branco"> Branco</label>
+                                <label class="opt-item"><input type="radio" name="toscana_molho" value="Sugo"> Sugo</label>
+                                <label class="opt-item"><input type="radio" name="toscana_molho" value="Bolonhesa"> Bolonhesa</label>
+                                <label class="opt-item"><input type="radio" name="toscana_molho" value="Rosê"> Rosê</label>
+                            </div>
+                        </td></tr>
+                    </table>
+                `;
+            } else {
+                container.innerHTML = `
+                    <table class="tabela-custom">
+                        <tr><th class="cabecalho-chegadas">Detalhes e Escolhas do Menu ${menu.toUpperCase()}</th></tr>
+                        <tr><td>
+                            <textarea class="textarea-tabela" id="form_menu_generico_obs" placeholder="Descreva aqui as escolhas específicas do seu menu..."></textarea>
+                        </td></tr>
+                    </table>
+                `;
+            }
+        }
+
+        // PROCESSAMENTO DE FOTOS DE REFERÊNCIA
+        function processarFotosDecor(input) {
+            const files = Array.from(input.files);
+            if (files.length + fotosDecorBase64.length > 5) {
+                alert("Você pode anexar no máximo 5 fotos de referência.");
+                return;
+            }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    fotosDecorBase64.push(e.target.result);
+                    renderizarPreviewFotos();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderizarPreviewFotos() {
+            const grid = document.getElementById('gridPreviewFotos');
+            grid.innerHTML = '';
+            fotosDecorBase64.forEach((base64, idx) => {
+                grid.innerHTML += `
+                    <div class="preview-card">
+                        <img src="${base64}" alt="Referência ${idx + 1}">
+                        <button type="button" class="btn-remove-img" onclick="removerFotoDecor(${idx})">✕</button>
+                    </div>
+                `;
+            });
+        }
+
+        function removerFotoDecor(index) {
+            fotosDecorBase64.splice(index, 1);
+            renderizarPreviewFotos();
+        }
+
+        // CARREGAR E SALVAR NO SUPABASE
+        async function carregarFormularioSupabase() {
+            const { data, error } = await _supabase
+                .from('formulario_casal_respostas')
+                .select('*')
+                .eq('casal_nome', casalNome)
+                .maybeSingle();
+
+            if (!error && data && data.respostas) {
+                const r = data.respostas;
+                document.getElementById('form_qtd_convidados').value = r.qtd_convidados || '';
+                document.getElementById('form_horario_convite').value = r.horario_convite || '';
+                document.getElementById('form_tempo_evento').value = r.tempo_evento || '';
+                document.getElementById('form_data_casamento').value = r.data_casamento || '';
+                if (r.cardapio_selecionado) {
+                    document.getElementById('selectCardapio').value = r.cardapio_selecionado;
+                    alternarCardapioExibido();
+                }
+
+                document.getElementById('form_celebrante_nome').value = r.celebrante_nome || '';
+                document.getElementById('form_lista_suite').value = r.lista_suite || '';
+                document.getElementById('form_observacoes_finais').value = r.observacoes_finais || '';
+
+                if (r.fotos_referencia) {
+                    fotosDecorBase64 = r.fotos_referencia;
+                    renderizarPreviewFotos();
+                }
+
+                document.querySelectorAll('textarea').forEach(ta => autoResize(ta));
+            }
+        }
+
+        async function salvarFormularioCasal() {
+            const respostasObjeto = {
+                qtd_convidados: document.getElementById('form_qtd_convidados').value,
+                horario_convite: document.getElementById('form_horario_convite').value,
+                tempo_evento: document.getElementById('form_tempo_evento').value,
+                data_casamento: document.getElementById('form_data_casamento').value,
+                cardapio_selecionado: document.getElementById('selectCardapio').value,
+                fundo_cerimonia: document.querySelector('input[name="fundo_cerimonia"]:checked')?.value || '',
+                cor_tapete: document.querySelector('input[name="cor_tapete"]:checked')?.value || '',
+                estilo_arranjos: document.querySelector('input[name="estilo_arranjos"]:checked')?.value || '',
+                dobradura_guardanapo: document.querySelector('input[name="dobradura_guardanapo"]:checked')?.value || '',
+                bolo_cenografico: document.querySelector('input[name="bolo_cenografico"]:checked')?.value || '',
+                posicao_mesa_bolo: document.querySelector('input[name="posicao_mesa_bolo"]:checked')?.value || '',
+                fotos_referencia: fotosDecorBase64,
+                celebrante_nome: document.getElementById('form_celebrante_nome').value,
+                lista_suite: document.getElementById('form_lista_suite').value,
+                observacoes_finais: document.getElementById('form_observacoes_finais').value
+            };
+
+            const { error } = await _supabase
+                .from('formulario_casal_respostas')
+                .upsert({
+                    casal_nome: casalNome,
+                    local_espaco: 'vezzane',
+                    respostas: respostasObjeto,
+                    atualizado_em: new Date().toISOString()
+                }, { onConflict: 'casal_nome' });
+
+            if (error) {
+                alert("Erro ao salvar respostas: " + error.message);
+            } else {
+                mostrarNotificacao("Suas respostas e fotos de referência foram salvas no Ally!");
+            }
+        }
+    </script>
+</body>
+</html>
