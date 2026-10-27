@@ -412,18 +412,18 @@
                     <span>Relatórios</span>
                 </a>
 
-                <button class="btn-quadrado" onclick="abrirModalPDF()">
+                <button type="button" class="btn-quadrado" onclick="abrirModalPDF()">
                     <i class="fa-solid fa-file-pdf"></i>
                     <span>Criar PDF</span>
                 </button>
 
-                <!-- Botões Exclusivos para Administrador (Formulário do Casal) -->
-                <a href="#" class="btn-quadrado admin-only" onclick="acessarFormularioCasal(event)">
+                <!-- Botão de Acesso do Administrador ao Formulário -->
+                <button type="button" class="btn-quadrado admin-only" onclick="abrirFormularioAdmin()">
                     <i class="fa-solid fa-clipboard-check"></i>
                     <span>Acessar Form. Casal</span>
-                </a>
+                </button>
 
-                <button class="btn-quadrado admin-only" onclick="abrirModalEnviarForm()">
+                <button type="button" class="btn-quadrado admin-only" onclick="abrirModalEnviarForm()">
                     <i class="fa-solid fa-paper-plane"></i>
                     <span>Enviar Form. Casal</span>
                 </button>
@@ -433,7 +433,7 @@
                     <span>Meu Perfil</span>
                 </a>
 
-                <button class="btn-quadrado" onclick="editarInformacoes()">
+                <button type="button" class="btn-quadrado" onclick="editarInformacoes()">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Trocar / Voltar</span>
                 </button>
@@ -513,8 +513,8 @@
             </div>
 
             <div class="modal-actions">
-                <button class="btn-modal-cancelar" onclick="fecharModalPDF()">Cancelar</button>
-                <button class="btn-modal-gerar" onclick="gerarPDFPersonalizado()">Gerar PDF</button>
+                <button type="button" class="btn-modal-cancelar" onclick="fecharModalPDF()">Cancelar</button>
+                <button type="button" class="btn-modal-gerar" onclick="gerarPDFPersonalizado()">Gerar PDF</button>
             </div>
         </div>
     </div>
@@ -537,8 +537,8 @@
             </div>
 
             <div class="modal-actions">
-                <button class="btn-modal-cancelar" onclick="fecharModalEnviarForm()">Cancelar</button>
-                <button class="btn-modal-gerar" onclick="enviarFormularioWhatsApp()">
+                <button type="button" class="btn-modal-cancelar" onclick="fecharModalEnviarForm()">Cancelar</button>
+                <button type="button" class="btn-modal-gerar" onclick="enviarFormularioWhatsApp()">
                     <i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp
                 </button>
             </div>
@@ -555,6 +555,11 @@
             carregarDadosUsuario();
             carregarDadosCasal();
         });
+
+        function abrirFormularioAdmin() {
+            const casalAtivo = localStorage.getItem('casal_ativo') || 'Casal';
+            window.location.href = "formulario_casal.html?casal=" + encodeURIComponent(casalAtivo) + "&local=vezzane&admin=true";
+        }
 
         function carregarDadosUsuario() {
             const userRole = localStorage.getItem('user_role');
@@ -664,25 +669,24 @@
             const espacoRadio = document.querySelector('input[name="radioEspacoForm"]:checked');
             const espaco = espacoRadio ? espacoRadio.value : 'vezzane';
             
-            const origin = window.location.origin;
-            const pathName = window.location.pathname;
-            const directory = pathName.substring(0, pathName.lastIndexOf('/'));
+            const LINK_HOSPEDAGEM = "https://gabriellymouradsm.github.io/cronograma_de_casamentos_ALLY/"; 
             
-            // O link enviado ao casal NÃO CONTÉM o parâmetro &admin=true
-            const linkForm = `${origin}${directory}/formulario_casal.html?casal=${encodeURIComponent(casalAtivo)}&local=${espaco}`;
+            let linkForm = "";
+
+            if (window.location.protocol === 'file:') {
+                linkForm = `${LINK_HOSPEDAGEM}/formulario_casal.html?casal=${encodeURIComponent(casalAtivo)}&local=${espaco}`;
+            } else {
+                const origin = window.location.origin;
+                const pathName = window.location.pathname;
+                const directory = pathName.substring(0, pathName.lastIndexOf('/'));
+                linkForm = `${origin}${directory}/formulario_casal.html?casal=${encodeURIComponent(casalAtivo)}&local=${espaco}`;
+            }
             
             const textoEspaco = espaco === 'jurua' ? 'Mirante Juruá' : 'Villa Vezzane';
             const msg = `Olá, ${casalAtivo}! ✨\n\nSegue o link do seu Formulário de Detalhes do Casamento (${textoEspaco}):\n\n${linkForm}\n\nPor favor, preencham com carinho!`;
             
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
             fecharModalEnviarForm();
-        }
-
-        function acessarFormularioCasal(e) {
-            e.preventDefault();
-            const casalAtivo = localStorage.getItem('casal_ativo') || 'Casal';
-            // O acesso direto do Administrador CONTÉM &admin=true para habilitar o botão de Voltar
-            window.location.href = `formulario_casal.html?casal=${encodeURIComponent(casalAtivo)}&local=vezzane&admin=true`;
         }
 
         async function gerarPDFPersonalizado() {
