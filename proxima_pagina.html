@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
-    <!-- FontAwesome Icons para os ícones dos quadrados -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -170,7 +170,6 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Grade de 4 quadrados (2x2) */
         .grid-atalhos {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -406,7 +405,7 @@
                 </div>
             </div>
 
-            <!-- Grade de 4 Quadrados (2x2) -->
+            <!-- Grade de Quadrados de Atalhos -->
             <div class="grid-atalhos">
                 <a href="relatorios.html" class="btn-quadrado" id="btnRelatoriosDetalhados">
                     <i class="fa-solid fa-chart-column"></i>
@@ -416,6 +415,17 @@
                 <button class="btn-quadrado" onclick="abrirModalPDF()">
                     <i class="fa-solid fa-file-pdf"></i>
                     <span>Criar PDF</span>
+                </button>
+
+                <!-- Botões Exclusivos para Administrador (Formulário do Casal) -->
+                <a href="#" class="btn-quadrado admin-only" onclick="acessarFormularioCasal(event)">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <span>Acessar Form. Casal</span>
+                </a>
+
+                <button class="btn-quadrado admin-only" onclick="abrirModalEnviarForm()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Enviar Form. Casal</span>
                 </button>
 
                 <a href="perfil.html" class="btn-quadrado">
@@ -478,6 +488,7 @@
         </div>
     </div>
 
+    <!-- MODAL PERSONALIZAR PDF -->
     <div class="modal-overlay" id="modalPDF">
         <div class="modal-card">
             <h3>Personalizar PDF</h3>
@@ -508,6 +519,32 @@
         </div>
     </div>
 
+    <!-- MODAL ENVIAR FORMULÁRIO DO CASAL -->
+    <div class="modal-overlay" id="modalEnviarForm">
+        <div class="modal-card">
+            <h3>Enviar Formulário ao Casal</h3>
+            <p style="font-size: 13px; color: #d1c4bc; margin-bottom: 15px; text-align: center;">
+                Selecione o espaço do evento para gerar o link do WhatsApp:
+            </p>
+            
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="radio" name="radioEspacoForm" value="vezzane" checked> Villa Vezzane
+                </label>
+                <label class="checkbox-label">
+                    <input type="radio" name="radioEspacoForm" value="jurua"> Mirante Juruá
+                </label>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal-cancelar" onclick="fecharModalEnviarForm()">Cancelar</button>
+                <button class="btn-modal-gerar" onclick="enviarFormularioWhatsApp()">
+                    <i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let nomeSalvo = "";
         let dataSalva = "";
@@ -524,17 +561,19 @@
             const adminNome = localStorage.getItem('admin_nome');
             const assistenteNome = localStorage.getItem('assistente_nome');
 
-            if (userRole === 'admin' && adminNome) {
-                document.getElementById("tituloNomeUsuario").textContent = adminNome;
+            if (userRole === 'admin') {
+                document.getElementById("tituloNomeUsuario").textContent = adminNome || "Administrador";
                 document.getElementById("subtituloPerfil").textContent = "Administrador(a)";
-            } else if (userRole === 'assistant' && assistenteNome) {
-                document.getElementById("tituloNomeUsuario").textContent = assistenteNome;
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+            } else if (userRole === 'assistant') {
+                document.getElementById("tituloNomeUsuario").textContent = assistenteNome || "Assistente";
                 document.getElementById("subtituloPerfil").textContent = "Assistente de Campo";
                 
                 const btnRelatorios = document.getElementById('btnRelatoriosDetalhados');
                 if (btnRelatorios) {
                     btnRelatorios.style.display = 'none';
                 }
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
             }
         }
 
@@ -610,6 +649,40 @@
 
         function fecharModalPDF() {
             document.getElementById('modalPDF').style.display = 'none';
+        }
+
+        function abrirModalEnviarForm() {
+            document.getElementById('modalEnviarForm').style.display = 'flex';
+        }
+
+        function fecharModalEnviarForm() {
+            document.getElementById('modalEnviarForm').style.display = 'none';
+        }
+
+        function enviarFormularioWhatsApp() {
+            const casalAtivo = localStorage.getItem('casal_ativo') || 'Casal';
+            const espacoRadio = document.querySelector('input[name="radioEspacoForm"]:checked');
+            const espaco = espacoRadio ? espacoRadio.value : 'vezzane';
+            
+            const origin = window.location.origin;
+            const pathName = window.location.pathname;
+            const directory = pathName.substring(0, pathName.lastIndexOf('/'));
+            
+            // O link enviado ao casal NÃO CONTÉM o parâmetro &admin=true
+            const linkForm = `${origin}${directory}/formulario_casal.html?casal=${encodeURIComponent(casalAtivo)}&local=${espaco}`;
+            
+            const textoEspaco = espaco === 'jurua' ? 'Mirante Juruá' : 'Villa Vezzane';
+            const msg = `Olá, ${casalAtivo}! ✨\n\nSegue o link do seu Formulário de Detalhes do Casamento (${textoEspaco}):\n\n${linkForm}\n\nPor favor, preencham com carinho!`;
+            
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+            fecharModalEnviarForm();
+        }
+
+        function acessarFormularioCasal(e) {
+            e.preventDefault();
+            const casalAtivo = localStorage.getItem('casal_ativo') || 'Casal';
+            // O acesso direto do Administrador CONTÉM &admin=true para habilitar o botão de Voltar
+            window.location.href = `formulario_casal.html?casal=${encodeURIComponent(casalAtivo)}&local=vezzane&admin=true`;
         }
 
         async function gerarPDFPersonalizado() {
