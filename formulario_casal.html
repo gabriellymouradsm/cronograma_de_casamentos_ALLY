@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Escolhas do Casal - Ally</title>
+    <title>Formulário do Casal - Ally</title>
 
     <!-- Configurações PWA e Ícones -->
     <link rel="manifest" href="manifest.json">
@@ -21,6 +21,10 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
+
+    <!-- pdfMake para Gerar PDF do Formulário -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -149,25 +153,10 @@
             }
         }
 
-        .cabecalho-chegadas {
-            background-color: #c4683a !important;
-            color: #ffffff !important;
-        }
-
-        .cabecalho-tempos {
-            background-color: #d4a32e !important;
-            color: #3b2a22 !important;
-        }
-
-        .cabecalho-azul {
-            background-color: #5c93c4 !important;
-            color: #ffffff !important;
-        }
-
-        .cabecalho-cinza {
-            background-color: #7f7f7f !important;
-            color: #ffffff !important;
-        }
+        .cabecalho-chegadas { background-color: #c4683a !important; color: #ffffff !important; }
+        .cabecalho-tempos { background-color: #d4a32e !important; color: #3b2a22 !important; }
+        .cabecalho-azul { background-color: #5c93c4 !important; color: #ffffff !important; }
+        .cabecalho-cinza { background-color: #7f7f7f !important; color: #ffffff !important; }
 
         textarea.input-tabela, select.select-tabela {
             width: 100%;
@@ -234,14 +223,21 @@
         .opt-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-size: 12px;
             color: #333;
             background: #fcfaf7;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #eadecc;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #dcd6cd;
             cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .opt-item:hover {
+            background-color: #f4eee6;
+            border-color: #3b2a22;
         }
 
         .opt-item input[type="checkbox"], .opt-item input[type="radio"] {
@@ -251,7 +247,6 @@
             cursor: pointer;
         }
 
-        /* Área de Upload de Fotos de Referência */
         .upload-container {
             border: 2px dashed #3b2a22;
             background-color: #fcfaf7;
@@ -346,7 +341,16 @@
         .btn-salvar { background-color: #3b2a22; color: #ffffff; }
         .btn-salvar:hover { background-color: #4a352b; }
 
-        .btn-voltar-painel { background-color: transparent; color: #3b2a22; border: 2px solid #3b2a22; }
+        .btn-pdf { background-color: #eadecc; color: #3b2a22; }
+        .btn-pdf:hover { background-color: #d8c7b3; }
+
+        /* Estritamente oculto por padrão para o casal */
+        .btn-voltar-painel { 
+            display: none !important; 
+            background-color: transparent; 
+            color: #3b2a22; 
+            border: 2px solid #3b2a22; 
+        }
         .btn-voltar-painel:hover { background-color: #f2eee9; }
 
         .badge-espaco {
@@ -399,7 +403,7 @@
             </tr>
         </table>
 
-        <!-- BLOCO 2: SELEÇÃO DO CARDÁPIO CONTRATADO -->
+        <!-- BLOCO 2: CARDÁPIO CONTRATADO -->
         <div class="secao-titulo"><i class="fa-solid fa-utensils"></i> 2. Escolha do Cardápio & Gastronomia</div>
         <table class="tabela-custom">
             <tr>
@@ -421,7 +425,7 @@
         <!-- ÁREA DINÂMICA DO MENU SELECIONADO -->
         <div id="containerMenuDinamico"></div>
 
-        <!-- BLOCO 3: DECORAÇÃO & MOVELARIA + FOTOS DE REFERÊNCIA -->
+        <!-- BLOCO 3: DECORAÇÃO, MOVELARIA & FOTOS -->
         <div class="secao-titulo"><i class="fa-solid fa-wand-magic-sparkles"></i> 3. Decoração, Movelaria & Fotos de Referência</div>
         
         <table class="tabela-custom">
@@ -432,7 +436,7 @@
                 <td colspan="2">
                     <div class="opt-grid">
                         <label class="opt-item"><input type="radio" name="fundo_cerimonia" value="Quadrado"> Quadrado</label>
-                        <label class="opt-item"><input type="radio" name="fundo_cerimonia" value="Triangulo"> Triângulo com 2 arranjos</label>
+                        <label class="opt-item"><input type="radio" name="fundo_cerimonia" value="Triângulo com 2 arranjos"> Triângulo com 2 arranjos</label>
                         <label class="opt-item"><input type="radio" name="fundo_cerimonia" value="Nenhum"> Nenhum</label>
                     </div>
                 </td>
@@ -509,10 +513,10 @@
             </tr>
         </table>
 
-        <!-- CAMPO DE UPLOAD DE FOTOS DE REFERÊNCIA -->
+        <!-- FOTOS DE REFERÊNCIA -->
         <div class="secao-titulo"><i class="fa-solid fa-camera"></i> Fotos de Inspiração & Referências da Decoração</div>
         <p style="font-size: 11px; color: #666; margin-bottom: 6px;">
-            Anexe fotos de inspiração para a mesa do bolo, buquê ou arranjos (retiradas do @villavezzane ou Pinterest):
+            Anexe fotos de inspiração para a mesa do bolo, buquê ou arranjos:
         </p>
 
         <div class="upload-container" onclick="document.getElementById('inputFotosDecor').click()">
@@ -537,11 +541,11 @@
             <tr>
                 <td colspan="2">
                     <div class="opt-grid">
-                        <label class="opt-item"><input type="checkbox" id="chk_lapelas"> Flor de Lapela (Noivo / Padrinhos / Pais)</label>
-                        <label class="opt-item"><input type="checkbox" id="chk_placa"> Placa ou Flâmula (Pajem / Daminha)</label>
-                        <label class="opt-item"><input type="checkbox" id="chk_minibuque"> Mini Buquê (Damas / Madrinhas)</label>
-                        <label class="opt-item"><input type="checkbox" id="chk_votos"> Votos Pessoais</label>
-                        <label class="opt-item"><input type="checkbox" id="chk_porta_aliancas"> Porta-Alianças</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_lapelas" name="cortejo_lapela" value="Flor de Lapela"> Flor de Lapela (Noivo / Padrinhos / Pais)</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_placa" name="cortejo_placa" value="Placa ou Flâmula"> Placa ou Flâmula (Pajem / Daminha)</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_minibuque" name="cortejo_minibuque" value="Mini Buquê"> Mini Buquê (Damas / Madrinhas)</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_votos" name="cortejo_votos" value="Votos Pessoais"> Votos Pessoais</label>
+                        <label class="opt-item"><input type="checkbox" id="chk_porta_aliancas" name="cortejo_porta_aliancas" value="Porta-Alianças"> Porta-Alianças</label>
                     </div>
                 </td>
             </tr>
@@ -577,9 +581,11 @@
             </tr>
         </table>
 
+        <!-- BOTÕES DE AÇÃO -->
         <div class="btn-acoes">
-            <button class="btn-acao-custom btn-salvar" onclick="salvarFormularioCasal()">💾 Salvar e Enviar Respostas no Ally</button>
-            <a href="proxima_pagina.html" class="btn-acao-custom btn-voltar-painel">⬅ Voltar ao Painel</a>
+            <button class="btn-acao-custom btn-salvar" onclick="salvarFormularioCasal()">💾 Salvar Respostas</button>
+            <button class="btn-acao-custom btn-pdf" onclick="gerarPDFFormulario()">📄 Criar PDF do Formulário</button>
+            <a href="proxima_pagina.html" class="btn-acao-custom btn-voltar-painel" id="btnVoltarPainel">⬅ Voltar ao Painel</a>
         </div>
 
     </div>
@@ -596,12 +602,21 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const casalNome = urlParams.get('casal') || localStorage.getItem('casal_ativo') || 'Casal';
+        const isAdminAccess = urlParams.get('admin') === 'true'; // Verifica se o acesso é do Administrador
         let fotosDecorBase64 = [];
 
         window.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('form_casal_nome').value = casalNome;
             document.getElementById('tituloHeader').textContent = "Ally — " + casalNome;
             
+            // O botão "Voltar ao Painel" é exibido EXCLUSIVAMENTE se a URL contiver &admin=true
+            const btnVoltar = document.getElementById('btnVoltarPainel');
+            if (isAdminAccess && btnVoltar) {
+                btnVoltar.style.setProperty('display', 'inline-flex', 'important');
+            } else if (btnVoltar) {
+                btnVoltar.style.setProperty('display', 'none', 'important');
+            }
+
             alternarCardapioExibido();
             await carregarFormularioSupabase();
         });
@@ -625,7 +640,7 @@
             }, 4000);
         }
 
-        // ALTERNÂNCIA DINÂMICA DOS CARDÁPIOS DAS PLANILHAS VEZZANE
+        // CARDÁPIO DINÂMICO
         function alternarCardapioExibido() {
             const menu = document.getElementById('selectCardapio').value;
             const container = document.getElementById('containerMenuDinamico');
@@ -655,7 +670,7 @@
                         <tr><th class="cabecalho-cinza">Bolo (Escolher 1 opção)</th></tr>
                         <tr><td>
                             <div class="opt-grid">
-                                <label class="opt-item"><input type="radio" name="veneza_bolo" value="Red Velvet com Frutas Vermelhas ao Vinho"> Red Velvet com Frutas Vermelhas</label>
+                                <label class="opt-item"><input type="radio" name="veneza_bolo" value="Red Velvet com Frutas Vermelhas"> Red Velvet com Frutas Vermelhas</label>
                                 <label class="opt-item"><input type="radio" name="veneza_bolo" value="Massa Branca com Limão Siciliano"> Massa Branca com Limão Siciliano</label>
                                 <label class="opt-item"><input type="radio" name="veneza_bolo" value="Massa Branca com Doce de Leite e Nozes"> Massa Branca com Doce de Leite e Nozes</label>
                                 <label class="opt-item"><input type="radio" name="veneza_bolo" value="Massa de Chocolate com Mousse Belga"> Massa de Chocolate com Mousse Belga</label>
@@ -723,7 +738,7 @@
             }
         }
 
-        // PROCESSAMENTO DE FOTOS DE REFERÊNCIA
+        // PROCESSAMENTO DE FOTOS
         function processarFotosDecor(input) {
             const files = Array.from(input.files);
             if (files.length + fotosDecorBase64.length > 5) {
@@ -759,7 +774,83 @@
             renderizarPreviewFotos();
         }
 
-        // CARREGAR E SALVAR NO SUPABASE
+        // SALVAMENTO E RESTAURAÇÃO DE DADOS
+        function coletarDadosFormulario() {
+            let textoObj = {};
+            document.querySelectorAll('input[type="text"], textarea, select').forEach(el => {
+                if (el.id) textoObj[el.id] = el.value;
+            });
+
+            let radiosObj = {};
+            document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+                if (el.name) radiosObj[el.name] = el.value;
+            });
+
+            let checkboxesArr = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(el => {
+                if (el.id) {
+                    checkboxesArr.push({ type: 'id', val: el.id });
+                } else if (el.name && el.value) {
+                    checkboxesArr.push({ type: 'name_val', name: el.name, val: el.value });
+                }
+            });
+
+            return {
+                texto: textoObj,
+                radios: radiosObj,
+                checkboxes: checkboxesArr,
+                fotos: fotosDecorBase64
+            };
+        }
+
+        function restaurarDadosFormulario(r) {
+            if (!r) return;
+
+            // 1. Textos e selects
+            if (r.texto) {
+                Object.keys(r.texto).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = r.texto[id];
+                });
+            }
+
+            // 2. Cardápio dinâmico
+            if (document.getElementById('selectCardapio')) {
+                alternarCardapioExibido();
+            }
+
+            // 3. Radios
+            if (r.radios) {
+                Object.keys(r.radios).forEach(name => {
+                    const val = r.radios[name];
+                    const radio = document.querySelector(`input[type="radio"][name="${CSS.escape(name)}"][value="${CSS.escape(val)}"]`);
+                    if (radio) radio.checked = true;
+                });
+            }
+
+            // 4. Checkboxes
+            if (r.checkboxes && Array.isArray(r.checkboxes)) {
+                r.checkboxes.forEach(item => {
+                    if (item.type === 'id') {
+                        const chk = document.getElementById(item.val);
+                        if (chk) chk.checked = true;
+                    } else if (item.type === 'name_val') {
+                        const chk = document.querySelector(`input[type="checkbox"][name="${CSS.escape(item.name)}"][value="${CSS.escape(item.val)}"]`);
+                        if (chk) chk.checked = true;
+                    }
+                });
+            }
+
+            // 5. Fotos
+            if (r.fotos && Array.isArray(r.fotos)) {
+                fotosDecorBase64 = r.fotos;
+                renderizarPreviewFotos();
+            }
+
+            document.querySelectorAll('textarea').forEach(ta => autoResize(ta));
+        }
+
+        // SUPABASE: CARREGAR E SALVAR
         async function carregarFormularioSupabase() {
             const { data, error } = await _supabase
                 .from('formulario_casal_respostas')
@@ -768,62 +859,95 @@
                 .maybeSingle();
 
             if (!error && data && data.respostas) {
-                const r = data.respostas;
-                document.getElementById('form_qtd_convidados').value = r.qtd_convidados || '';
-                document.getElementById('form_horario_convite').value = r.horario_convite || '';
-                document.getElementById('form_tempo_evento').value = r.tempo_evento || '';
-                document.getElementById('form_data_casamento').value = r.data_casamento || '';
-                if (r.cardapio_selecionado) {
-                    document.getElementById('selectCardapio').value = r.cardapio_selecionado;
-                    alternarCardapioExibido();
-                }
-
-                document.getElementById('form_celebrante_nome').value = r.celebrante_nome || '';
-                document.getElementById('form_lista_suite').value = r.lista_suite || '';
-                document.getElementById('form_observacoes_finais').value = r.observacoes_finais || '';
-
-                if (r.fotos_referencia) {
-                    fotosDecorBase64 = r.fotos_referencia;
-                    renderizarPreviewFotos();
-                }
-
-                document.querySelectorAll('textarea').forEach(ta => autoResize(ta));
+                restaurarDadosFormulario(data.respostas);
             }
         }
 
         async function salvarFormularioCasal() {
-            const respostasObjeto = {
-                qtd_convidados: document.getElementById('form_qtd_convidados').value,
-                horario_convite: document.getElementById('form_horario_convite').value,
-                tempo_evento: document.getElementById('form_tempo_evento').value,
-                data_casamento: document.getElementById('form_data_casamento').value,
-                cardapio_selecionado: document.getElementById('selectCardapio').value,
-                fundo_cerimonia: document.querySelector('input[name="fundo_cerimonia"]:checked')?.value || '',
-                cor_tapete: document.querySelector('input[name="cor_tapete"]:checked')?.value || '',
-                estilo_arranjos: document.querySelector('input[name="estilo_arranjos"]:checked')?.value || '',
-                dobradura_guardanapo: document.querySelector('input[name="dobradura_guardanapo"]:checked')?.value || '',
-                bolo_cenografico: document.querySelector('input[name="bolo_cenografico"]:checked')?.value || '',
-                posicao_mesa_bolo: document.querySelector('input[name="posicao_mesa_bolo"]:checked')?.value || '',
-                fotos_referencia: fotosDecorBase64,
-                celebrante_nome: document.getElementById('form_celebrante_nome').value,
-                lista_suite: document.getElementById('form_lista_suite').value,
-                observacoes_finais: document.getElementById('form_observacoes_finais').value
-            };
+            const conteudoObjeto = coletarDadosFormulario();
 
             const { error } = await _supabase
                 .from('formulario_casal_respostas')
                 .upsert({
                     casal_nome: casalNome,
                     local_espaco: 'vezzane',
-                    respostas: respostasObjeto,
+                    respostas: conteudoObjeto,
                     atualizado_em: new Date().toISOString()
                 }, { onConflict: 'casal_nome' });
 
             if (error) {
                 alert("Erro ao salvar respostas: " + error.message);
             } else {
-                mostrarNotificacao("Suas respostas e fotos de referência foram salvas no Ally!");
+                mostrarNotificacao("Suas respostas e escolhas foram salvas no Ally!");
             }
+        }
+
+        // GERAÇÃO DO PDF DO FORMULÁRIO
+        function gerarPDFFormulario() {
+            const dados = coletarDadosFormulario();
+            const txt = dados.texto || {};
+            const rad = dados.radios || {};
+
+            let contentArray = [
+                { text: 'ALLY — VILLA VEZZANE', style: 'brandTitle' },
+                { text: 'FORMULÁRIO DE ESCOLHAS DO CASAL', style: 'brandSubtitle' },
+                { canvas: [{ type: 'line', x1: 0, y1: 8, x2: 515, y2: 8, lineWidth: 1, lineColor: '#3b2a22' }] },
+                { text: '', margin: [0, 4] },
+
+                {
+                    table: {
+                        widths: ['*', '*'],
+                        body: [
+                            [{ text: 'Casal: ' + (casalNome || '-'), style: 'infoBoxText' }, { text: 'Data: ' + (txt.form_data_casamento || '-'), style: 'infoBoxText' }],
+                            [{ text: 'Convidados: ' + (txt.form_qtd_convidados || '-'), style: 'infoBoxText' }, { text: 'Horário Convite: ' + (txt.form_horario_convite || '-'), style: 'infoBoxText' }]
+                        ]
+                    },
+                    layout: 'lightHorizontalLines',
+                    margin: [0, 5, 0, 15]
+                },
+
+                { text: '1. Cardápio Selecionado', style: 'sectionTitle' },
+                { text: 'Menu: ' + (txt.selectCardapio ? txt.selectCardapio.toUpperCase() : 'Não informado'), style: 'cellBold' },
+
+                { text: '2. Decoração e Movelaria Escolhida', style: 'sectionTitle' },
+                {
+                    table: {
+                        widths: ['50%', '50%'],
+                        body: [
+                            [{ text: 'Fundo da Cerimônia:', style: 'cellBold' }, { text: rad.fundo_cerimonia || 'Não selecionado', style: 'cellNormal' }],
+                            [{ text: 'Cor do Tapete:', style: 'cellBold' }, { text: rad.cor_tapete || 'Não selecionado', style: 'cellNormal' }],
+                            [{ text: 'Estilo dos Arranjos:', style: 'cellBold' }, { text: rad.estilo_arranjos || 'Não selecionado', style: 'cellNormal' }],
+                            [{ text: 'Dobradura do Guardanapo:', style: 'cellBold' }, { text: rad.dobradura_guardanapo || 'Não selecionado', style: 'cellNormal' }],
+                            [{ text: 'Bolo Cenográfico:', style: 'cellBold' }, { text: rad.bolo_cenografico || 'Não selecionado', style: 'cellNormal' }],
+                            [{ text: 'Posicionamento Mesa do Bolo:', style: 'cellBold' }, { text: rad.posicao_mesa_bolo || 'Não selecionado', style: 'cellNormal' }]
+                        ]
+                    },
+                    margin: [0, 4, 0, 12]
+                },
+
+                { text: '3. Cerimônia e Suíte', style: 'sectionTitle' },
+                { text: 'Celebrante: ' + (txt.form_celebrante_nome || '-'), style: 'cellNormal' },
+                { text: 'Acompanhantes na Suíte:\n' + (txt.form_lista_suite || 'Nenhum informado'), style: 'cellNormal', margin: [0, 4, 0, 10] },
+
+                { text: '4. Observações Especiais', style: 'sectionTitle' },
+                { text: txt.form_observacoes_finais || 'Sem observações adicionais.', style: 'cellNormal' }
+            ];
+
+            const docDefinition = {
+                pageSize: 'A4',
+                pageMargins: [35, 35, 35, 35],
+                content: contentArray,
+                styles: {
+                    brandTitle: { fontStyle: 'serif', fontSize: 20, bold: true, alignment: 'center', color: '#3b2a22' },
+                    brandSubtitle: { fontSize: 8, bold: true, alignment: 'center', color: '#725a4d', margin: [0, 2, 0, 0] },
+                    sectionTitle: { fontSize: 11, bold: true, color: '#3b2a22', margin: [0, 10, 0, 4], textTransform: 'uppercase' },
+                    infoBoxText: { fontSize: 9, color: '#3b2a22' },
+                    cellBold: { fontSize: 9, bold: true, color: '#2c221e' },
+                    cellNormal: { fontSize: 9, color: '#333333' }
+                }
+            };
+
+            pdfMake.createPdf(docDefinition).download('Formulario_Casal_' + casalNome.replace(/\s+/g, '_') + '.pdf');
         }
     </script>
 </body>
