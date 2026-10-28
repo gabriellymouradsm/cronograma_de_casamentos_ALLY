@@ -246,6 +246,17 @@
             margin-bottom: 12px;
         }
 
+        .brunch-destaque {
+            background-color: #ffff00;
+            color: #2b5797;
+            font-weight: bold;
+            font-size: 11px;
+            text-align: center;
+            padding: 4px;
+            margin-bottom: 20px;
+            border-radius: 2px;
+        }
+
         .alerta-amarelo {
             background-color: #ffff00;
             color: #111111;
@@ -392,6 +403,19 @@
             margin-bottom: 10px;
         }
 
+        .box-obs-contrato {
+            margin-top: 25px;
+            font-size: 10px;
+            color: #111111;
+            line-height: 1.4;
+        }
+
+        .obs-titulo {
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+
         .concordancia-texto {
             margin-top: 15px;
             font-size: 10px;
@@ -417,7 +441,7 @@
 </head>
 <body>
 
-    <!-- BARRA SUPERIOR DE CONTROLE E NAVEGAÇÃO -->
+    <!-- BARRA SUPERIOR DE CONTROLE E NAVEGAÇÃO POR ABAS -->
     <div class="painel-controles">
         <div class="menu-abas-superior">
             <button class="aba-btn active" onclick="alternarAba('abaInfoGerais')"><i class="fa-solid fa-info-circle"></i> Info Gerais</button>
@@ -556,6 +580,7 @@
                 <div class="info-item"><span class="info-label">Tempo de evento:</span><input type="text" class="info-valor-azul form_tempo_evento" placeholder="00 horas"></div>
             </div>
             <div class="checklist-instrucao">CheckList (Preencher as informações em Azul)</div>
+            <div class="brunch-destaque">Brunch para até 10 acompanhantes - duração de 1h30 (enquanto houver disponibilidade)</div>
             <div id="corpoCardapioDinamico"></div>
         </div>
 
@@ -563,15 +588,167 @@
         <div id="abaDecorPerm" class="conteudo-aba">
             <div class="menu-titulo-principal">DECORAÇÃO E MOVELARIA</div>
             <div class="subtitulo-gerais" style="color: #2b5797;">FLORES: PERMANENTES</div>
+
             <div class="grid-info-gerais">
                 <div class="info-item"><span class="info-label">Casal:</span><input type="text" class="info-valor-azul form_casal_nome" value="Teste & Teste" readonly></div>
                 <div class="info-item"><span class="info-label">Data:</span><input type="text" class="info-valor-azul form_data_casamento" placeholder="01/03/2026"><span class="info-label" style="margin-left: 10px;">Hora:</span><input type="text" class="info-valor-azul form_horario_convite" placeholder="00h às 00h"></div>
                 <div class="info-item"><span class="info-label">Quantidade de convidados:</span><input type="text" class="info-valor-azul form_qtd_convidados" placeholder="000+00"></div>
                 <div class="info-item"><span class="info-label">Tempo de evento:</span><input type="text" class="info-valor-azul form_tempo_evento" placeholder="00 horas"></div>
             </div>
+
+            <div class="checklist-instrucao">CheckList (Preencher as informações em Azul)</div>
+            <div style="text-align: center; font-weight: bold; color: #2b5797; font-size: 11px; margin-bottom: 12px;">
+                MINI WEDDING &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Salão Superior
+            </div>
+
             <div class="secao-bloco">
-                <div class="secao-titulo-doc">Lounge & Cerimonial</div>
-                <p style="font-size: 11px;">Estrutura de Flores Permanentes do Salão Superior / Mini Wedding.</p>
+                <div class="secao-titulo-doc">Lounge</div>
+                <ul class="lista-bullets">
+                    <li>Voals</li>
+                    <li>Iluminação decorativa</li>
+                    <li>Mesa para Café</li>
+                    <li>Tapetes</li>
+                    <li>Sofá e poltrona</li>
+                    <li>Par de mesa de centro em madeira</li>
+                    <li>Estante para lembrancinhas</li>
+                    <li>Painel de fotos (indicado para 25 a 40 fotos)</li>
+                </ul>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Cerimonial</div>
+                <ul class="lista-bullets">
+                    <li>Varais com Luzes</li>
+                    <li>Aparador com objeto decorativo</li>
+                    <li>Três opções de fundo:</li>
+                </ul>
+                <div class="grid-opcoes-2col" style="margin-left: 18px;">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_fundo" value="Quadrado"><span class="box-check"></span><span class="texto-opcao">Quadrado</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_fundo" value="Triângulo com 2 arranjos permanentes"><span class="box-check"></span><span class="texto-opcao">Triângulo com 2 arranjos permanentes</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_fundo" value="Nenhum"><span class="box-check"></span><span class="texto-opcao">Nenhum</span></label>
+                </div>
+
+                <div style="margin-top: 10px; font-size: 11px;">
+                    <b>Estrutura Contratada externa:</b> <input type="text" id="decor_perm_estrutura_ext" class="campo-linha-texto">
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Tapete:</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_tapete" value="Verde"><span class="box-check"></span><span class="texto-opcao">Verde</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_tapete" value="Bege"><span class="box-check"></span><span class="texto-opcao">Bege</span></label>
+                </div>
+
+                <div style="margin-top: 10px; font-size: 11px;">
+                    <b>Passarela contratada externa:</b> <input type="text" id="decor_perm_passarela_ext" class="campo-linha-texto">
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Arranjos</div>
+                <div style="font-size: 11px; margin-bottom: 4px;">Até 10 arranjos variados</div>
+                <div class="nota-cinza">
+                    <b>Nota:</b> Enviar fotos de inspiração retiradas de @villavezzane para aprovação via Whatsapp.
+                </div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_estilo_arranjos" value="100% Branco"><span class="box-check"></span><span class="texto-opcao">100% Branco</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_estilo_arranjos" value="Mix branco e samambaias"><span class="box-check"></span><span class="texto-opcao">Mix branco e samambaias</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_estilo_arranjos" value="Estilo boho neutro com branco"><span class="box-check"></span><span class="texto-opcao">Estilo boho neutro com branco</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_estilo_arranjos" value="Estilo boho com samambaias"><span class="box-check"></span><span class="texto-opcao">Estilo boho com samambaias</span></label>
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Assentos</div>
+                <div style="font-size: 11px; font-weight: bold; margin-bottom: 6px;">Bancos de madeira ou cadeiras para os convidados</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <label class="item-opcao"><input type="checkbox" name="decor_perm_assento" value="Madrinhas acrílico marrom"><span class="box-check"></span><span class="texto-opcao">Cadeiras de acrílico marrom para madrinhas. Quantas: <input type="text" id="qtd_perm_madrinhas" style="width: 40px; border: none; border-bottom: 1px solid #333; outline: none; color: #2b5797;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_perm_assento" value="Padrinhos acrílico marrom"><span class="box-check"></span><span class="texto-opcao">Cadeiras de acrílico marrom para padrinhos. Quantas: <input type="text" id="qtd_perm_padrinhos" style="width: 40px; border: none; border-bottom: 1px solid #333; outline: none; color: #2b5797;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_perm_assento" value="Pais/Outros acrílico marrom"><span class="box-check"></span><span class="texto-opcao">Cadeiras de acrílico marrom para pais e outros. Quantas: <input type="text" id="qtd_perm_pais" style="width: 40px; border: none; border-bottom: 1px solid #333; outline: none; color: #2b5797;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_perm_assento" value="Pais e padrinhos em bancos pequenos na diagonal"><span class="box-check"></span><span class="texto-opcao">Pais e padrinhos em bancos pequenos na diagonal</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_perm_assento" value="Pais e padrinhos nos primeiros bancos"><span class="box-check"></span><span class="texto-opcao">Pais e padrinhos nos primeiros bancos</span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 8px;">Posição dos padrinhos na cerimônia</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_posicao_padrinhos" value="Sentarão em casais"><span class="box-check"></span><span class="texto-opcao">Sentarão em casais</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_posicao_padrinhos" value="Homens lado do noivo, mulheres lado da noiva"><span class="box-check"></span><span class="texto-opcao">Homens lado do noivo, mulheres lado da noiva</span></label>
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Área do Jantar</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_mesas_jantar" value="5 mesas redondas com 5 lugares: 25 lugares"><span class="box-check"></span><span class="texto-opcao">5 mesas redondas com 5 lugares: 25 lugares</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_mesas_jantar" value="1 Mesa contínua para todos os convidados"><span class="box-check"></span><span class="texto-opcao">1 Mesa contínua para todos os convidados</span></label>
+                </div>
+
+                <div class="alerta-amarelo">
+                    A quantidade de lugares poderá ser alterada após alinhamento das informações dos noivos com a assessoria.
+                </div>
+
+                <div class="subsecao-titulo">Jantar dos noivos:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_jantar_noivos" value="Mesa com os pais e familiares"><span class="box-check"></span><span class="texto-opcao">Os noivos jantarão na mesa com os pais e familiares</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_jantar_noivos" value="Mesa reservada 2 lugares"><span class="box-check"></span><span class="texto-opcao">Reservar uma mesa com 2 lugares para os noivos</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_jantar_noivos" value="Mesa 2 lugares no Mirante"><span class="box-check"></span><span class="texto-opcao">Servir o jantar dos noivos em uma mesa de 2 lugares no Mirante</span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Cores das flores dos arranjos da mesa dos convidados:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_cores_flores" value="Flores 100% brancas"><span class="box-check"></span><span class="texto-opcao">Flores 100% brancas</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_cores_flores" value="50% branco com 50% em até 1 opção de cor"><span class="box-check"></span><span class="texto-opcao">50% branco com 50% em até 1 opção de cor</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_cores_flores" value="50% branco com Boho"><span class="box-check"></span><span class="texto-opcao">50% branco com Boho</span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Acessórios inclusos para a mesa dos convidados</div>
+                <ul class="lista-bullets">
+                    <li>Guardanapos na cor cáqui</li>
+                    <li>Pratos de louça em porcelana</li>
+                    <li>Talheres de Inox</li>
+                    <li>Copos de vidro para servir água, refrigerantes, sucos e cerveja</li>
+                    <li>Bolachas de madeira</li>
+                    <li>Pote de vidro com velas flutuantes</li>
+                    <li>Garrafinha de vidro com Flores nas cores escolhidas</li>
+                    <li>Toalhas de jacar na cor: Champagne (tradicional)</li>
+                </ul>
+
+                <div class="subsecao-titulo">Dobradura do guardanapo</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Envelope"><span class="box-check"></span><span class="texto-opcao">Envelope</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Pata"><span class="box-check"></span><span class="texto-opcao">Pata</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Concha"><span class="box-check"></span><span class="texto-opcao">Concha</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Nó"><span class="box-check"></span><span class="texto-opcao">Nó</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Em baixo do prato"><span class="box-check"></span><span class="texto-opcao">Em baixo do prato</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Escamas"><span class="box-check"></span><span class="texto-opcao">Escamas</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Flor alta"><span class="box-check"></span><span class="texto-opcao">Flor alta</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Botão de flor"><span class="box-check"></span><span class="texto-opcao">Botão de flor</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Chapéu de bispo"><span class="box-check"></span><span class="texto-opcao">Chapéu de bispo</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Coração"><span class="box-check"></span><span class="texto-opcao">Coração</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_guardanapo" value="Iremos levar porta guardanapo"><span class="box-check"></span><span class="texto-opcao">Iremos levar porta guardanapo</span></label>
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Mesa do Bolo & Confeitaria</div>
+                
+                <div class="subsecao-titulo">Cor da mesa do bolo (Com flores Permanentes)</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_cor_mesa_bolo" value="Flores 100% brancas"><span class="box-check"></span><span class="texto-opcao">Flores 100% brancas</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_cor_mesa_bolo" value="50% branco com 50% em até 2 opções de cor"><span class="box-check"></span><span class="texto-opcao">50% branco com 50% em até 2 opções de cor</span></label>
+                </div>
+
+                <div class="subsecao-titulo">Bolo cenográfico</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_bolo_ceno" value="Bolo Boho (flores no tom da decoração)"><span class="box-check"></span><span class="texto-opcao">Bolo Boho (flores no tom da decoração)</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_bolo_ceno" value="Bolo Faixas (flor central não removível)"><span class="box-check"></span><span class="texto-opcao">Bolo Faixas (flor central não removível)</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_bolo_ceno" value="Clássico liso"><span class="box-check"></span><span class="texto-opcao">Clássico liso</span></label>
+                </div>
+
+                <div class="subsecao-titulo">Mesa do bolo (Posicionamento)</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_perm_posicao_mesa_bolo" value="Dentro do salão"><span class="box-check"></span><span class="texto-opcao">Dentro do salão</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_perm_posicao_mesa_bolo" value="Na parte externa (janela)"><span class="box-check"></span><span class="texto-opcao">Na parte externa (janela)</span></label>
+                </div>
             </div>
         </div>
 
@@ -579,70 +756,907 @@
         <div id="abaDecorNat" class="conteudo-aba">
             <div class="menu-titulo-principal">DECORAÇÃO E MOVELARIA</div>
             <div class="subtitulo-gerais" style="color: #2b5797;">FLORES: NATURAIS</div>
+
             <div class="grid-info-gerais">
                 <div class="info-item"><span class="info-label">Casal:</span><input type="text" class="info-valor-azul form_casal_nome" value="Teste & Teste" readonly></div>
                 <div class="info-item"><span class="info-label">Data:</span><input type="text" class="info-valor-azul form_data_casamento" placeholder="01/03/2026"><span class="info-label" style="margin-left: 10px;">Hora:</span><input type="text" class="info-valor-azul form_horario_convite" placeholder="00h às 00h"></div>
                 <div class="info-item"><span class="info-label">Quantidade de convidados:</span><input type="text" class="info-valor-azul form_qtd_convidados" placeholder="000+00"></div>
                 <div class="info-item"><span class="info-label">Tempo de evento:</span><input type="text" class="info-valor-azul form_tempo_evento" placeholder="00 horas"></div>
             </div>
+
+            <div class="brunch-destaque">Espaço Kids Completo</div>
+            <div class="checklist-instrucao">CheckList (Preencher as informações em Azul)</div>
+            <div style="text-align: center; font-weight: bold; color: #cc0000; font-size: 11px; margin-bottom: 12px;">
+                UPGRADE DE DECORAÇÃO (se houver)
+            </div>
+
             <div class="secao-bloco">
-                <div class="secao-titulo-doc">Lounge & Cerimonial com Flores Naturais</div>
-                <p style="font-size: 11px;">Estrutura de arranjos com flores naturais para cerimônia e recepção.</p>
+                <div class="secao-titulo-doc">Lounge</div>
+                <ul class="lista-bullets">
+                    <li>Voals</li>
+                    <li>Iluminação decorativa</li>
+                    <li>Mesa para Café</li>
+                    <li>Tapetes</li>
+                    <li>Sofá e poltrona</li>
+                    <li>Par de mesa de centro em madeira</li>
+                    <li>Estante para lembrancinhas</li>
+                    <li>Painel de fotos (indicado para 25 a 40 fotos)</li>
+                </ul>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Cerimonial</div>
+                <ul class="lista-bullets">
+                    <li>Varais com Luzes</li>
+                    <li>Aparador com objeto decorativo</li>
+                    <li>Três opções de fundo:</li>
+                </ul>
+                <div class="grid-opcoes-2col" style="margin-left: 18px;">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_fundo" value="Quadrado"><span class="box-check"></span><span class="texto-opcao">Quadrado</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_fundo" value="Triângulo com 2 arranjos permanentes"><span class="box-check"></span><span class="texto-opcao">Triângulo com 2 arranjos permanentes</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_fundo" value="Nenhum"><span class="box-check"></span><span class="texto-opcao">Nenhum</span></label>
+                </div>
+
+                <div style="margin-top: 10px; font-size: 11px;">
+                    <b>Estrutura Contratada externa:</b> <input type="text" id="decor_nat_estrutura_ext" class="campo-linha-texto">
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Tapete:</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_tapete" value="Verde"><span class="box-check"></span><span class="texto-opcao">Verde</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_tapete" value="Bege"><span class="box-check"></span><span class="texto-opcao">Bege</span></label>
+                </div>
+
+                <div style="margin-top: 10px; font-size: 11px;">
+                    <b>Passarela contratada externa:</b> <input type="text" id="decor_nat_passarela_ext" class="campo-linha-texto">
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Arranjos</div>
+                <div style="font-size: 11px; margin-bottom: 4px;">Até 20 arranjos variados incluindo flores com até três cores variadas</div>
+                <div class="nota-cinza">
+                    <b>Nota:</b> Enviar fotos de inspiração retiradas de @villavezzane para aprovação via Whatsapp.
+                </div>
+                <div style="background: #fde8e8; color: #a00; font-size: 10px; padding: 4px; margin-bottom: 8px; font-style: italic;">
+                    <b>OBS:</b> montagem dos arranjos em vasos sem custos. Para opção de arranjos sem vasos, consultar valores.
+                </div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_estilo_arranjos" value="100% Branco"><span class="box-check"></span><span class="texto-opcao">100% Branco</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_estilo_arranjos" value="Mix branco e samambaias"><span class="box-check"></span><span class="texto-opcao">Mix branco e samambaias</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_estilo_arranjos" value="Estilo boho com tons terrosos"><span class="box-check"></span><span class="texto-opcao">Estilo boho com tons terrosos</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_estilo_arranjos" value="Estilo boho com samambaias"><span class="box-check"></span><span class="texto-opcao">Estilo boho com samambaias</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_estilo_arranjos" value="Estilo boho neutro com branco"><span class="box-check"></span><span class="texto-opcao">Estilo boho neutro com branco</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_estilo_arranjos" value="Base branca com até 3 opções de cores"><span class="box-check"></span><span class="texto-opcao">Base branca com até 3 opções de cores</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_estilo_arranjos" value="Base folhagem com até 3 opções de cores"><span class="box-check"></span><span class="texto-opcao">Base folhagem com até 3 opções de cores</span></label>
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Assentos</div>
+                <div style="font-size: 11px; font-weight: bold; margin-bottom: 6px;">Bancos de madeira para os convidados</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_assento" value="Madrinhas acrílico marrom"><span class="box-check"></span><span class="texto-opcao">Cadeiras de acrílico marrom para madrinhas. Quantas: <input type="text" id="qtd_nat_madrinhas" style="width: 40px; border: none; border-bottom: 1px solid #333; outline: none; color: #2b5797;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_assento" value="Padrinhos acrílico marrom"><span class="box-check"></span><span class="texto-opcao">Cadeiras de acrílico marrom para padrinhos. Quantas: <input type="text" id="qtd_nat_padrinhos" style="width: 40px; border: none; border-bottom: 1px solid #333; outline: none; color: #2b5797;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_assento" value="Pais/Outros acrílico marrom"><span class="box-check"></span><span class="texto-opcao">Cadeiras de acrílico marrom para pais e outros. Quantas: <input type="text" id="qtd_nat_pais" style="width: 40px; border: none; border-bottom: 1px solid #333; outline: none; color: #2b5797;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_assento" value="Pais e padrinhos em bancos pequenos na diagonal"><span class="box-check"></span><span class="texto-opcao">Pais e padrinhos em bancos pequenos na diagonal</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_assento" value="Pais e padrinhos nos primeiros bancos"><span class="box-check"></span><span class="texto-opcao">Pais e padrinhos nos primeiros bancos</span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 8px;">Posição dos padrinhos na cerimônia</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_posicao_padrinhos" value="Sentarão em casais"><span class="box-check"></span><span class="texto-opcao">Sentarão em casais</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_posicao_padrinhos" value="Homens lado do noivo, mulheres lado da noiva"><span class="box-check"></span><span class="texto-opcao">Homens lado do noivo, mulheres lado da noiva</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_posicao_padrinhos" value="Assentos dos padrinhos alinhados aos bancos"><span class="box-check"></span><span class="texto-opcao">Assentos dos padrinhos alinhados aos bancos</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_posicao_padrinhos" value="Assentos dos padrinhos em meia-lua"><span class="box-check"></span><span class="texto-opcao">Assentos dos padrinhos em meia-lua</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_posicao_padrinhos" value="Assentos dos padrinhos em diagonal"><span class="box-check"></span><span class="texto-opcao">Assentos dos padrinhos em diagonal</span></label>
+                </div>
+                <div style="margin-top: 6px; font-size: 11px;">
+                    <b>Obs / Outros:</b> <input type="text" id="decor_nat_obs_padrinhos" class="campo-linha-texto" style="width: 320px;" placeholder="Pode enviar foto de inspiração">
+                </div>
+                <div class="nota-cinza" style="margin-top: 6px;">
+                    <b>NOTA:</b> Com lista de até 90 pessoas (incluindo crianças), há a opção de alocar os convidados completamente com cadeiras na cerimônia. Acima dessa quantidade, somente com bancos de madeira.
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Salão de Festas (Layout de Mesas)</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_layout_salao" value="7 Mesas quadradas com 8 lugares (máx 10 lugares, temos 7 unidades)"><span class="box-check"></span><span class="texto-opcao">7 Mesas quadradas com 8 lugares (máx 10)</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_layout_salao" value="Mesas redondas com 10 lugares (máx 10 lugares)"><span class="box-check"></span><span class="texto-opcao">Mesas redondas com 10 lugares</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_layout_salao" value="Mesa comunitária com 12 lugares (temos 1 unidade)"><span class="box-check"></span><span class="texto-opcao">Mesa comunitária com 12 lugares</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_layout_salao" value="Mesa pequena com 5 lugares (temos 5 unidades)"><span class="box-check"></span><span class="texto-opcao">Mesa pequena com 5 lugares</span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Reserva de mesas:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_reserva_mesas" value="Reservar 1 mesa para os pais dos noivos"><span class="box-check"></span><span class="texto-opcao">Reservar 1 mesa para os pais dos noivos</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_reserva_mesas" value="Reservar 1 mesa para os pais e familiares próximos da noiva"><span class="box-check"></span><span class="texto-opcao">Reservar 1 mesa para os pais e familiares próximos da noiva</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_reserva_mesas" value="Reservar 1 mesa para os pais e familiares próximos do noivo"><span class="box-check"></span><span class="texto-opcao">Reservar 1 mesa para os pais e familiares próximos do noivo</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_reserva_mesas" value="Reservar 1 mesa para os padrinhos"><span class="box-check"></span><span class="texto-opcao">Reservar 1 mesa para os padrinhos</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_reserva_mesas" value="Mesas mapeadas (Sugerimos)"><span class="box-check"></span><span class="texto-opcao">Mesas mapeadas <span style="background: #ffff00; color: #111; padding: 1px 4px; font-size: 10px; font-weight: bold;">(Sugerimos)</span></span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Jantar dos noivos:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_jantar_noivos" value="Os noivos jantarão na mesa com os pais e familiares"><span class="box-check"></span><span class="texto-opcao">Os noivos jantarão na mesa com os pais e familiares</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_jantar_noivos" value="Reservar uma mesa com 2 lugares para os noivos no salão de festas"><span class="box-check"></span><span class="texto-opcao">Reservar uma mesa com 2 lugares para os noivos no salão de festas</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_jantar_noivos" value="Servir o jantar dos noivos em uma mesa de 2 lugares no Mirante"><span class="box-check"></span><span class="texto-opcao">Servir o jantar dos noivos em uma mesa de 2 lugares no Mirante <span style="background: #ffff00; color: #111; padding: 1px 4px; font-size: 10px; font-weight: bold;">(Sugerimos)</span></span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Cores das flores dos arranjos da mesa dos convidados:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_cores_flores" value="Flores 100% brancas"><span class="box-check"></span><span class="texto-opcao">Flores 100% brancas</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_cores_flores" value="50% branca e 50% com até 3 opções de cores"><span class="box-check"></span><span class="texto-opcao">50% branca e 50% com até 3 opções de cores</span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Formato do arranjo com 1 pote de vidro com vela flutuante</div>
+                <div style="background: #fde8e8; color: #a00; font-size: 10px; padding: 4px; margin-bottom: 6px; font-style: italic;">
+                    <b>OBS:</b> Para inclusão de mais velas, consultar valores de Upgrade.
+                </div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_formato_arranjo" value="Arranjo único baixo"><span class="box-check"></span><span class="texto-opcao">Arranjo único baixo</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_formato_arranjo" value="Trio de vidro"><span class="box-check"></span><span class="texto-opcao">Trio de vidro</span></label>
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Acessórios inclusos para a mesa dos convidados</div>
+                <ul class="lista-bullets">
+                    <li>Souplast</li>
+                    <li>Guardanapos na cor cáqui</li>
+                    <li>Pratos de louça em porcelana</li>
+                    <li>Talheres de Inox</li>
+                    <li>Copos de vidro para servir água, refrigerantes, sucos e cerveja</li>
+                    <li>Toalhas de jacar na cor: Champagne (tradicional)</li>
+                </ul>
+
+                <div class="subsecao-titulo">Dobradura do guardanapo</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Envelope"><span class="box-check"></span><span class="texto-opcao">Envelope</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Pata"><span class="box-check"></span><span class="texto-opcao">Pata</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Concha"><span class="box-check"></span><span class="texto-opcao">Concha</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Nó"><span class="box-check"></span><span class="texto-opcao">Nó</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Em baixo do prato"><span class="box-check"></span><span class="texto-opcao">Em baixo do prato</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Escamas"><span class="box-check"></span><span class="texto-opcao">Escamas</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Flor alta"><span class="box-check"></span><span class="texto-opcao">Flor alta</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Botão de flor"><span class="box-check"></span><span class="texto-opcao">Botão de flor</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Chapéu de bispo"><span class="box-check"></span><span class="texto-opcao">Chapéu de bispo</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Coração"><span class="box-check"></span><span class="texto-opcao">Coração</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_guardanapo" value="Iremos levar porta guardanapo"><span class="box-check"></span><span class="texto-opcao">Iremos levar porta guardanapo</span></label>
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Mesa do Bolo & Confeitaria</div>
+                
+                <div class="subsecao-titulo">Cor da mesa do bolo</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_cor_mesa_bolo" value="Flores 100% brancas"><span class="box-check"></span><span class="texto-opcao">Flores 100% brancas</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_cor_mesa_bolo" value="50% branca e 50% com até 4 opções de cores"><span class="box-check"></span><span class="texto-opcao">50% branca e 50% com até 4 opções de cores</span></label>
+                </div>
+
+                <div class="subsecao-titulo">Bolo cenográfico</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_bolo_ceno" value="Bolo Boho (flores no tom da decoração)"><span class="box-check"></span><span class="texto-opcao">Bolo Boho (flores no tom da decoração)</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_bolo_ceno" value="Bolo Faixas (flor central não removível)"><span class="box-check"></span><span class="texto-opcao">Bolo Faixas (flor central não removível)</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_bolo_ceno" value="Clássico liso"><span class="box-check"></span><span class="texto-opcao">Clássico liso</span></label>
+                </div>
+
+                <div class="subsecao-titulo">Mesa do bolo (Posicionamento)</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="radio" name="decor_nat_posicao_mesa_bolo" value="Dentro do salão"><span class="box-check"></span><span class="texto-opcao">Dentro do salão</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_posicao_mesa_bolo" value="Na parte externa (janela)"><span class="box-check"></span><span class="texto-opcao">Na parte externa (janela)</span></label>
+                    <label class="item-opcao"><input type="radio" name="decor_nat_posicao_mesa_bolo" value="Na parte externa (360°)"><span class="box-check"></span><span class="texto-opcao">Na parte externa (360°)</span></label>
+                </div>
+
+                <div class="nota-cinza" style="margin-top: 6px;">
+                    <b>NOTA:</b> Se optado pela mesa do bolo na parte externa, há possibilidade de alteração na qualidade das flores naturais em dias de calor excessivo.
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 10px;">Extras de Movelaria:</div>
+                <div class="grid-opcoes-2col">
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_movelaria_extra" value="Conjunto de sofás"><span class="box-check"></span><span class="texto-opcao">Conjunto de sofás</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="decor_nat_movelaria_extra" value="Letreiro luminoso"><span class="box-check"></span><span class="texto-opcao">Letreiro luminoso</span></label>
+                </div>
+
+                <div style="margin-top: 8px; font-size: 11px;">
+                    <b>Caso tenha algum item a acrescentar na decoração do salão, informar:</b><br>
+                    <input type="text" id="decor_nat_item_acrescentar" class="campo-linha-texto" style="width: 100%; margin-top: 4px;">
+                </div>
             </div>
         </div>
 
         <!-- ABA 5: ITENS, ALIMENTOS EXTRAS & LEMBRANCINHAS -->
         <div id="abaItensExtras" class="conteudo-aba">
             <div class="menu-titulo-principal">ALIMENTOS E BEBIDAS EXTRAS, ITENS GERAIS E LEMBRANCINHAS</div>
+            <div class="subtitulo-gerais">INFORMAÇÕES GERAIS</div>
+
             <div class="grid-info-gerais">
                 <div class="info-item"><span class="info-label">Casal:</span><input type="text" class="info-valor-azul form_casal_nome" value="Teste & Teste" readonly></div>
                 <div class="info-item"><span class="info-label">Data:</span><input type="text" class="info-valor-azul form_data_casamento" placeholder="01/03/2026"><span class="info-label" style="margin-left: 10px;">Hora:</span><input type="text" class="info-valor-azul form_horario_convite" placeholder="00h às 00h"></div>
+                <div class="info-item"><span class="info-label">Quantidade de convidados:</span><input type="text" class="info-valor-azul form_qtd_convidados" placeholder="000+00"></div>
+                <div class="info-item"><span class="info-label">Tempo de evento:</span><input type="text" class="info-valor-azul form_tempo_evento" placeholder="00 horas"></div>
             </div>
+
+            <div class="checklist-instrucao">CheckList (Preencher as informações em Azul)</div>
+
             <div class="secao-bloco">
-                <div class="secao-titulo-doc">Doces, Bebidas e Lembrancinhas</div>
-                <p style="font-size: 11px;">Listagem de itens que os noivos levarão no dia do evento.</p>
+                <div class="secao-titulo-doc">Alimentos:</div>
+                <div style="font-size: 11px; margin-bottom: 4px;">
+                    <b>1. Terão doces finos?</b>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="doces_finos_tem" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="doces_finos_tem" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
+
+                <div style="font-size: 11px; margin-left: 15px; margin-bottom: 4px;">
+                    • Os doces virão em fôrma decorada?
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="doces_forma_decorada" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="doces_forma_decorada" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
+
+                <div style="font-size: 11px; margin-left: 15px; margin-bottom: 6px;">
+                    • Usar os doces finos na decoração da mesa do bolo?
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="doces_usa_mesa_bolo" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="doces_usa_mesa_bolo" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
+
+                <div class="nota-cinza">
+                    <b>NOTA:</b> Caso os doces finos não vierem em embalagens decoradas, o Villa Vezzane utilizará forminhas de doce simples para usá-los na decoração da mesa do bolo.
+                </div>
+                <div class="nota-cinza">
+                    <b>NOTA:</b> Dependendo da quantidade de doces, não há espaço na mesa do bolo para todos. Nestes casos, os doces que não estiverem na mesa do bolo serão servidos junto com o bolo de corte.
+                </div>
+
+                <div style="font-size: 11px; margin-top: 8px;">
+                    <label class="item-opcao"><input type="checkbox" name="doces_outros_check" value="Outros"><span class="box-check"></span><span class="texto-opcao">Outros:</span></label>
+                    <input type="text" id="doces_outros_desc" class="campo-linha-texto" style="width: 80%; margin-left: 5px;">
+                </div>
+
+                <table class="tabela-itens">
+                    <thead>
+                        <tr>
+                            <th style="width: 45%;">Listar Doces por tipo</th>
+                            <th style="width: 20%;">Quantidade</th>
+                            <th style="width: 35%;">Onde colocar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" id="doce_tipo_1" placeholder="Ex: Bem-casados"></td>
+                            <td><input type="text" id="doce_qtd_1" placeholder="000"></td>
+                            <td>
+                                <label class="item-opcao"><input type="radio" name="doce_local_1" value="Mesa do bolo"><span class="box-check"></span><span class="texto-opcao">Mesa do bolo</span></label><br>
+                                <label class="item-opcao"><input type="radio" name="doce_local_1" value="Mesa de café de encerramento"><span class="box-check"></span><span class="texto-opcao">Mesa de café de encerramento</span></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" id="doce_tipo_2"></td>
+                            <td><input type="text" id="doce_qtd_2"></td>
+                            <td>
+                                <label class="item-opcao"><input type="radio" name="doce_local_2" value="Mesa do bolo"><span class="box-check"></span><span class="texto-opcao">Mesa do bolo</span></label><br>
+                                <label class="item-opcao"><input type="radio" name="doce_local_2" value="Mesa de café de encerramento"><span class="box-check"></span><span class="texto-opcao">Mesa de café de encerramento</span></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" id="doce_tipo_3"></td>
+                            <td><input type="text" id="doce_qtd_3"></td>
+                            <td>
+                                <label class="item-opcao"><input type="radio" name="doce_local_3" value="Mesa do bolo"><span class="box-check"></span><span class="texto-opcao">Mesa do bolo</span></label><br>
+                                <label class="item-opcao"><input type="radio" name="doce_local_3" value="Mesa de café de encerramento"><span class="box-check"></span><span class="texto-opcao">Mesa de café de encerramento</span></label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Bebidas:</div>
+                <div style="font-size: 11px; margin-bottom: 6px;">
+                    <b>1. Outros tipos de bebidas (além das bebidas servidas no menu)</b>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="bebidas_extras_tem" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="bebidas_extras_tem" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
+
+                <table class="tabela-itens">
+                    <thead>
+                        <tr>
+                            <th style="width: 45%;">Listar Bebidas por tipo</th>
+                            <th style="width: 20%;">Quantidade</th>
+                            <th style="width: 35%;">Em que momento servir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" id="bebida_tipo_1" placeholder="Ex: Whisky / Espumante"></td>
+                            <td><input type="text" id="bebida_qtd_1" placeholder="00 garrafas"></td>
+                            <td>
+                                <label class="item-opcao"><input type="radio" name="bebida_momento_1" value="Após a cerimônia"><span class="box-check"></span><span class="texto-opcao">Após a cerimônia</span></label><br>
+                                <label class="item-opcao"><input type="radio" name="bebida_momento_1" value="A partir da abertura do buffet"><span class="box-check"></span><span class="texto-opcao">A partir da abertura do buffet</span></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" id="bebida_tipo_2"></td>
+                            <td><input type="text" id="bebida_qtd_2"></td>
+                            <td>
+                                <label class="item-opcao"><input type="radio" name="bebida_momento_2" value="Após a cerimônia"><span class="box-check"></span><span class="texto-opcao">Após a cerimônia</span></label><br>
+                                <label class="item-opcao"><input type="radio" name="bebida_momento_2" value="A partir da abertura do buffet"><span class="box-check"></span><span class="texto-opcao">A partir da abertura do buffet</span></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" id="bebida_tipo_3"></td>
+                            <td><input type="text" id="bebida_qtd_3"></td>
+                            <td>
+                                <label class="item-opcao"><input type="radio" name="bebida_momento_3" value="Após a cerimônia"><span class="box-check"></span><span class="texto-opcao">Após a cerimônia</span></label><br>
+                                <label class="item-opcao"><input type="radio" name="bebida_momento_3" value="A partir da abertura do buffet"><span class="box-check"></span><span class="texto-opcao">A partir da abertura do buffet</span></label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="nota-cinza">
+                    <b>NOTA:</b> No caso de bebidas extras, será necessário a contratação de um garçom extra (R$ 300) para cada tipo de bebida. (Alguns tipos de bebidas, também será necessário contratar copo adequado de acordo com a bebida).
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Bar:</div>
+                <div style="font-size: 11px; margin-bottom: 4px;">
+                    <b>1. Terá serviço de bar externo?</b>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="bar_externo_tem" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="bar_externo_tem" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
+
+                <div style="font-size: 11px; margin-bottom: 6px;">
+                    <b>2. O Bar levará estrutura?</b>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="bar_estrutura_levara" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="bar_estrutura_levara" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
+
+                <div class="nota-cinza">
+                    <b>Nota:</b> Caso a equipe opte por utilizar nossa estrutura, precisará ser dividida com nossa equipe.
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Lembrancinhas:</div>
+                <div style="font-size: 11px; margin-bottom: 4px;">
+                    <b>1. Lembrancinha para os convidados:</b>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="lembrancinha_convidados_tem" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="lembrancinha_convidados_tem" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
+
+                <div style="font-size: 11px; margin-left: 15px;">
+                    • Qual: <input type="text" id="lembrancinha_convidados_qual" class="campo-linha-texto" style="width: 250px;"><br>
+                    • Quantos: <input type="text" id="lembrancinha_convidados_quantos" class="campo-linha-texto" style="width: 100px;">
+                </div>
+
+                <div class="subsecao-titulo" style="margin-left: 15px;">Quanto à entrega das lembrancinhas</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px; margin-left: 15px;">
+                    <label class="item-opcao"><input type="radio" name="lembrancinha_convidados_entrega" value="A assessoria fará a entrega"><span class="box-check"></span><span class="texto-opcao">A assessoria fará a entrega</span></label>
+                    <label class="item-opcao"><input type="radio" name="lembrancinha_convidados_entrega" value="Os noivos farão a entrega"><span class="box-check"></span><span class="texto-opcao">Os noivos farão a entrega</span></label>
+                    <div style="margin-left: 20px;">
+                        • Quantos por pessoa: <input type="text" id="lembrancinha_qtd_por_pessoa" class="campo-linha-texto" style="width: 150px;">
+                    </div>
+                </div>
+
+                <div style="font-size: 11px; margin-top: 10px; margin-bottom: 4px;">
+                    <b>2. Lembrancinha específicas para padrinhos:</b>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="lembrancinha_padrinhos_tem" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="lembrancinha_padrinhos_tem" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
+
+                <div style="font-size: 11px; margin-left: 15px;">
+                    • Qual: <br>
+                    <span style="margin-left: 15px;">• Madrinhas:</span> <input type="text" id="lemb_madrinhas_desc" class="campo-linha-texto" style="width: 250px;"><br>
+                    <span style="margin-left: 15px;">• Padrinhos:</span> <input type="text" id="lemb_padrinhos_desc" class="campo-linha-texto" style="width: 250px;"><br>
+                    <span style="margin-left: 15px;">• Pais:</span> <input type="text" id="lemb_pais_desc" class="campo-linha-texto" style="width: 250px;">
+                </div>
+
+                <div class="subsecao-titulo" style="margin-left: 15px;">Quanto à entrega:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px; margin-left: 15px;">
+                    <label class="item-opcao"><input type="radio" name="lembrancinha_padrinhos_entrega" value="A assessoria fará a entrega"><span class="box-check"></span><span class="texto-opcao">A assessoria fará a entrega</span></label>
+                    <label class="item-opcao"><input type="radio" name="lembrancinha_padrinhos_entrega" value="Os noivos farão a entrega"><span class="box-check"></span><span class="texto-opcao">Os noivos farão a entrega</span></label>
+                    <div style="margin-left: 20px;">
+                        • Informar em que momento será feita a entrega: <input type="text" id="lemb_padrinhos_momento" class="campo-linha-texto" style="width: 250px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">Itens:</div>
+                <div class="subsecao-titulo">1. Assinalar outros itens que irão levar:</div>
+
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 11px;">
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Cardápios impressos"><span class="box-check"></span><span class="texto-opcao">Cardápios impressos para a mesa dos convidados. Quantos: <input type="text" id="item_cardapio_qtd" class="campo-linha-texto" style="width: 80px;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Porta guardanapos"><span class="box-check"></span><span class="texto-opcao">Porta guardanapos (seja fita, argola, strass, outros)</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Leques para cerimônia"><span class="box-check"></span><span class="texto-opcao">Leques para cerimônia</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Buquê para jogar"><span class="box-check"></span><span class="texto-opcao">Buquê para jogar. O buquê que jogará será o da entrada da noiva ou um diferente?</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Quadro de boas vindas"><span class="box-check"></span><span class="texto-opcao">Quadro de boas vindas. Onde colocar: <input type="text" id="item_quadro_onde" class="campo-linha-texto" style="width: 250px;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Livro de assinaturas"><span class="box-check"></span><span class="texto-opcao">Livro de assinaturas. Onde colocar: <input type="text" id="item_livro_onde" class="campo-linha-texto" style="width: 250px;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Árvore de digitais"><span class="box-check"></span><span class="texto-opcao">Árvore de digitais. Onde colocar: <input type="text" id="item_arvore_onde" class="campo-linha-texto" style="width: 250px;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Kit toaletes"><span class="box-check"></span><span class="texto-opcao">Kit toaletes. Quantos: <input type="text" id="item_kit_toalete_qtd" class="campo-linha-texto" style="width: 80px;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Iniciais ou palavras em MDF"><span class="box-check"></span><span class="texto-opcao">Iniciais ou palavras em MDF. Onde colocar: <input type="text" id="item_mdf_onde" class="campo-linha-texto" style="width: 250px;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Porta alianças"><span class="box-check"></span><span class="texto-opcao">Porta alianças. Qual modelo: <input type="text" id="item_aliancas_modelo" class="campo-linha-texto" style="width: 250px;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Decoração para topo do bolo"><span class="box-check"></span><span class="texto-opcao">Decoração para o topo do bolo cenográfico. Qual: <input type="text" id="item_topo_bolo_qual" class="campo-linha-texto" style="width: 200px;"></span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Placa para cadeira do jantar"><span class="box-check"></span><span class="texto-opcao">Placa para a cadeira do jantar</span></label>
+                    
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Lencinhos para cerimônia - Lágrimas de Alegria"><span class="box-check"></span><span class="texto-opcao">Lencinhos para a cerimônia - Lágrimas de Alegria</span></label>
+                    <div style="margin-left: 20px;">
+                        Quantos: <input type="text" id="item_lencinhos_qtd" class="campo-linha-texto" style="width: 80px;"> | 
+                        Quando entregar: <input type="text" id="item_lencinhos_quando" class="campo-linha-texto" style="width: 150px;"> | 
+                        Para quem entregar: <input type="text" id="item_lencinhos_para_quem" class="campo-linha-texto" style="width: 150px;">
+                    </div>
+
+                    <div class="box-destaque-borda">
+                        <label class="item-opcao"><input type="checkbox" name="item_levar" value="Chinelos personalizados"><span class="box-check"></span><span class="texto-opcao"><b>Chinelos personalizados</b></span></label>
+                        <div style="margin-top: 4px;">
+                            Quantos: <input type="text" id="item_chinelos_qtd" class="campo-linha-texto" style="width: 80px;"> | 
+                            Quando entregar: <input type="text" id="item_chinelos_quando" class="campo-linha-texto" style="width: 120px;"> | 
+                            Para quem entregar: <input type="text" id="item_chinelos_para_quem" class="campo-linha-texto" style="width: 120px;">
+                        </div>
+                        <div style="display: flex; gap: 15px; margin-top: 6px;">
+                            <label class="item-opcao"><input type="radio" name="chinelos_modo" value="Entrega livre"><span class="box-check"></span><span class="texto-opcao">Entrega livre</span></label>
+                            <label class="item-opcao"><input type="radio" name="chinelos_modo" value="Tag ou vale-conforto"><span class="box-check"></span><span class="texto-opcao">Tag ou vale-conforto</span></label>
+                            <label class="item-opcao"><input type="radio" name="chinelos_modo" value="Lista de nomes"><span class="box-check"></span><span class="texto-opcao">Lista de nomes <span style="background: #ffff00; color: #111; padding: 1px 4px; font-weight: bold;">(Sugerimos)</span></span></label>
+                        </div>
+                    </div>
+
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Canecas ou itens personalizados"><span class="box-check"></span><span class="texto-opcao">Canecas ou itens personalizados</span></label>
+                    <div style="margin-left: 20px;">
+                        Quantos: <input type="text" id="item_canecas_qtd" class="campo-linha-texto" style="width: 80px;"> | 
+                        Quando entregar: <input type="text" id="item_canecas_quando" class="campo-linha-texto" style="width: 150px;"> | 
+                        Para quem entregar: <input type="text" id="item_canecas_para_quem" class="campo-linha-texto" style="width: 150px;">
+                    </div>
+
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Pétalas para saída da cerimônia"><span class="box-check"></span><span class="texto-opcao">Pétalas para saída da cerimônia <span style="background: #ffff00; color: #111; padding: 1px 4px; font-weight: bold;">(Permitido somente pétalas naturais - vide nota em OBS)</span></span></label>
+                    <div style="margin-left: 20px;">
+                        Para quem entregar: <input type="text" id="item_petalas_para_quem" class="campo-linha-texto" style="width: 250px;">
+                    </div>
+
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Bolhas de sabão para saída da cerimônia"><span class="box-check"></span><span class="texto-opcao">Bolhas de sabão para saída da cerimônia</span></label>
+                    <div style="margin-left: 20px;">
+                        Quantos: <input type="text" id="item_bolhas_qtd" class="campo-linha-texto" style="width: 80px;"> | 
+                        Para quem entregar: <input type="text" id="item_bolhas_para_quem" class="campo-linha-texto" style="width: 200px;">
+                    </div>
+
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Sparkles para saída da cerimônia"><span class="box-check"></span><span class="texto-opcao">Sparkles para saída da cerimônia</span></label>
+                    <div style="margin-left: 20px;">
+                        Quantos: <input type="text" id="item_sparkles_qtd" class="campo-linha-texto" style="width: 80px;"> | 
+                        Para quem entregar: <input type="text" id="item_sparkles_para_quem" class="campo-linha-texto" style="width: 200px;">
+                    </div>
+
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Kit balada - assessoria distribui na pista de dança"><span class="box-check"></span><span class="texto-opcao">Kit balada - assessoria distribui na pista de dança</span></label>
+                    <label class="item-opcao"><input type="checkbox" name="item_levar" value="Kit balada - disponibilizar em cestas"><span class="box-check"></span><span class="texto-opcao">Kit balada - disponibilizar em cestas</span></label>
+                    
+                    <div style="margin-top: 4px;">
+                        <label class="item-opcao"><input type="checkbox" name="item_levar" value="Outros itens"><span class="box-check"></span><span class="texto-opcao">Outros itens:</span></label>
+                        <input type="text" id="item_outros_desc" class="campo-linha-texto" style="width: 80%;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="secao-bloco" style="border-top: 1px solid #111; padding-top: 10px; margin-top: 20px;">
+                <div style="text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 6px;">TERMO DE RESPONSABILIDADE</div>
+                <div style="text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 8px;">DECLARAÇÃO DE RESPONSABILIDADE REFERENTE AO PREPARO E FORNECIMENTO DE ALIMENTOS</div>
+                
+                <div style="font-size: 10px; text-align: justify; line-height: 1.4;">
+                    Eu, (<input type="text" id="termo_nome_responsavel" class="campo-linha-texto" style="width: 250px;" placeholder="NOME COMPLETO">) responsável pela entrega dos itens descritos abaixo, ATESTO, para todos os fins de direito que, adquiri de fornecedor externo e/ou fabriquei, os itens que serão disponibilizados no Villa Vezzane aos convidados do evento, que os mesmo foram confeccionados tanto no preparo e manipulação em conformidade com todas as normas de higiene estabelecidas pelos órgãos de Vigilância Sanitária, referentes às práticas necessárias ao preparo, fornecimento de alimentos. Estou ciente de que qualquer imprevisto decorrente desses produtos será de minha responsabilidade, isentando o espaço de qualquer ônus.
+                </div>
+
+                <div style="font-size: 10px; font-weight: bold; margin-top: 8px;">
+                    DESCRITIVO DOS ITENS: (DESCREVER ITENS EXTERNOS COMESTÍVEIS):
+                </div>
+                <input type="text" id="termo_descritivo_itens_1" class="campo-linha-texto" style="width: 100%; margin-top: 4px;"><br>
+                <input type="text" id="termo_descritivo_itens_2" class="campo-linha-texto" style="width: 100%; margin-top: 4px;">
+            </div>
+
+            <div class="box-obs-contrato">
+                <div class="obs-titulo" style="text-align: center; font-size: 11px; text-transform: uppercase;">OBSERVAÇÕES IMPORTANTES AOS NOIVOS</div>
+                <ul class="lista-bullets" style="font-size: 9.5px; margin-left: 10px; text-align: justify;">
+                    <li>Existem alguns itens que não há no Villa Vezzane dos quais enfatizamos para os noivos providenciarem: Topo do bolo, Cestinhas das floristas, Almofadinha ou outro objeto para a entrada das alianças, Tesoura para o corte da gravata, kit de maquiagem para retoque e etc;</li>
+                    <li>Caso os convidados levem presentes, serão guardados na suíte da noiva e a chave ficará com uma das assessoras;</li>
+                    <li><b>Todos os itens que os noivos levarão para o Villa Vezzane, sem exceção, tem que estar com uma etiqueta que consiste em: nome do casal, data do casamento, horário e o que está dentro da caixa ou sacola. Assim não se confundirá com pertences de outros noivos.</b></li>
+                    <li><b><u>Não é permitida a utilização de chuva de prata, confetes, arroz ou similares no sítio</u></b>, principalmente na cerimônia ou salão de festas, pois dificulta a limpeza. O sítio indica o uso de chuva de pétalas para os noivos na saída da cerimônia, bolhas de sabão ou sparkles.</li>
+                    <li>Pensando na preservação do nosso ecossistema e na facilidade da limpeza pós-evento, pedimos gentilmente que as pétalas utilizadas na cerimônia sejam **EXCLUSIVAMENTE NATURAIS**. As pétalas artificiais/permanentes (plástico, tecido, etc.), apesar de lindas, causam impactos na natureza e em nossa estrutura. Por isso, a utilização delas é restrita e não permitida.</li>
+                    <li><b>Ficam proibidos, terminantemente, fogos de artifícios dentro dos limites do Villa Vezzane.</b></li>
+                    <li>Caso haja alteração quanto aos itens serem levados para Villa Vezzane deverá ser comunicado a assessora responsável, até 10 dias úteis antes do evento. Caso haja mudanças sem ser comunicadas, o sítio não e responsabilizará;</li>
+                </ul>
             </div>
         </div>
 
-        <!-- ABA 6: SOM & MÚSICA -->
+        <!-- ABA 6: SOM & MÚSICA (6.Som) -->
         <div id="abaSom" class="conteudo-aba">
             <div class="menu-titulo-principal">INFORMAÇÕES SOM</div>
+            <div class="subtitulo-gerais">INFORMAÇÕES GERAIS</div>
+
             <div class="grid-info-gerais">
                 <div class="info-item"><span class="info-label">Casal:</span><input type="text" class="info-valor-azul form_casal_nome" value="Teste & Teste" readonly></div>
-                <div class="info-item"><span class="info-label">Data:</span><input type="text" class="info-valor-azul form_data_casamento" placeholder="01/03/2026"></div>
+                <div class="info-item"><span class="info-label">Data:</span><input type="text" class="info-valor-azul form_data_casamento" placeholder="01/03/2026"><span class="info-label" style="margin-left: 10px;">Hora:</span><input type="text" class="info-valor-azul form_horario_convite" placeholder="00h às 00h"></div>
+                <div class="info-item"><span class="info-label">Quantidade de convidados:</span><input type="text" class="info-valor-azul form_qtd_convidados" placeholder="000+00"></div>
+                <div class="info-item"><span class="info-label">Tempo de evento:</span><input type="text" class="info-valor-azul form_tempo_evento" placeholder="00 horas"></div>
             </div>
+
+            <div class="checklist-instrucao">CheckList (Preencher as informações em Azul)</div>
+
             <div class="secao-bloco">
-                <div class="secao-titulo-doc">Músicas da Cerimônia e Festa</div>
-                <p style="font-size: 11px;">Orientação para DJ / Banda contratados.</p>
+                <div class="secao-titulo-doc">Música da Cerimônia:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <label class="item-opcao"><input type="checkbox" name="som_cerimonia_dj" value="DJ: Áudio Beats Eventos"><span class="box-check"></span><span class="texto-opcao">DJ: Áudio Beats Eventos</span></label>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label class="item-opcao"><input type="checkbox" name="som_cerimonia_banda_check" value="Banda"><span class="box-check"></span><span class="texto-opcao">Banda:</span></label>
+                        <input type="text" id="som_cerimonia_banda_nome" class="campo-linha-texto" style="width: 300px;">
+                    </div>
+                    <div style="margin-left: 20px; margin-top: 4px;">
+                        Precisa contratar sonorização? 
+                        <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="som_precisa_sonorizacao" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                        <label class="item-opcao" style="display: inline-flex; margin-left: 10px;"><input type="radio" name="som_precisa_sonorizacao" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase;">FORNECEDORES EXTERNOS/MÚSICOS:</div>
+                <ul class="lista-bullets" style="font-size: 10px; text-align: justify;">
+                    <li>Os músicos externos serão responsáveis por levar todos os itens para sonorização, incluindo caixas e outros.</li>
+                    <li>Caso os músicos não содержа m os equipamentos necessários para a correta execução da sonorização, vocês poderão fazer uma contratação de equipamentos adicionais com a casa. Dessa forma o DJ em conjunto com os músicos, prepararão os equipamentos.</li>
+                    <li>Não será autorizada a utilização dos equipamentos do DJ da casa para sonorização de músicos externos, sem a prévia contratação.</li>
+                    <li>No caso de banda para festa, não será autorizada a passagem de som dentro do intervalo de 2h para início da cerimônia, para garantir uma recepção harmoniosa aos convidados.</li>
+                </ul>
+            </div>
+
+            <div class="secao-bloco">
+                <div style="font-size: 11px; margin-bottom: 4px;">
+                    <b>Música para entrada no salão:</b> <input type="text" id="som_musica_entrada_salao" class="campo-linha-texto" style="width: 60%;">
+                </div>
+                <div style="font-size: 11px; margin-bottom: 4px;">
+                    <b>Música para Trend de fotos (se houver):</b> <input type="text" id="som_musica_trend_fotos" class="campo-linha-texto" style="width: 55%;">
+                </div>
+                <div style="font-size: 11px; margin-bottom: 4px;">
+                    <b>Música para dança do casal (se houver):</b> <input type="text" id="som_musica_danca_casal" class="campo-linha-texto" style="width: 55%;">
+                </div>
+                <div style="font-size: 11px; margin-bottom: 4px;">
+                    <b>Música para momento do buquê (se houver):</b> <input type="text" id="som_musica_buque" class="campo-linha-texto" style="width: 55%;">
+                </div>
+            </div>
+
+            <div class="secao-bloco">
+                <div class="secao-titulo-doc">DJ - Completo - Pista de Dança</div>
+                <div style="font-size: 11px; font-weight: bold; margin-bottom: 4px;">Musical:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px; margin-left: 10px;">
+                    <label class="item-opcao"><input type="checkbox" name="som_pista_dj" value="DJ: Áudio Beats Eventos"><span class="box-check"></span><span class="texto-opcao">DJ: Áudio Beats Eventos</span></label>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label class="item-opcao"><input type="checkbox" name="som_pista_banda_check" value="Banda"><span class="box-check"></span><span class="texto-opcao">Banda:</span></label>
+                        <input type="text" id="som_pista_banda_nome" class="campo-linha-texto" style="width: 300px;">
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px; font-size: 11px;">
+                    <b>Informar se há alguma restrição de estilo musical:</b><br>
+                    <input type="text" id="som_restricao_musical" class="campo-linha-texto" style="width: 100%; margin-top: 4px;">
+                </div>
+
+                <div class="subsecao-titulo" style="margin-top: 12px;">Playlist da Festa:</div>
+                <div style="font-size: 10px; color: #333; margin-bottom: 6px;">
+                    Os noivos deverão encaminhar para o DJ a playlist de sua preferência para a festa em até 15 dias antes da data do casamento.
+                </div>
+                <div class="nota-cinza">
+                    <b>Nota:</b> (O DJ irá encaminhar um briefing para o casal)
+                </div>
+
+                <div style="margin-top: 10px; font-size: 11px;">
+                    <label class="item-opcao"><input type="checkbox" id="som_estou_ciente" value="Estou ciente"><span class="box-check"></span><span class="texto-opcao"><b>Estou ciente</b></span></label>
+                </div>
             </div>
         </div>
 
-        <!-- ABA 7: CERIMÔNIA & CRONOGRAMA CORTEJO -->
+        <!-- ABA 7: CERIMÔNIA & CRONOGRAMA CORTEJO (7.Cerimonial) -->
         <div id="abaCerimonia" class="conteudo-aba">
             <div class="menu-titulo-principal">CERIMÔNIA</div>
+            <div class="subtitulo-gerais">INFORMAÇÕES GERAIS</div>
+
             <div class="grid-info-gerais">
                 <div class="info-item"><span class="info-label">Casal:</span><input type="text" class="info-valor-azul form_casal_nome" value="Teste & Teste" readonly></div>
-                <div class="info-item"><span class="info-label">Data:</span><input type="text" class="info-valor-azul form_data_casamento" placeholder="01/03/2026"></div>
+                <div class="info-item"><span class="info-label">Data:</span><input type="text" class="info-valor-azul form_data_casamento" placeholder="01/03/2026"><span class="info-label" style="margin-left: 10px;">Hora:</span><input type="text" class="info-valor-azul form_horario_convite" placeholder="00h às 00h"></div>
+                <div class="info-item"><span class="info-label">Quantidade de convidados:</span><input type="text" class="info-valor-azul form_qtd_convidados" placeholder="000+00"></div>
+                <div class="info-item"><span class="info-label">Tempo de evento:</span><input type="text" class="info-valor-azul form_tempo_evento" placeholder="00 horas"></div>
             </div>
+
+            <div class="checklist-instrucao">CheckList (Preencher as informações em Azul)</div>
+
             <div class="secao-bloco">
-                <div class="secao-titulo-doc">Ordem do Cortejo</div>
-                <p style="font-size: 11px;">Integrantes do cortejo e entradas.</p>
+                <div class="secao-titulo-doc">Horários</div>
+                <div class="alerta-amarelo">
+                    NOTA: às 00 horas de evento é contada a partir do horário marcado no convite.
+                </div>
+                <ul class="lista-bullets">
+                    <li>Horário marcado no convite: <input type="text" id="cerim_horario_convite" class="campo-linha-texto"></li>
+                    <li>Horário da cerimônia: <input type="text" id="cerim_horario_cerimonia" class="campo-linha-texto"></li>
+                    <li>Nome Celebrante: <input type="text" id="cerim_nome_celebrante" class="campo-linha-texto"></li>
+                </ul>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="secao-bloco">
+                    <div class="secao-titulo-doc">Cerimonial</div>
+                    <div style="font-size: 11px; font-weight: bold; margin-bottom: 4px;">Tipo de cerimônia:</div>
+                    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                        <label class="item-opcao"><input type="radio" name="cerim_tipo" value="Religiosa"><span class="box-check"></span><span class="texto-opcao">Religiosa</span></label>
+                        <label class="item-opcao"><input type="radio" name="cerim_tipo" value="Celebrante"><span class="box-check"></span><span class="texto-opcao">Celebrante</span></label>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <label class="item-opcao"><input type="radio" name="cerim_tipo" value="Outros"><span class="box-check"></span><span class="texto-opcao">Outros. Especificar:</span></label>
+                            <input type="text" id="cerim_tipo_outros_spec" class="campo-linha-texto" style="width: 120px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-destaque-borda" style="margin: 0;">
+                    <div style="font-size: 11px; font-weight: bold; margin-bottom: 6px;">Itens para entrada no cortejo:</div>
+                    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                        <label class="item-opcao"><input type="checkbox" name="cerim_cortejo_item" value="Flor de Lapela noivo / padrinhos / pais"><span class="box-check"></span><span class="texto-opcao">Flor de Lapela noivo / padrinhos / pais</span></label>
+                        <label class="item-opcao"><input type="checkbox" name="cerim_cortejo_item" value="Placa ou flâmula pajem / daminha"><span class="box-check"></span><span class="texto-opcao">Placa ou flâmula pajem / daminha</span></label>
+                        <label class="item-opcao"><input type="checkbox" name="cerim_cortejo_item" value="Mini buquê damas / madrinhas"><span class="box-check"></span><span class="texto-opcao">Mini buquê damas / madrinhas</span></label>
+                        <label class="item-opcao"><input type="checkbox" name="cerim_cortejo_item" value="Homenagem (quadro / balão)"><span class="box-check"></span><span class="texto-opcao">Homenagem (quadro / balão)</span></label>
+                        <label class="item-opcao"><input type="checkbox" name="cerim_cortejo_item" value="Votos pessoais"><span class="box-check"></span><span class="texto-opcao">Votos pessoais</span></label>
+                        <label class="item-opcao"><input type="checkbox" name="cerim_cortejo_item" value="Porta aliança"><span class="box-check"></span><span class="texto-opcao">Porta aliança</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alerta-amarelo" style="margin-top: 15px;">
+                <b>OBSERVAÇÕES:</b><br>
+                ► O responsável pela celebração do casamento, se contratado terceiros (não parceiros) deverá se apresentar com pelo menos uma hora de antecedência no Espaço, para evitar riscos de atrasos da cerimônia.<br>
+                ► Este cronograma os noivos deverão repassar para o DJ ou aos músicos que foram contratados!
+            </div>
+
+            <div class="secao-bloco" style="margin-top: 15px;">
+                <div class="secao-titulo-doc" style="text-align: center;">Cronograma Cerimonial de Casamento</div>
+                <div class="alerta-amarelo" style="background-color: #e2dad0; text-align: center;">
+                    VOCÊS PODEM ALTERAR A ORDEM DE ACORDO COM AS ESCOLHAS DE VOCÊS!<br>
+                    <span style="color: #2b5797; font-weight: bold;">Favor preencher com nome de todos os participantes do cortejo</span>
+                </div>
+
+                <div style="font-size: 11px; margin-top: 10px;">
+                    <b>1. Entrada dos Pais - Música:</b> <input type="text" id="cron_musica_pais" class="campo-linha-texto" style="width: 250px;"><br>
+                    <span style="color: #2b5797; font-size: 10px;">Pai noivo, mãe noiva-</span> <input type="text" id="cron_nomes_pais" class="campo-linha-texto" style="width: 70%;">
+                </div>
+
+                <div style="font-size: 11px; margin-top: 10px;">
+                    <b>2. Entrada dos Padrinhos - Música:</b> <input type="text" id="cron_musica_padrinhos" class="campo-linha-texto" style="width: 250px;">
+                    <div style="margin-left: 10px; margin-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                        <input type="text" id="padrinho_1" class="campo-linha-texto" placeholder="Padrinhos do Noivo -">
+                        <input type="text" id="padrinho_2" class="campo-linha-texto" placeholder="Padrinhos da Noiva -">
+                        <input type="text" id="padrinho_3" class="campo-linha-texto" placeholder="Padrinhos do Noivo -">
+                        <input type="text" id="padrinho_4" class="campo-linha-texto" placeholder="Padrinhos da Noiva -">
+                        <input type="text" id="padrinho_5" class="campo-linha-texto" placeholder="Padrinhos do Noivo -">
+                        <input type="text" id="padrinho_6" class="campo-linha-texto" placeholder="Padrinhos da Noiva -">
+                        <input type="text" id="padrinho_7" class="campo-linha-texto" placeholder="Padrinhos do Noivo -">
+                        <input type="text" id="padrinho_8" class="campo-linha-texto" placeholder="Padrinhos da Noiva -">
+                    </div>
+
+                    <div class="subsecao-titulo" style="margin-top: 8px;">Posição dos padrinhos na cerimônia</div>
+                    <div class="grid-opcoes-2col">
+                        <label class="item-opcao"><input type="radio" name="cron_posicao_padrinhos" value="Sentarão em casais"><span class="box-check"></span><span class="texto-opcao">Sentarão em casais</span></label>
+                        <label class="item-opcao"><input type="radio" name="cron_posicao_padrinhos" value="Homens lado do noivo, mulheres lado da noiva"><span class="box-check"></span><span class="texto-opcao">Homens lado do noivo, mulheres lado da noiva</span></label>
+                    </div>
+                </div>
+
+                <div style="font-size: 11px; margin-top: 10px;">
+                    <b>3. Entrada do Noivo:</b> (<input type="text" id="cron_noivo_nome" class="campo-linha-texto" style="width: 100px;">) com (<input type="text" id="cron_noivo_acompanhante" class="campo-linha-texto" style="width: 100px;">) - <b>Música:</b> <input type="text" id="cron_musica_noivo" class="campo-linha-texto" style="width: 200px;">
+                </div>
+
+                <div style="font-size: 11px; margin-top: 8px;">
+                    <b>4. Entrada da Florista:</b> (<input type="text" id="cron_florista_nome" class="campo-linha-texto" style="width: 150px;">) - <b>Música:</b> <input type="text" id="cron_musica_florista" class="campo-linha-texto" style="width: 200px;">
+                </div>
+
+                <div style="font-size: 11px; margin-top: 8px;">
+                    <b>5. Entrada da Noiva:</b> (<input type="text" id="cron_noiva_nome" class="campo-linha-texto" style="width: 100px;">) com (<input type="text" id="cron_noiva_acompanhante" class="campo-linha-texto" style="width: 100px;">) - <b>Música:</b> <input type="text" id="cron_musica_noiva" class="campo-linha-texto" style="width: 200px;">
+                    <div style="margin-left: 15px; margin-top: 4px;">
+                        <label class="item-opcao" style="display: inline-flex;"><input type="radio" name="cron_noiva_entrada_tipo" value="Entrada principal com Voal"><span class="box-check"></span><span class="texto-opcao">Entrada principal com Voal</span></label>
+                        <label class="item-opcao" style="display: inline-flex; margin-left: 15px;"><input type="radio" name="cron_noiva_entrada_tipo" value="Entrada pela escada pela varanda"><span class="box-check"></span><span class="texto-opcao">Entrada pela escada pela varanda</span></label>
+                    </div>
+                </div>
+
+                <div style="font-size: 11px; margin-top: 8px;">
+                    <b>6. Entrada das Alianças:</b> (<input type="text" id="cron_aliancas_nomes" class="campo-linha-texto" style="width: 200px;">) - <b>Música:</b> <input type="text" id="cron_musica_aliancas" class="campo-linha-texto" style="width: 200px;">
+                </div>
+
+                <div style="font-size: 11px; margin-top: 8px;">
+                    <b>7. Votos escritos - Música:</b> <input type="text" id="cron_musica_votos" class="campo-linha-texto" style="width: 300px;">
+                </div>
+
+                <div style="font-size: 11px; margin-top: 8px;">
+                    <b>8. Assinaturas - Música:</b> <input type="text" id="cron_musica_assinaturas" class="campo-linha-texto" style="width: 300px;">
+                </div>
+
+                <div style="font-size: 11px; margin-top: 8px;">
+                    <b>9. Cumprimentos e Saída dos Pais, Padrinhos e Crianças - Música:</b> <input type="text" id="cron_musica_cumprimentos" class="campo-linha-texto" style="width: 250px;">
+                    <div style="margin-left: 15px; margin-top: 4px;">
+                        <label class="item-opcao" style="display: inline-flex;"><input type="radio" name="cron_fotos_posadas" value="COM Fotos Posadas na saída"><span class="box-check"></span><span class="texto-opcao">COM Fotos Posadas na saída</span></label>
+                        <label class="item-opcao" style="display: inline-flex; margin-left: 15px;"><input type="radio" name="cron_fotos_posadas" value="SEM Fotos Posadas na saída"><span class="box-check"></span><span class="texto-opcao">SEM Fotos Posadas na saída</span></label>
+                    </div>
+                </div>
+
+                <div style="font-size: 11px; margin-top: 8px;">
+                    <b>10. Saída dos Noivos - Música:</b> <input type="text" id="cron_musica_saida_noivos" class="campo-linha-texto" style="width: 280px;"><br>
+                    <b>Saída com:</b>
+                    <div style="margin-left: 15px; margin-top: 4px;">
+                        <label class="item-opcao"><input type="checkbox" name="cron_saida_elemento" value="Pétalas"><span class="box-check"></span><span class="texto-opcao">Pétalas</span></label>
+                        <label class="item-opcao"><input type="checkbox" name="cron_saida_elemento" value="Sparkles"><span class="box-check"></span><span class="texto-opcao">Sparkles</span></label>
+                        <label class="item-opcao"><input type="checkbox" name="cron_saida_elemento" value="Bolhas de sabão"><span class="box-check"></span><span class="texto-opcao">Bolhas de sabão</span></label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px; font-size: 11px;">
+                    <b>OBS:</b> <input type="text" id="cron_observacoes_extras" class="campo-linha-texto" style="width: 90%;">
+                </div>
+            </div>
+
+            <div class="box-obs-contrato">
+                <div class="obs-titulo" style="text-align: center; font-size: 11px; text-transform: uppercase;">OBSERVAÇÕES IMPORTANTES AOS NOIVOS</div>
+                <ul class="lista-bullets" style="font-size: 9.5px; margin-left: 10px; text-align: justify;">
+                    <li>O limite de tolerância por parte do Villa Vezzane para se começar a cerimônia é de, no máximo, 1 hora após o horário marcado no convite. Após esse prazo, mesmo que estejam faltando convidados cruciais tais como padrinhos ou até mesmo os pais, e estando presentes os noivos e o celebrante, a cerimônia deverá começar;</li>
+                    <li><b><u>Não é permitida a utilização de chuva de prata, confetes, arroz ou similares no sítio</u></b>, principalmente na cerimônia ou salão de festas. O sítio indica o uso de chuva de pétalas (exclusivamente naturais) para os noivos na saída da cerimônia, bolhas de sabão ou sparkles;</li>
+                    <li>Ficam proibidos, terminantemente, fogos de artifícios dentro dos limites do Villa Vezzane.</li>
+                </ul>
             </div>
         </div>
 
         <!-- ABA 8: SERVIÇOS EXTERNOS & REDES SOCIAIS -->
         <div id="abaServicosExternos" class="conteudo-aba">
             <div class="menu-titulo-principal">SERVIÇOS EXTERNOS</div>
+            <div class="subtitulo-gerais">INFORMAÇÕES GERAIS</div>
+
             <div class="grid-info-gerais">
                 <div class="info-item"><span class="info-label">Casal:</span><input type="text" class="info-valor-azul form_casal_nome" value="Teste & Teste" readonly></div>
+                <div class="info-item"><span class="info-label">Data:</span><input type="text" class="info-valor-azul form_data_casamento" placeholder="01/03/2026"><span class="info-label" style="margin-left: 10px;">Hora:</span><input type="text" class="info-valor-azul form_horario_convite" placeholder="00h às 00h"></div>
+                <div class="info-item"><span class="info-label">Quantidade de convidados:</span><input type="text" class="info-valor-azul form_qtd_convidados" placeholder="000+00"></div>
+                <div class="info-item"><span class="info-label">Tempo de evento:</span><input type="text" class="info-valor-azul form_tempo_evento" placeholder="00 horas"></div>
             </div>
-            <div class="secao-bloco">
-                <div class="secao-titulo-doc">Fornecedores Contratados</div>
-                <p style="font-size: 11px;">Fornecedores externos e handles do Instagram.</p>
+
+            <div class="checklist-instrucao">CheckList (Preencher as informações em Azul)</div>
+
+            <div class="grid-opcoes-2col" style="gap: 15px;">
+                <div>
+                    <div class="subsecao-titulo">Foto/ Vídeo:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_foto_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_foto_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_foto_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_foto_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_foto_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+
+                    <div class="subsecao-titulo">Cabelo/ Maquiagem:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_make_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_make_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_make_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_make_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_make_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+
+                    <div class="subsecao-titulo">Banda/ Músicos:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_banda_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_banda_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_banda_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_banda_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_banda_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+
+                    <div class="subsecao-titulo">Bar Drinks:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_bar_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_bar_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_bar_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_bar_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_bar_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+
+                    <div class="subsecao-titulo">Toten/ Cabine Fotos:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_toten_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_toten_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_toten_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_toten_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_toten_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="subsecao-titulo">Passarela Espelhada:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_passarela_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_passarela_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_passarela_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_passarela_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_passarela_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+
+                    <div class="subsecao-titulo">Buquê:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_buque_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_buque_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_buque_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_buque_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_buque_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+
+                    <div class="subsecao-titulo">Bem-casado/ Doces:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_bemcasados_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_bemcasados_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Contato Principal: <input type="text" id="ext_bemcasados_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_bemcasados_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_bemcasados_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+
+                    <div class="subsecao-titulo">Celebrante:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_celebrante_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_celebrante_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_celebrante_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_celebrante_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_celebrante_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+
+                    <div class="subsecao-titulo">Outros:</div>
+                    <div style="font-size: 10px;">
+                        • Empresa: <input type="text" id="ext_outros_empresa" class="campo-linha-texto" style="width: 150px;"><br>
+                        • Qtd de pessoas: <input type="text" id="ext_outros_qtd" class="campo-linha-texto" style="width: 60px;"><br>
+                        • Responsável: <input type="text" id="ext_outros_resp" class="campo-linha-texto" style="width: 130px;"><br>
+                        • Telefone: <input type="text" id="ext_outros_tel" class="campo-linha-texto" style="width: 130px;"><br>
+                        <span style="background: #e2dad0; padding: 1px 3px;">Horário de chegada:</span> <input type="text" id="ext_outros_chegada" class="campo-linha-texto" style="width: 100px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="secao-bloco" style="margin-top: 15px; background: #faf8f5; padding: 10px; border-radius: 4px;">
+                <div style="text-align: center; font-weight: bold; font-size: 11px; color: #2b5797; margin-bottom: 8px;">REDES SOCIAIS (INSTAGRAM):</div>
+                <div class="grid-opcoes-2col" style="font-size: 10px; gap: 4px 10px;">
+                    <div>Noiva: <input type="text" id="ig_noiva" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Noivo: <input type="text" id="ig_noivo" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Foto/ Vídeo: <input type="text" id="ig_foto" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Músicos: <input type="text" id="ig_musicos" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Banda festa: <input type="text" id="ig_banda" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Vestido: <input type="text" id="ig_vestido" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Sapato noiva: <input type="text" id="ig_sapato" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Cabelo/ Maquiagem: <input type="text" id="ig_make" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Acessórios: <input type="text" id="ig_acessorios" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Buquê: <input type="text" id="ig_buque" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Lembrancinhas: <input type="text" id="ig_lembrancinhas" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Bem-casados: <input type="text" id="ig_bemcasados" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Porta aliança: <input type="text" id="ig_porta_alianca" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Placa de boas vindas: <input type="text" id="ig_placa_boas_vindas" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Papelaria: <input type="text" id="ig_papelaria" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Toten fotográfico: <input type="text" id="ig_toten" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Plataforma 360°: <input type="text" id="ig_plataforma_360" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Celebrante: <input type="text" id="ig_celebrante" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Bar: <input type="text" id="ig_bar" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Passarela espelhada: <input type="text" id="ig_passarela" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                    <div>Outros: <input type="text" id="ig_outros" class="campo-linha-texto" placeholder="@" style="width: 140px;"></div>
+                </div>
+            </div>
+
+            <div class="secao-bloco" style="margin-top: 10px;">
+                <div style="font-size: 11px; font-weight: bold; margin-bottom: 4px;">FORNECEDORES EXTERNOS:</div>
+                <ul class="lista-bullets" style="font-size: 9.5px; text-align: justify;">
+                    <li>Exigência de visita técnica em dia útil, horário comercial e pré-agendada até 10 dias antes do evento, para que conheça o local, identifiquem o que será necessário levar para se adaptarem ao espaço, determinem suas posições previamente para não haver transtornos. O espaço sempre estará disposto a auxiliar, mas não se responsabilizará por erros cometidos por eles;</li>
+                    <li>Exigido que esteja no local e com a estrutura pronta com até 1 hora de antecedência do convite;</li>
+                    <li>Adequadamente trajados.</li>
+                </ul>
+            </div>
+
+            <div class="secao-bloco" style="border: 1px solid #111; padding: 10px; margin-top: 15px;">
+                <div style="text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px;">AUTORIZAÇÃO DE USO DE IMAGEM</div>
+                <div style="font-size: 10px; text-align: justify; line-height: 1.4; margin-bottom: 8px;">
+                    Autorizam a capturar e utilizar imagens e vídeos do evento para fins de divulgação e promoção, incluindo, mas não se limitando a materiais digitais, websites e redes sociais, sem a necessidade de autorização adicional?
+                </div>
+                <div style="text-align: center; font-size: 11px;">
+                    <label class="item-opcao" style="display: inline-flex;"><input type="radio" name="autoriza_imagem" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex; margin-left: 20px;"><input type="radio" name="autoriza_imagem" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
+                </div>
             </div>
         </div>
 
-        <!-- ABA 9: SUÍTES (9.Suítes - Imagens 1000095250 e 1000095251) -->
+        <!-- ABA 9: SUÍTES (9.Suítes) -->
         <div id="abaSuites" class="conteudo-aba">
             <div class="menu-titulo-principal">TERMO DE CONHECIMENTO E RESPONSABILIDADE SUÍTES</div>
             <div class="grid-info-gerais">
@@ -680,7 +1694,6 @@
                 </ul>
             </div>
 
-            <!-- TABELA DE USUÁRIOS DAS SUÍTES -->
             <div class="secao-bloco">
                 <div class="box-destaque-borda" style="margin: 0; padding: 8px;">
                     <ul class="lista-bullets" style="font-size: 10px; font-weight: bold; margin-bottom: 8px;">
@@ -726,7 +1739,7 @@
             </div>
         </div>
 
-        <!-- ABA 10: CRONOGRAMA DO EVENTO (Imagem 1000095252) -->
+        <!-- ABA 10: CRONOGRAMA DO EVENTO -->
         <div id="abaCronogramaEvento" class="conteudo-aba">
             <div class="menu-titulo-principal">CRONOGRAMA DO EVENTO</div>
             
@@ -872,7 +1885,7 @@
             </table>
         </div>
 
-        <!-- ABA 11: LISTA DE CONVIDADOS (11.ListaConv - Imagens 1000095253 e 1000095254) -->
+        <!-- ABA 11: LISTA DE CONVIDADOS -->
         <div id="abaListaConvidados" class="conteudo-aba">
             <div class="menu-titulo-principal">LISTA DE CONVIDADOS</div>
             <div class="grid-info-gerais">
@@ -923,7 +1936,6 @@
                         </tr>
                     </thead>
                     <tbody id="corpoTabelaConvidados">
-                        <!-- Exemplos do modelo -->
                         <tr><td><input type="text" value="JANETE PEREIRA"></td><td><input type="text" value="EX: MÃE NOIVA"></td><td style="text-align: center;"><input type="text" value="1" style="text-align: center;"></td><td><input type="text"></td><td style="text-align: center;"><input type="text" value="1" style="text-align: center;"></td></tr>
                         <tr><td><input type="text" value="BIANCA CRUZ"></td><td><input type="text" value="EX: MADRINHA"></td><td style="text-align: center;"><input type="text" value="1" style="text-align: center;"></td><td><input type="text"></td><td style="text-align: center;"><input type="text" value="2" style="text-align: center;"></td></tr>
                         <tr><td><input type="text" value="BEATRIZ SILVA"></td><td><input type="text" value="EX: DAMINHA"></td><td><input type="text"></td><td style="text-align: center;"><input type="text" value="1" style="text-align: center;"></td><td style="text-align: center;"><input type="text" value="6" style="text-align: center;"></td></tr>
@@ -959,7 +1971,7 @@
                 btnVoltar.style.display = 'inline-flex';
             }
 
-            // Gerar 20 linhas vazias na lista de convidados
+            // Gerar 15 linhas vazias na lista de convidados
             const corpo = document.getElementById('corpoTabelaConvidados');
             for(let i=0; i<15; i++){
                 adicionarLinhaConvidado();
@@ -1042,8 +2054,63 @@
                 container.innerHTML = `
                     <div class="secao-bloco">
                         <div class="secao-titulo-doc">Coquetéis</div>
-                        <div class="subsecao-titulo">1. Coquetel de Boas Vindas</div>
-                        <p style="font-size: 11px;">Canapés à francesa, entradas e salgados variados.</p>
+                        <div class="subsecao-titulo">1. Coquetel de Boas Vindas (Antes da Cerimônia)</div>
+                        <div style="font-size: 11px; margin-bottom: 6px;">Canapés à francesa <b>(Escolher 3 opções de patês que serão servidos em mini torradas)</b></div>
+                        <div class="grid-opcoes-2col">
+                            <label class="item-opcao"><input type="checkbox" name="pates" value="Atum"><span class="box-check"></span><span class="texto-opcao">Atum</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pates" value="Tomate Seco"><span class="box-check"></span><span class="texto-opcao">Tomate Seco</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pates" value="Frango"><span class="box-check"></span><span class="texto-opcao">Frango</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pates" value="Azeitona Preta"><span class="box-check"></span><span class="texto-opcao">Azeitona Preta</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pates" value="Berinjela"><span class="box-check"></span><span class="texto-opcao">Berinjela</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pates" value="Queijo"><span class="box-check"></span><span class="texto-opcao">Queijo</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pates" value="Ervas Finas"><span class="box-check"></span><span class="texto-opcao">Ervas Finas</span></label>
+                        </div>
+
+                        <div class="subsecao-titulo">2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher 3 opções):</div>
+                        <div class="grid-opcoes-2col">
+                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Croquetas de cupim"><span class="box-check"></span><span class="texto-opcao">Croquetas de cupim</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Bolinho de queijo"><span class="box-check"></span><span class="texto-opcao">Bolinho de queijo</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Croquetas de feijoada"><span class="box-check"></span><span class="texto-opcao">Croquetas de feijoada</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Coxinha de frango"><span class="box-check"></span><span class="texto-opcao">Coxinha de frango</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Bolinho de tapioca"><span class="box-check"></span><span class="texto-opcao">Bolinho de tapioca</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Kibe tradicional"><span class="box-check"></span><span class="texto-opcao">Kibe tradicional</span></label>
+                        </div>
+
+                        <div class="subsecao-titulo">3. Coquetel de pista (última hora de festa)</div>
+                        <ul class="lista-bullets">
+                            <li>Minipastéis de carne, muçarela e frango requeijão</li>
+                            <li>Minichurros de chocolate com doce de leite</li>
+                        </ul>
+                    </div>
+
+                    <div class="secao-bloco">
+                        <div class="secao-titulo-doc">Jantar</div>
+                        <div class="subsecao-titulo">1. Pizza Salgada (Escolher 5 opções):</div>
+                        <div class="grid-opcoes-2col">
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Atum"><span class="box-check"></span><span class="texto-opcao">Atum</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Calabresa"><span class="box-check"></span><span class="texto-opcao">Calabresa</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Bauru"><span class="box-check"></span><span class="texto-opcao">Bauru</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Muçarela"><span class="box-check"></span><span class="texto-opcao">Muçarela</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Berinjela"><span class="box-check"></span><span class="texto-opcao">Berinjela</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Portuguesa"><span class="box-check"></span><span class="texto-opcao">Portuguesa</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Frango com Catupiry"><span class="box-check"></span><span class="texto-opcao">Frango com Catupiry</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Marguerita"><span class="box-check"></span><span class="texto-opcao">Marguerita</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Rúcula"><span class="box-check"></span><span class="texto-opcao">Rúcula</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Carne - iscas de carne com queijo"><span class="box-check"></span><span class="texto-opcao">Carne - iscas de carne com queijo</span></label>
+                        </div>
+                    </div>
+                `;
+            } else if (menuChave === 'veneza') {
+                container.innerHTML = `
+                    <div class="secao-bloco">
+                        <div class="secao-titulo-doc">Coquetéis & Entradas</div>
+                        <div class="subsecao-titulo">1. Coquetel de Boas Vindas (Escolher 3 opções):</div>
+                        <div class="grid-opcoes-2col">
+                            <label class="item-opcao"><input type="checkbox" name="veneza_pates" value="Atum"><span class="box-check"></span><span class="texto-opcao">Atum</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="veneza_pates" value="Frango"><span class="box-check"></span><span class="texto-opcao">Frango</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="veneza_pates" value="Berinjela"><span class="box-check"></span><span class="texto-opcao">Berinjela</span></label>
+                            <label class="item-opcao"><input type="checkbox" name="veneza_pates" value="Tomate Seco"><span class="box-check"></span><span class="texto-opcao">Tomate Seco</span></label>
+                        </div>
                     </div>
                 `;
             } else {
