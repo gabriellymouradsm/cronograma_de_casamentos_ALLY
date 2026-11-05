@@ -21,9 +21,6 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,78 +30,258 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
-            --bg-cream: #fbf8f3;
-            --card-brown: #382a24;
-            --input-bg: #f7f4ef;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background-color: var(--bg-cream);
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fbf8f3;
             color: #2c221e;
-        }
-
-        .font-serif-title {
-            font-family: 'Playfair Display', Georgia, serif;
-        }
-
-        .custom-input {
-            background-color: var(--input-bg);
-            color: #382a24;
-            transition: all 0.2s ease-in-out;
-            border: 2px solid transparent;
-        }
-
-        .custom-input:focus {
-            outline: none;
-            border-color: #8b6b55;
-            box-shadow: 0 0 0 3px rgba(139, 107, 85, 0.25);
-            background-color: #ffffff;
-        }
-
-        .card-container {
-            background-color: var(--card-brown);
-            box-shadow: 0 20px 40px rgba(56, 42, 36, 0.18);
-            border-radius: 28px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 15px;
         }
 
         .brand-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-top: 10px;
+            margin-bottom: 20px;
             width: 100%;
         }
 
         .brand-logo-rings {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 40px;
             margin: 0 auto 6px;
             display: block;
         }
 
         .brand-title {
-            font-family: Georgia, serif;
-            font-size: 2.2rem;
-            font-weight: bold;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.3rem;
+            font-weight: 700;
             color: #382a23;
-            margin: 0;
-            line-height: 1;
+            line-height: 1.1;
         }
 
         .brand-tagline {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 3.5px;
             color: #725a4d;
-            margin-top: 6px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .card-container {
+            background-color: #382a24;
+            box-shadow: 0 15px 35px rgba(56, 42, 36, 0.25);
+            border-radius: 28px;
+            padding: 30px 24px;
+            color: #ffffff;
+            width: 100%;
+        }
+
+        .escondido {
+            display: none !important;
+        }
+
+        .card-titulo {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 22px;
+            color: #faf7f2;
+            letter-spacing: 0.5px;
+        }
+
+        .campo-grupo {
+            margin-bottom: 16px;
+        }
+
+        .campo-label {
+            display: block;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #f0e8e0;
+            margin-bottom: 6px;
+        }
+
+        .campo-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-input {
+            width: 100%;
+            height: 48px;
+            background-color: #f7f4ef;
+            color: #382a24;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 0 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .custom-input::placeholder {
+            color: #9e8d83;
+        }
+
+        .custom-input:focus {
+            border-color: #c5a059;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.25);
+        }
+
+        select.custom-input {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%23382a24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            cursor: pointer;
+        }
+
+        .text-center-input {
+            text-align: center;
+        }
+
+        .btn-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #725a4d;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px;
+        }
+
+        .btn-eye:hover {
+            color: #382a24;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-principal {
+            width: 100%;
+            height: 48px;
+            background-color: #f7f4ef;
+            color: #382a24;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .btn-principal:hover {
+            background-color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .btn-principal:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secundario {
+            width: 100%;
+            height: 44px;
+            background-color: #47362e;
+            color: #d1c4bc;
+            border: 1px solid #5d463b;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+        }
+
+        .btn-secundario:hover {
+            background-color: #523d34;
+            color: #ffffff;
+        }
+
+        .links-rodape {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            font-size: 0.75rem;
+            gap: 10px;
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: #d1c4bc;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: color 0.2s ease;
+        }
+
+        .btn-link:hover {
+            color: #ffffff;
+        }
+
+        .toast-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #382a24;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1px solid #6d5246;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            z-index: 1000;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-10">
+<body>
 
     <header class="brand-header">
         <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 35 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
             <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
             <circle cx="50" cy="8" r="3" fill="#c5a059"/>
         </svg>
@@ -112,221 +289,178 @@
         <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
     </header>
 
-    <main class="w-full max-w-md md:max-w-xl flex-1 flex flex-col justify-center">
+    <main>
 
-        <!-- ================= TELA 1: LOGIN ================= -->
-        <div id="tela-login" class="card-container text-white p-6 sm:p-8">
-            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
-                Entrar no Sistema
-            </h2>
+        <!-- TELA 1: LOGIN -->
+        <div id="tela-login" class="card-container">
+            <h2 class="card-titulo">Entrar no Sistema</h2>
 
-            <form onsubmit="fazerLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Digite o Casal</label>
-                    <input type="text" id="loginCasalInput" list="listaCasaisLogin" required placeholder="Digite o nome do casal..." class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium"/>
+            <form onsubmit="fazerLogin(event)">
+                <div class="campo-grupo">
+                    <label class="campo-label">Digite o Casal</label>
+                    <input type="text" id="loginCasalInput" list="listaCasaisLogin" required placeholder="Digite o nome do casal..." class="custom-input"/>
                     <datalist id="listaCasaisLogin"></datalist>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
-                    <select id="loginRole" onchange="mudarLabelLogin()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+                <div class="campo-grupo">
+                    <label class="campo-label">Perfil de Acesso</label>
+                    <select id="loginRole" onchange="mudarLabelLogin()" class="custom-input">
                         <option value="admin">Administrador(a) do Casamento</option>
                         <option value="assistant">Assistente de Campo</option>
                     </select>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="loginLabelNome">Nome do Administrador</label>
-                    <input type="text" id="loginNome" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                <div class="campo-grupo">
+                    <label class="campo-label" id="loginLabelNome">Nome do Administrador</label>
+                    <input type="text" id="loginNome" required placeholder="O seu nome" class="custom-input text-center-input"/>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Senha de Acesso</label>
-                    <div class="relative">
-                        <input type="password" id="loginSenha" required placeholder="Digite a sua senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
-                        <button type="button" onclick="togglePassword('loginSenha', 'eyeLogin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                <div class="campo-grupo">
+                    <label class="campo-label">Senha de Acesso</label>
+                    <div class="campo-wrapper">
+                        <input type="password" id="loginSenha" required placeholder="Digite a sua senha" class="custom-input text-center-input" style="padding-right: 40px;"/>
+                        <button type="button" onclick="togglePassword('loginSenha', 'eyeLogin')" class="btn-eye">
                             <i class="fa-solid fa-eye" id="eyeLogin"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
-                        Entrar
-                    </button>
-                </div>
+                <button type="submit" class="btn-principal">Entrar</button>
+                <button type="button" onclick="mudarTela('tela-novo-casal')" class="btn-secundario">+ Criar um Novo Casal</button>
 
-                <div>
-                    <button type="button" onclick="mudarTela('tela-novo-casal')" class="w-full bg-[#47362e] hover:bg-[#523d34] text-[#d1c4bc] hover:text-white font-bold py-3 px-4 rounded-xl transition border border-[#5d463b] uppercase tracking-wider text-xs shadow-md">
-                        + Criar um Novo Casal
-                    </button>
-                </div>
-
-                <div class="flex justify-between items-center mt-3 text-xs">
-                    <button type="button" onclick="mudarTela('tela-cadastro-colaborador')" class="text-[#d1c4bc] underline hover:text-white">
-                        Primeiro acesso? Registar colaborador
-                    </button>
-                    <button type="button" onclick="mudarTela('tela-recuperar')" class="text-[#d1c4bc] underline hover:text-white">
-                        Esqueceu-se da senha?
-                    </button>
+                <div class="links-rodape">
+                    <button type="button" onclick="mudarTela('tela-cadastro-colaborador')" class="btn-link">Primeiro acesso? Registar colaborador</button>
+                    <button type="button" onclick="mudarTela('tela-recuperar')" class="btn-link">Esqueceu-se da senha?</button>
                 </div>
             </form>
         </div>
 
+        <!-- TELA 2: CRIAR NOVO CASAL -->
+        <div id="tela-novo-casal" class="card-container escondido">
+            <h2 class="card-titulo">Criar Novo Casal</h2>
 
-        <!-- ================= TELA 2: CRIAR NOVO CASAL ================= -->
-        <div id="tela-novo-casal" class="card-container text-white p-6 sm:p-8 hidden">
-            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
-                Criar Novo Casal
-            </h2>
-
-            <form onsubmit="criarNovoCasal(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Nome do Casal</label>
-                    <input type="text" id="novoCasalNome" required placeholder="Ex: Lucas & Mariana" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+            <form onsubmit="criarNovoCasal(event)">
+                <div class="campo-grupo">
+                    <label class="campo-label">Nome do Casal</label>
+                    <input type="text" id="novoCasalNome" required placeholder="Ex: Lucas & Mariana" class="custom-input text-center-input"/>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Data do Casamento</label>
-                        <input type="text" id="novoData" required placeholder="DD/MM/AAAA" class="w-full custom-input px-3 py-2.5 rounded-xl text-center text-sm"/>
+                <div class="grid-2col">
+                    <div class="campo-grupo">
+                        <label class="campo-label" style="font-size: 0.8rem;">Data do Casamento</label>
+                        <input type="text" id="novoData" required placeholder="DD/MM/AAAA" class="custom-input text-center-input"/>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-[#f0e8e0] mb-1">Horário</label>
-                        <input type="text" id="novoHorario" required placeholder="HH:MM" class="w-full custom-input px-3 py-2.5 rounded-xl text-center text-sm"/>
+                    <div class="campo-grupo">
+                        <label class="campo-label" style="font-size: 0.8rem;">Horário</label>
+                        <input type="text" id="novoHorario" required placeholder="HH:MM" class="custom-input text-center-input"/>
                     </div>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
-                        Criar Casal
-                    </button>
-                </div>
+                <button type="submit" class="btn-principal">Criar Casal</button>
 
-                <div class="mt-4 text-center">
-                    <button type="button" onclick="mudarTela('tela-login')" class="text-xs text-[#d1c4bc] underline hover:text-white">
-                        ← Voltar para o Login
-                    </button>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button type="button" onclick="mudarTela('tela-login')" class="btn-link">← Voltar para o Login</button>
                 </div>
             </form>
         </div>
 
+        <!-- TELA 3: REGISTAR COLABORADOR -->
+        <div id="tela-cadastro-colaborador" class="card-container escondido">
+            <h2 class="card-titulo">Registar Colaborador</h2>
 
-        <!-- ================= TELA 3: REGISTAR COLABORADOR ================= -->
-        <div id="tela-cadastro-colaborador" class="card-container text-white p-6 sm:p-8 hidden">
-            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
-                Registar Colaborador
-            </h2>
-
-            <form onsubmit="registarColaborador(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
-                    <select id="cadColabRole" onchange="mudarLabelRegistarColab()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+            <form onsubmit="registarColaborador(event)">
+                <div class="campo-grupo">
+                    <label class="campo-label">Perfil de Acesso</label>
+                    <select id="cadColabRole" onchange="mudarLabelRegistarColab()" class="custom-input">
                         <option value="admin">Administrador(a) do Casamento</option>
                         <option value="assistant">Assistente de Campo</option>
                     </select>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="cadColabLabelNome">Nome do Administrador</label>
-                    <input type="text" id="cadColabNome" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                <div class="campo-grupo">
+                    <label class="campo-label" id="cadColabLabelNome">Nome do Administrador</label>
+                    <input type="text" id="cadColabNome" required placeholder="O seu nome" class="custom-input text-center-input"/>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Senha</label>
-                    <div class="relative">
-                        <input type="password" id="cadColabSenha" required placeholder="Mínimo de 6 caracteres" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
-                        <button type="button" onclick="togglePassword('cadColabSenha', 'eyeCad1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                <div class="campo-grupo">
+                    <label class="campo-label">Senha</label>
+                    <div class="campo-wrapper">
+                        <input type="password" id="cadColabSenha" required placeholder="Mínimo de 6 caracteres" class="custom-input text-center-input" style="padding-right: 40px;"/>
+                        <button type="button" onclick="togglePassword('cadColabSenha', 'eyeCad1')" class="btn-eye">
                             <i class="fa-solid fa-eye" id="eyeCad1"></i>
                         </button>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Confirmar Senha</label>
-                    <div class="relative">
-                        <input type="password" id="cadColabConfirmaSenha" required placeholder="Confirme a senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
-                        <button type="button" onclick="togglePassword('cadColabConfirmaSenha', 'eyeCad2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                <div class="campo-grupo">
+                    <label class="campo-label">Confirmar Senha</label>
+                    <div class="campo-wrapper">
+                        <input type="password" id="cadColabConfirmaSenha" required placeholder="Confirme a senha" class="custom-input text-center-input" style="padding-right: 40px;"/>
+                        <button type="button" onclick="togglePassword('cadColabConfirmaSenha', 'eyeCad2')" class="btn-eye">
                             <i class="fa-solid fa-eye" id="eyeCad2"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
-                        Criar
-                    </button>
-                </div>
+                <button type="submit" class="btn-principal">Criar</button>
 
-                <div class="mt-4 text-center">
-                    <button type="button" onclick="mudarTela('tela-login')" class="text-xs text-[#d1c4bc] underline hover:text-white">
-                        ← Voltar para o Login
-                    </button>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button type="button" onclick="mudarTela('tela-login')" class="btn-link">← Voltar para o Login</button>
                 </div>
             </form>
         </div>
 
+        <!-- TELA 4: RECUPERAR SENHA -->
+        <div id="tela-recuperar" class="card-container escondido">
+            <h2 class="card-titulo">Atualizar Senha</h2>
 
-        <!-- ================= TELA 4: RECUPERAR SENHA ================= -->
-        <div id="tela-recuperar" class="card-container text-white p-6 sm:p-8 hidden">
-            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
-                Atualizar Senha
-            </h2>
-
-            <form onsubmit="recuperarSenha(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Perfil de Acesso</label>
-                    <select id="recRole" onchange="mudarLabelRecuperar()" class="w-full custom-input px-4 py-3 rounded-xl text-sm font-medium">
+            <form onsubmit="recuperarSenha(event)">
+                <div class="campo-grupo">
+                    <label class="campo-label">Perfil de Acesso</label>
+                    <select id="recRole" onchange="mudarLabelRecuperar()" class="custom-input">
                         <option value="admin">Administrador(a) do Casamento</option>
                         <option value="assistant">Assistente de Campo</option>
                     </select>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title" id="recLabelNome">Nome do Administrador</label>
-                    <input type="text" id="recNome" required placeholder="O seu nome" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium"/>
+                <div class="campo-grupo">
+                    <label class="campo-label" id="recLabelNome">Nome do Administrador</label>
+                    <input type="text" id="recNome" required placeholder="O seu nome" class="custom-input text-center-input"/>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Nova Senha</label>
-                    <div class="relative">
-                        <input type="password" id="recNovaSenha" required placeholder="Digite a nova senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
-                        <button type="button" onclick="togglePassword('recNovaSenha', 'eyeRec1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                <div class="campo-grupo">
+                    <label class="campo-label">Nova Senha</label>
+                    <div class="campo-wrapper">
+                        <input type="password" id="recNovaSenha" required placeholder="Digite a nova senha" class="custom-input text-center-input" style="padding-right: 40px;"/>
+                        <button type="button" onclick="togglePassword('recNovaSenha', 'eyeRec1')" class="btn-eye">
                             <i class="fa-solid fa-eye" id="eyeRec1"></i>
                         </button>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-[#f0e8e0] mb-1.5 font-serif-title">Confirmar Nova Senha</label>
-                    <div class="relative">
-                        <input type="password" id="recConfirmaSenha" required placeholder="Confirme a nova senha" class="w-full custom-input px-4 py-3 rounded-xl text-center text-sm font-medium pr-10"/>
-                        <button type="button" onclick="togglePassword('recConfirmaSenha', 'eyeRec2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#725a4d] hover:text-[#382a24]">
+                <div class="campo-grupo">
+                    <label class="campo-label">Confirmar Nova Senha</label>
+                    <div class="campo-wrapper">
+                        <input type="password" id="recConfirmaSenha" required placeholder="Confirme a nova senha" class="custom-input text-center-input" style="padding-right: 40px;"/>
+                        <button type="button" onclick="togglePassword('recConfirmaSenha', 'eyeRec2')" class="btn-eye">
                             <i class="fa-solid fa-eye" id="eyeRec2"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3.5 px-4 rounded-xl transition transform active:scale-95 shadow-md uppercase tracking-wider text-sm">
-                        Atualizar Senha
-                    </button>
-                </div>
+                <button type="submit" class="btn-principal">Atualizar Senha</button>
 
-                <div class="mt-4 text-center">
-                    <button type="button" onclick="mudarTela('tela-login')" class="text-xs text-[#d1c4bc] underline hover:text-white">
-                        ← Voltar para o Login
-                    </button>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button type="button" onclick="mudarTela('tela-login')" class="btn-link">← Voltar para o Login</button>
                 </div>
             </form>
         </div>
 
     </main>
 
-    <!-- TOAST DE ALERTA -->
-    <div id="toast" class="fixed bottom-5 right-5 hidden z-50 bg-[#382a24] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-[#6d5246] flex items-center gap-3">
-        <i class="fa-solid fa-circle-exclamation text-amber-400 text-lg"></i>
-        <span id="toast-message" class="text-sm font-medium">Aviso</span>
+    <div id="toast" class="toast-box escondido">
+        <i class="fa-solid fa-circle-exclamation" style="color: #f39c12; font-size: 1.1rem;"></i>
+        <span id="toast-message">Aviso</span>
     </div>
 
     <script>
@@ -335,12 +469,12 @@
         });
 
         function mudarTela(idTela) {
-            document.getElementById('tela-login').classList.add('hidden');
-            document.getElementById('tela-novo-casal').classList.add('hidden');
-            document.getElementById('tela-cadastro-colaborador').classList.add('hidden');
-            document.getElementById('tela-recuperar').classList.add('hidden');
+            document.getElementById('tela-login').classList.add('escondido');
+            document.getElementById('tela-novo-casal').classList.add('escondido');
+            document.getElementById('tela-cadastro-colaborador').classList.add('escondido');
+            document.getElementById('tela-recuperar').classList.add('escondido');
             
-            document.getElementById(idTela).classList.remove('hidden');
+            document.getElementById(idTela).classList.remove('escondido');
             if (idTela === 'tela-login') {
                 carregarCasaisDropdown();
             }
@@ -365,7 +499,7 @@
                 });
             }
 
-            listaLogin.innerHTML = opcoes;
+            if (listaLogin) listaLogin.innerHTML = opcoes;
         }
 
         function mudarLabelLogin() {
@@ -395,7 +529,6 @@
             }
         }
 
-        // 1. FAZER LOGIN (Validando com SHA-256)
         async function fazerLogin(e) {
             e.preventDefault();
             const casalNome = document.getElementById('loginCasalInput').value.trim();
@@ -408,11 +541,18 @@
                 return;
             }
 
+            const { data: casalData } = await _supabase
+                .from('casal_config')
+                .select('*')
+                .eq('nome', casalNome)
+                .maybeSingle();
+
             const senhaHash = await hashPassword(senhaDigitada);
 
             const { data, error } = await _supabase
                 .from('colaboradores')
                 .select('*')
+                .ilike('nome', nomeResponsavel)
                 .eq('role', role)
                 .maybeSingle();
 
@@ -427,7 +567,12 @@
             }
 
             localStorage.setItem('user_role', role);
-            localStorage.setItem('casal_ativo', casalNome);
+            localStorage.setItem('casal_nome', casalNome);
+            if (casalData) {
+                localStorage.setItem('casal_data', casalData.data_casamento);
+                localStorage.setItem('casal_horario', casalData.horario);
+            }
+
             if (role === 'admin') {
                 localStorage.setItem('admin_nome', nomeResponsavel || data.nome);
             } else {
@@ -437,7 +582,6 @@
             window.location.href = "proxima_pagina.html";
         }
 
-        // 2. CRIAR NOVO CASAL
         async function criarNovoCasal(e) {
             e.preventDefault();
             const casalNome = document.getElementById('novoCasalNome').value.trim();
@@ -470,13 +614,34 @@
             mudarTela('tela-login');
         }
 
-        // 3. REGISTAR COLABORADOR (Forçando o uso de hash SHA-256)
+        // TRADUZ ERROS DO SUPABASE PARA UMA MENSAGEM CLARA
+        function descreverErroSupabase(err) {
+            if (!err) return "Erro desconhecido.";
+            const code = err.code || "";
+            const msg = err.message || "";
+            if (code === '23505') return "Registro duplicado no banco: " + (err.details || msg);
+            if (code === '42501') return "Sem permissão no banco (RLS/GRANT). Rode o SQL de correção.";
+            if (code === '42P01' || code === 'PGRST205') return "Tabela 'colaboradores' não encontrada no banco.";
+            if (code === '42703' || code === 'PGRST204') return "Coluna inexistente na tabela: " + msg;
+            if (code === '23502') return "Campo obrigatório vazio no banco: " + msg;
+            if (code === '23503') return "Violação de chave estrangeira: " + (err.details || msg);
+            if (/failed to fetch|networkerror/i.test(msg)) return "Sem conexão com o banco de dados.";
+            return `Erro ${code || ''} ${msg}`.trim();
+        }
+
+        // REGISTAR COLABORADOR
         async function registarColaborador(e) {
             e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
             const role = document.getElementById('cadColabRole').value;
             const nomeResponsavel = document.getElementById('cadColabNome').value.trim();
             const senhaPura = document.getElementById('cadColabSenha').value;
             const confirmaSenha = document.getElementById('cadColabConfirmaSenha').value;
+
+            if (!nomeResponsavel) {
+                showToast("Preencha o seu nome.");
+                return;
+            }
 
             if (senhaPura.length < 6) {
                 showToast("A senha precisa ter pelo menos 6 caracteres.");
@@ -488,24 +653,59 @@
                 return;
             }
 
-            const senhaHash = await hashPassword(senhaPura);
+            if (btn) { btn.disabled = true; btn.textContent = "Salvando..."; }
 
-            const { error: insertError } = await _supabase.from('colaboradores').upsert([{
-                role: role,
-                nome: nomeResponsavel,
-                senha_hash: senhaHash
-            }], { onConflict: 'role' });
+            try {
+                // 1. Evita duplicar o mesmo nome + perfil (o login busca por nome + perfil)
+                const nomeEscapado = nomeResponsavel.replace(/[\\%_]/g, '\\$&');
+                const { data: existentes, error: erroBusca } = await _supabase
+                    .from('colaboradores')
+                    .select('id')
+                    .ilike('nome', nomeEscapado)
+                    .eq('role', role)
+                    .limit(1);
 
-            if (insertError) {
-                showToast("Erro ao guardar as credenciais.");
-                return;
+                if (erroBusca) {
+                    console.error("Erro no Supabase ao consultar colaboradores:", erroBusca);
+                    showToast("Erro ao consultar o banco: " + descreverErroSupabase(erroBusca), 7000);
+                    return;
+                }
+
+                if (existentes && existentes.length > 0) {
+                    showToast("Já existe um colaborador com esse nome e perfil.");
+                    return;
+                }
+
+                // 2. Grava no banco e confirma devolvendo a linha criada
+                const senhaHash = await hashPassword(senhaPura);
+
+                const { data: criado, error: insertError } = await _supabase
+                    .from('colaboradores')
+                    .insert([{
+                        role: role,
+                        nome: nomeResponsavel,
+                        senha_hash: senhaHash
+                    }])
+                    .select()
+                    .single();
+
+                if (insertError || !criado) {
+                    console.error("Erro no Supabase ao inserir:", insertError);
+                    showToast("Erro ao guardar: " + descreverErroSupabase(insertError), 7000);
+                    return;
+                }
+
+                showToast("Colaborador registado com sucesso!");
+                e.target.reset();
+                mudarTela('tela-login');
+            } catch (err) {
+                console.error("Falha inesperada ao registar colaborador:", err);
+                showToast("Falha inesperada: " + (err.message || err), 7000);
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = "Criar"; }
             }
-
-            showToast("Colaborador registado com sucesso!");
-            mudarTela('tela-login');
         }
 
-        // 4. ATUALIZAR SENHA (Com nome, validação e hash SHA-256)
         async function recuperarSenha(e) {
             e.preventDefault();
             const role = document.getElementById('recRole').value;
@@ -527,10 +727,8 @@
 
             const { error: updateError } = await _supabase
                 .from('colaboradores')
-                .update({ 
-                    nome: nomeResponsavel,
-                    senha_hash: senhaHash 
-                })
+                .update({ senha_hash: senhaHash })
+                .ilike('nome', nomeResponsavel)
                 .eq('role', role);
 
             if (updateError) {
@@ -542,11 +740,13 @@
             mudarTela('tela-login');
         }
 
-        function showToast(msg) {
+        let toastTimer;
+        function showToast(msg, duracao = 3500) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-message').innerText = msg;
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3500);
+            toast.classList.remove('escondido');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.add('escondido'), duracao);
         }
     </script>
 </body>
