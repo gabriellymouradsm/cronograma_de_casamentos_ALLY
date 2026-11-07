@@ -437,6 +437,99 @@
             font-weight: bold;
             padding-top: 4px;
         }
+
+        /* ===== LISTAS DE ESCOLHA (substituem os quadradinhos) ===== */
+        .lista-oculta { display: none !important; }
+        .dep-oculto { display: none !important; }
+
+        .lista-escolha-wrap {
+            display: inline-block;
+            vertical-align: middle;
+            position: relative;
+            max-width: 100%;
+            margin: 2px 0;
+            grid-column: 1 / -1;
+        }
+
+        .lista-escolha,
+        .ms-btn {
+            font-family: inherit;
+            font-size: 11px;
+            color: #2b5797;
+            background: #ffffff;
+            border: 1px solid #2b5797;
+            border-radius: 4px;
+            padding: 5px 8px;
+            min-width: 220px;
+            max-width: 100%;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        .lista-escolha:focus,
+        .ms-btn:focus { outline: 2px solid #9bb8e6; }
+
+        .ms-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            width: 100%;
+            text-align: left;
+        }
+        .ms-btn .ms-seta { font-size: 10px; }
+
+        .ms-painel {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            z-index: 60;
+            min-width: 100%;
+            width: max-content;
+            max-width: min(560px, 88vw);
+            max-height: 280px;
+            overflow-y: auto;
+            background: #ffffff;
+            border: 1px solid #2b5797;
+            border-radius: 4px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+        }
+        .ms-painel.aberto { display: block; }
+
+        .ms-item {
+            position: relative;
+            padding: 6px 10px 6px 28px;
+            font-size: 11px;
+            line-height: 1.3;
+            color: #2b5797;
+            cursor: pointer;
+            user-select: none;
+        }
+        .ms-item:hover { background: #eef3fb; }
+        .ms-item.sel { background: #e3ecf9; font-weight: bold; }
+        .ms-item.sel::before { content: "\2713"; position: absolute; left: 10px; }
+
+        .ms-resumo {
+            margin: 3px 0 0 0;
+            padding: 0 0 0 16px;
+            font-size: 11px;
+            color: #111111;
+        }
+        .ms-resumo:empty { display: none; }
+
+        .dep-titulo {
+            font-weight: bold;
+            color: #2b5797;
+            font-size: 11px;
+            margin: 8px 0 2px 0;
+        }
+        .dep-opcao { font-size: 11px; color: #2b5797; margin: 2px 0 4px 0; }
+
+        .rodape-acoes { position: sticky; bottom: 0; width: 100%; max-width: 950px; box-sizing: border-box; margin-top: 20px; padding: 14px 20px; background: #ffffff; border-top: 3px solid #3b2a22; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.12); display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; z-index: 50; }
+        .rodape-acoes .btn-voltar { display: none; }
+        .rodape-msg { width: 100%; text-align: center; font: 12px Arial, sans-serif; color: #3b2a22; min-height: 14px; }
+        .faixa-edit { cursor: text; }
+        .faixa-edit:focus { outline: 2px dashed #2b5797; }
     </style>
 </head>
 <body>
@@ -462,21 +555,17 @@
                 <label style="font-size: 12px; font-weight: bold; color: #3b2a22; display: block; margin-bottom: 4px;">SELECIONE O MENU:</label>
                 <select id="selectCardapio" class="select-menu-estilo" onchange="trocarMenuExibido()">
                     <option value="napoles">MENU: NÁPOLES</option>
+                    <option value="napoles_antigo">MENU: NÁPOLES (ANTIGO)</option>
                     <option value="napoles2">MENU: NÁPOLES 2</option>
                     <option value="veneza">MENU: VENEZA</option>
+                    <option value="veneza_antigo">MENU: VENEZA (ANTIGO)</option>
                     <option value="toscana">MENU: TOSCANA</option>
                     <option value="florenca">MENU: FLORENÇA</option>
                     <option value="florenca2">MENU: FLORENÇA 2</option>
                     <option value="roma">MENU: ROMA</option>
                 </select>
             </div>
-
-            <div class="btn-grupo">
-                <button class="btn-acao btn-salvar" onclick="salvarRespostasSupabase()"><i class="fa-solid fa-floppy-disk"></i> Salvar Respostas</button>
-                <button class="btn-acao btn-pdf" onclick="gerarPDFModeloOficial()"><i class="fa-solid fa-file-pdf"></i> Baixar PDF</button>
-                <a href="proxima_pagina.html" class="btn-acao btn-voltar" id="btnVoltarPainel">⬅ Voltar</a>
-            </div>
-        </div>
+</div>
     </div>
 
     <!-- FOLHA DO DOCUMENTO CANVA / PDF -->
@@ -1438,7 +1527,7 @@
                 </div>
 
                 <div style="font-size: 11px; margin-top: 10px;">
-                    <b>3. Entrada do Noivo:</b> (<input type="text" id="cron_noivo_nome" class="campo-linha-texto" style="width: 100px;">) com (<input type="text" id="cron_noivo_acompanhante" class="campo-linha-texto" style="width: 100px;">) - <b>Música:</b> <input type="text" id="cron_musica_noivo" class="campo-linha-texto" style="width: 200px;">
+                    <b>3. Entrada do Noivo:</b> (<input type="text" id="cron_noivo_nome" class="campo-linha-texto" style="width: 100px;">) com (<input type="text" id="cron_noivo_acompanhante" data-rotulo="Acompanhante do noivo" class="campo-linha-texto" style="width: 100px;">) - <b>Música:</b> <input type="text" id="cron_musica_noivo" class="campo-linha-texto" style="width: 200px;">
                 </div>
 
                 <div style="font-size: 11px; margin-top: 8px;">
@@ -1446,7 +1535,7 @@
                 </div>
 
                 <div style="font-size: 11px; margin-top: 8px;">
-                    <b>5. Entrada da Noiva:</b> (<input type="text" id="cron_noiva_nome" class="campo-linha-texto" style="width: 100px;">) com (<input type="text" id="cron_noiva_acompanhante" class="campo-linha-texto" style="width: 100px;">) - <b>Música:</b> <input type="text" id="cron_musica_noiva" class="campo-linha-texto" style="width: 200px;">
+                    <b>5. Entrada da Noiva:</b> (<input type="text" id="cron_noiva_nome" class="campo-linha-texto" style="width: 100px;">) com (<input type="text" id="cron_noiva_acompanhante" data-rotulo="Acompanhante da noiva" class="campo-linha-texto" style="width: 100px;">) - <b>Música:</b> <input type="text" id="cron_musica_noiva" class="campo-linha-texto" style="width: 200px;">
                     <div style="margin-left: 15px; margin-top: 4px;">
                         <label class="item-opcao" style="display: inline-flex;"><input type="radio" name="cron_noiva_entrada_tipo" value="Entrada principal com Voal"><span class="box-check"></span><span class="texto-opcao">Entrada principal com Voal</span></label>
                         <label class="item-opcao" style="display: inline-flex; margin-left: 15px;"><input type="radio" name="cron_noiva_entrada_tipo" value="Entrada pela escada pela varanda"><span class="box-check"></span><span class="texto-opcao">Entrada pela escada pela varanda</span></label>
@@ -1650,7 +1739,7 @@
                     Autorizam a capturar e utilizar imagens e vídeos do evento para fins de divulgação e promoção, incluindo, mas não se limitando a materiais digitais, websites e redes sociais, sem a necessidade de autorização adicional?
                 </div>
                 <div style="text-align: center; font-size: 11px;">
-                    <label class="item-opcao" style="display: inline-flex;"><input type="radio" name="autoriza_imagem" value="Sim"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
+                    <label class="item-opcao" style="display: inline-flex;"><input type="radio" name="autoriza_imagem" value="Sim" data-pergunta="Autorizam o uso de imagens e vídeos do evento?"><span class="box-check"></span><span class="texto-opcao">Sim</span></label>
                     <label class="item-opcao" style="display: inline-flex; margin-left: 20px;"><input type="radio" name="autoriza_imagem" value="Não"><span class="box-check"></span><span class="texto-opcao">Não</span></label>
                 </div>
             </div>
@@ -1936,10 +2025,6 @@
                         </tr>
                     </thead>
                     <tbody id="corpoTabelaConvidados">
-                        <tr><td><input type="text" value="JANETE PEREIRA"></td><td><input type="text" value="EX: MÃE NOIVA"></td><td style="text-align: center;"><input type="text" value="1" style="text-align: center;"></td><td><input type="text"></td><td style="text-align: center;"><input type="text" value="1" style="text-align: center;"></td></tr>
-                        <tr><td><input type="text" value="BIANCA CRUZ"></td><td><input type="text" value="EX: MADRINHA"></td><td style="text-align: center;"><input type="text" value="1" style="text-align: center;"></td><td><input type="text"></td><td style="text-align: center;"><input type="text" value="2" style="text-align: center;"></td></tr>
-                        <tr><td><input type="text" value="BEATRIZ SILVA"></td><td><input type="text" value="EX: DAMINHA"></td><td><input type="text"></td><td style="text-align: center;"><input type="text" value="1" style="text-align: center;"></td><td style="text-align: center;"><input type="text" value="6" style="text-align: center;"></td></tr>
-                        <tr><td><input type="text" value="CAIO ARAÚJO"></td><td><input type="text" value="EX: FOTOGRAFO"></td><td style="text-align: center;"><input type="text" value="0,5" style="text-align: center;"></td><td><input type="text"></td><td style="text-align: center;"><input type="text" value="STAFF" style="text-align: center;"></td></tr>
                     </tbody>
                 </table>
                 <button type="button" onclick="adicionarLinhaConvidado()" style="padding: 5px 10px; font-size: 11px; cursor: pointer; background: #e0e0e0; border: 1px solid #aaa; border-radius: 4px;">+ Adicionar Convidado</button>
@@ -1954,8 +2039,25 @@
         <div class="area-assinaturas">
             <div class="linha-assinatura">Nome 1</div>
             <div class="linha-assinatura">Nome 2</div>
+            <div class="box-obs-contrato">
+                <div class="obs-titulo" style="text-align: center; font-size: 11px; text-transform: uppercase;">OBSERVAÇÕES IMPORTANTES AOS NOIVOS</div>
+                <ul class="lista-bullets" style="font-size: 9.5px; margin-left: 10px; text-align: justify;">
+                    <li><b>Convidados excedentes</b>, desde que confirmado em até 10 dias antes;</li>
+                    <li>A Lista deve estar em ordem alfabética e nome completo;</li>
+                    <li>Os noivos precisam, obrigatoriamente, enviar a pré lista de convidados para a assessoria responsável, em até 30 dias antes do evento. Apesar dos noivos entregarem os convites individuais, a lista é imprescindível; também existe um modelo que será enviado para os noivos apenas adaptarem. Caso a lista não seja entregue conforme o exigido nos padrões, o Villa Vezzane não se responsabilizará por entrada de pessoas não convidadas. Pessoas sem o nome na lista não entram, exceto se estiverem acompanhadas de outras que realmente sejam convidados; é preciso um monitoramento por parte dos noivos com os seus convidados para que isso não aconteça. A entrega do convite individual e a confirmação de alguém de confiança do casal, 15 dias antes, ajuda a diminuir as chances dessa situação. Enfatize aos convidados que se trata de um buffet e, se precisarem ou quiserem levar alguém, isso precisa ser comunicado aos noivos, senão a pessoa será barrada;</li>
+                    <li>As crianças abaixo de 8 anos devem constar na lista, pois apesar de não pagarem, são reservadas cadeiras no salão para elas e a montagem do salão precisa contar com todos;</li>
+                    <li>Prestadores de serviços externos, não parceiros, devem ser incluídos na lista de convidados. (É cobrado 50% do valor por convidado descrito em contrato para os prestadores que ficarão ao longo do evento);</li>
+                </ul>
+            </div>
         </div>
 
+    </div>
+
+    <div class="rodape-acoes">
+        <div class="rodape-msg" id="msgRodape"></div>
+        <button class="btn-acao btn-salvar" onclick="salvarRespostasSupabase()"><i class="fa-solid fa-floppy-disk"></i> Salvar Respostas</button>
+        <button class="btn-acao btn-pdf" onclick="gerarPDFModeloOficial()"><i class="fa-solid fa-file-pdf"></i> Baixar PDF</button>
+        <a href="proxima_pagina.html" class="btn-acao btn-voltar" id="btnVoltarPainel">⬅ Voltar</a>
     </div>
 
     <script>
@@ -1976,9 +2078,16 @@
             for(let i=0; i<15; i++){
                 adicionarLinhaConvidado();
             }
+            const dica = corpo.firstElementChild;
+            if (dica) {
+                dica.querySelector('.conv_nome').placeholder = 'Ex.: Janete Pereira';
+                dica.querySelector('.conv_class').placeholder = 'Ex.: Mãe da noiva';
+            }
 
+            _ativarFaixas();
             bindInputsSincronizados();
             trocarMenuExibido();
+            aprimorarListas(document);
             await carregarFormularioSupabase();
         });
 
@@ -2042,85 +2151,62 @@
             });
         }
 
-        /* RENDERIZADOR DOS CONTEÚDOS DE CADA MENU */
-        function trocarMenuExibido() {
-            const menuChave = document.getElementById('selectCardapio').value;
-            const docNomeMenu = document.getElementById('docNomeMenu');
-            const container = document.getElementById('corpoCardapioDinamico');
+        /* RENDERIZADOR DOS CONTEÚDOS DE CADA MENU (dados compactos) */
+        const _B=['Massa Red Velvet de Iogurte grego com recheio de frutas vermelhas ao vinho tinto','Massa branca com recheio de limão siciliano, chocolate branco e frutas vermelhas','Massa branca com recheio de doce de leite e nozes','Massa de chocolate com recheio de mousse de chocolate belga'];
+        const _D=['Brigadeiro Belga','Nozes','Crème brulée','Camafeu','Frutas Vermelhas','Pistache','Romeu e Julieta','Ninho com Nutella'];
+        const _S=['Merengue de frutas vermelhas','Trifle de Três Chocolates','Merengue de maracujá','Mousse de limão siciliano com frutas vermelhas e suspiro','Banoffe','Terrini de chocolate com caramelo salgado e castanhas'];
+        const _SU=['Abacaxi com Hortelã','Limão com Manjericão','Acerola'];
+        const _MO=['Bechamel','Sugo','Alfredo','Pesto'], _MO2=['Branco','Sugo','Bolonhesa','Rosê'];
+        const _CA=['Atum','Tomate Seco','Frango','Azeitona Preta','Berinjela','Queijo','Ervas Finas'];
+        const _QU=['Croquetas de cupim','Bolinho de queijo','Croquetas de feijoada','Coxinha de frango','Bolinho de tapioca','Kibe tradicional'];
+        const _BV=['Caprese no palito','Quiche de alho poró','Crostini de pera e gorgonzola','Bruschetta de tomate, manjericão e muçarela'];
+        const _PZ=['Atum','Calabresa','Bauru','Muçarela','Berinjela','Portuguesa','Frango com Catupiry','Marguerita','Rúcula','Carne - iscas de carne com queijo'];
+        const _PX=['Brócolis com queijo e bacon','Strogonoff de carne com batata palha'];
+        const _PD=['Banana, leite condensado e canela','Chocolate com morango','Brigadeiro: chocolate e granulado','Romeu e Julieta: goiabada e muçarela'];
+        const _PI=['Minipastéis de carne, muçarela e frango requeijão','Minichurros de chocolate com doce de leite'];
+        const _SL=['Legumes ao vapor','Pepino e cenoura','Mix de folhas'];
+        const _ESF='Esfiha de carne, de frango e pão de batata com requeijão';
+        const _MQ=['Nhoque de batata','Ravióli de muçarela','Capelete de carne','Rondelli Misto (presunto e queijo)'];
+        const _SAL=['Caesar salad','Caprese','Coleslaw'];
+        const _PP=(ps,mo)=>[['c',ps]].concat(ps.reduce((a,p)=>a.concat([['h2','Molho — '+p+':'],['c',mo,1]]),[]));
+        const _CF=(d,mimo,sob)=>{let n=1;const r=[['s','Confeitaria'],['h',(n++)+'. Bolo (Escolher 1 opção):'],['c',_B,1]];if(sob)r.push(['h',(n++)+'. Sobremesa (Escolher 1 opção):'],['c',_S,1]);if(d)r.push(['h',(n++)+'. Doces (Escolher '+d+' opções):'],['c',_D]);if(mimo)r.push(['h',(n++)+'. Mimo de Despedida:'],['n','Mini Donuts recheados de Doce de Leite (1x por convidado) — Conferir no contrato']);return r;};
+        const _EN=t=>{const r=[['s','Encerramento'],['u',['Café','Chá-verde','Petit four']],['n','Marshmallow coberto com chocolate — Conferir no contrato']];if(t)r.push(['h2','Mini tortinha de:'],['c',['limão','morango'],1]);return r;};
+        const _BE=m=>[['s','Bebidas'],['h','1. Bebidas (Inclusas):'],['u',['Refrigerantes (1ª linha)','Água sem gás','Cerveja '+m+' à vontade. Poderá ser servida?']],['c',['Sim','Não'],1],['h','2. Suco Natural de Fruta (Escolher 2 opções):'],['c',_SU],['p','OBSERVAÇÃO IMPORTANTE: Conforme contrato, caso haja sobra de alimentos ou bebidas, nem os convidados, nem mesmo o CONTRATANTE, poderão levá-los. Os arranjos específicos da cerimônia, da mesa do bolo dos noivos, mesa do buffet, mesa do café de encerramento, bem como os arranjos das mesas dos convidados, também não poderá ser levados.']];
+        const _CQ=[['s','Coquetéis'],['h','1. Coquetel de Boas Vindas (Antes da Cerimônia)'],['u',_BV],['h','2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher 3 opções):'],['c',_QU],['u',[_ESF]],['h','3. Coquetel de pista (última hora de festa)'],['u',_PI]];
+        const _CN=[['s','Coquetéis'],['h','1. Coquetel de Boas Vindas (Antes da Cerimônia)'],['p','Canapés à francesa (Escolher 3 opções de patês que serão servidos em mini torradas)'],['c',_CA]];
+        const _MENUS={
+            napoles:_CN.concat([['h','2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher 3 opções):'],['c',_QU],['h','3. Coquetel de pista (última hora de festa)'],['u',_PI],['s','Jantar'],['h','1. Pizza Salgada (Escolher 5 opções):'],['c',_PZ.concat(_PX)],['h','2. Pizza Doce (Escolher 2 opções):'],['c',_PD.concat(['Doce de leite com Nuts'])],['h','3. Saladas (Inclusas):'],['u',_SL]],_CF(3,1),_EN(0),_BE('Brahma Duplo Malte')),
+            napoles_antigo:_CN.concat([['h','2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher 3 opções):'],['c',_QU],['h','3. Coquetel de pista (última hora de festa)'],['u',_PI],['s','Jantar'],['h','1. Pizza Salgada (Escolher 5 opções):'],['c',_PZ],['h','2. Pizza Doce (Escolher 2 opções):'],['c',_PD],['h','3. Saladas (Inclusas):'],['u',_SL]],_CF(0,0),_EN(0),_BE('Brahma Duplo Malte')),
+            napoles2:[['s','Coquetéis'],['h','1. Coquetel de Boas Vindas (Antes da Cerimônia)'],['u',_BV],['h','2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher 3 opções):'],['c',_QU],['h','3. Coquetel volante (Após a Cerimônia / 30 minutos) - (Escolher 2 opções):'],['c',['Mini batata com queijo e bacon','Caldo verde','Creme de mandioquinha','Nhoque ao molho pesto']],['h','4. Coquetel de Ilha: (1h no início do jantar)'],['u',['Nuts','3 queijos','3 embutidos','4 frutas da estação que harmonizem','Pães com 2 tipos de geléia de 2 tipos de patês']],['h','5. Coquetel de pista (última hora de festa)'],['u',_PI],['s','Jantar'],['h','1. Pizza Salgada (Escolher 5 opções):'],['c',_PZ.slice(0,9).concat(['Carne - iscas MIGNON com queijo'],_PX)],['h','2. Pizza Doce (Escolher 2 opções):'],['c',_PD.concat(['Doce de leite com Nuts'])],['h','3. Saladas (Inclusas):'],['u',_SL]].concat(_CF(3,1),_EN(0),_BE('Brahma Duplo Malte')),
+            veneza:_CQ.concat([['s','Jantar'],['h','1. Prato Principal (Escolher 2 opções):'],['c',['Maminha ao molho madeira','Lombo Suíno','Brassato (fraldinha)','Filé de Frango ao molho da casa']],['t','Obs Prato Principal:'],['h','2. Acompanhamentos: (Inclusos)'],['u',['Arroz com alho poró e amêndoas laminadas','Arroz Branco','Batata sautê']],['h','3. Massas:'],['h2','Opção 1 (Escolher 1 opção):'],['c',_MQ,1],['h2','Molho para opção selecionada acima:'],['c',_MO2,1],['h2','Opção 2 (Escolher 1 opção):'],['c',_MQ.concat(['Capelete de frango']),1],['h2','Molho para opção selecionada acima:'],['c',_MO2,1],['t','Obs Massas:'],['h','4. Saladas (Inclusas):'],['u',['Ratatouille','Cobb','Tropical']]],_CF(4,1),_EN(0),_BE('Brahma Duplo Malte')),
+            veneza_antigo:_CN.concat([['h','2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher 3 opções):'],['c',_QU],['u',[_ESF]],['h','3. Coquetel de pista (última hora de festa)'],['u',_PI],['s','Jantar'],['h','1. Prato Principal (Escolher 2 opções):'],['c',['Maminha ao molho madeira','Lombo Suíno','Filé de Frango ao molho da casa','Strogonoff de Frango','Strogonoff de Carne']],['t','Obs Prato Principal:'],['h','2. Acompanhamentos: (Inclusos)'],['u',['Arroz branco','Arroz a Grega']],['h','3. Guarnições: (Inclusas)'],['u',['Batata Sautê','Farofa']],['h','4. Massas:'],['h2','Opção 1 (Escolher 1 opção):'],['c',['Nhoque de batata','Capelete de carne','Ravióli de muçarela','Rondelli Misto (presunto e queijo)'],1],['h2','Molho para opção selecionada acima:'],['c',_MO2,1],['h2','Opção 2 (Escolher 1 opção):'],['c',_MQ.concat(['Capelete de frango']),1],['h2','Molho para opção selecionada acima:'],['c',_MO2,1],['t','Obs Massas:'],['h','5. Saladas (Inclusas):'],['u',['Maionese de legumes','Vinagrete','Mix de folhas','Feijão branco','Pepino e Cenoura']]],_CF(4,0),_EN(0),_BE('Brahma Duplo Malte')),
+            toscana:[['s','Coquetéis'],['h','1. Coquetel de Boas Vindas (Antes da Cerimônia)'],['u',_BV],['h','2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher X opções):'],['c',_QU.slice(0,4).concat(['Croquetas de gorgonzola'],_QU.slice(4))],['u',[_ESF]],['h','3. Coquetel de pista (última hora de festa)'],['u',_PI],['s','Jantar'],['h','1. Prato Principal:'],['u',['Picanha','Bifa Ancho','Sobrecoxa de frango desossada','Linguiça']],['h','2. Acompanhamentos: (Inclusos)'],['u',['Arroz Branco','Arroz biru-biru','Farofa com feijão fradinho','Batatas coradas']],['h','3. Massas:'],['h2','Opção de fogão (Escolher 1 opção):'],['c',['Nhoque de batata','Ravióli de muçarela','Capelete de carne'],1],['h2','Molho para opção selecionada acima:'],['c',_MO2,1],['h2','Opção de forno (Escolher 1 opção):'],['c',['Rondelli de 4 queijos','Rondelli Misto (presunto e queijo)'],1],['h2','Molho para opção selecionada acima:'],['c',_MO2,1],['h','4. Saladas (Inclusas):'],['u',['Ratatouille','Cobb','Tropical','Batata bolinha']]].concat(_CF(4,1),_EN(1),_BE('Brahma Duplo Malte')),
+            roma:[['s','Coquetéis'],['h','1. Coquetel de Boas Vindas (Antes da Cerimônia)'],['n','Welcome drink com Espumante Demi-sec'],['p','Escolher quatro opções:'],['c',['Dadinho de tapioca com mel','Dadinho de tapioca com geléia de pimenta','Vol-au-vent com camarão','Vol-au-vent com salmão','Crostini de pera e gorgonzola','Caprese no palito','Bruscheta de tomate, manjericão e muçarela']],['h','2. Coquetel (Após a Cerimônia)'],['n','Entrada - licor à moda Vezzane'],['p','Escolher duas opções volante:'],['c',['Arancini','Rolinho de berinjela','Quiche de alho poró','Mini batata com queijo e bacon']],['p','Escolher duas opções no copo americano (Caldo verde OU Caldo de feijão / Creme de mandioquinha OU Creme de alho poró):'],['c',['Caldo verde','Caldo de feijão','Creme de mandioquinha','Creme de alho poró','Ceviche','Bobó de camarão']],['h','3. Coquetel de pista:'],['u',['Minipastéis de carne, muçarela e frango com requeijão','Mini churros de doce de chocolate com doce de leite']],['s','Jantar'],['h','1. Saladas (Escolher 1 opção):'],['c',_SAL,1],['h','2. Prato Principal:'],['h2','Peixe - escolher uma opção:'],['c',['Filet de Saint Peter com purê de banana da terra','Salmão ao molho de maracujá'],1],['h2','Frango - escolher uma opção:'],['c',['Filet de frango grelhado ao perfume de ervas (Tomilho, Salsa, Sálvia, entre outras)','Medalhão de frango ao molho branco'],1],['h2','Outras carnes - escolher uma opção:'],['c',['Filet mignon ao molho de mostarda','Lombo suíno ao molho de abacaxi ou laranja'],1],['h2','Acompanhamentos - escolher até três opções:'],['c',['Risoto de parmesão e amêndoas','Risoto de tomate e manjericão','Risoto de alho poró e limão siciliano','Risoto de Castanhas do Brasil e muçarela']],].concat(_PP(['Rondelli de quatro queijos','Rondelli de presunto e queijo','Nhoque de batata','Raviolli de muçarela','Capeletti de carne'],_MO),[['h','3. Guarnições:'],['u',['Cuscuz marroquino','Farofa de maracujá','Aligot','Batatas Coradas']]],_CF(0,1,1),_EN(1),_BE('Heineken')),
+            florenca:[['s','Coquetéis'],['h','1. Coquetel de Boas Vindas (Antes da Cerimônia). Escolher três opções:'],['c',['Dadinho de tapioca com peperoni','Dadinho de tapioca com mel','Crostini de pera e gorgonzola','Bruscheta de tomate, manjericão e muçarela','Caprese no palito']],['h','2. Coquetel (Após a Cerimônia)'],['p','Escolher duas opções:'],['c',['Almôndega','Tomate, queijo e bacon','Muçarela de búfala, manjericão e tomate']],['p','Escolher uma opção volante:'],['c',['Rolinho de berinjela','Mini batata com queijo e bacon'],1],['p','Escolher duas opções no copo americano (Caldo verde OU Caldo de feijão / Creme de mandioquinha OU Creme de alho poró):'],['c',['Caldo verde','Caldo de feijão','Creme de mandioquinha','Creme de alho poró','Ceviche']],['h','3. Coquetel de pista (Escolher 4 opções):'],['c',['Croquete de bacalhau','Croquete de gorgonzola','Croquete de cupim','Bolinho de tapioca','Esfiha de carne e frango','Pão de batata com requeijão','Mini pastéis de carne, muçarela e frango com requeijão','Churros de chocolate com doce de leite']],['s','Jantar'],['h','1. Saladas (Escolher 1 opção):'],['c',_SAL,1],['h','2. Prato Principal:'],['c',['Finger food','Franco-americano'],1],['h2','Escolher 5 opções (uma hora e meia):'],['c',['Filet de Saint Peter com purê de banana da terra','Bobó de camarão','Moqueca de peixe','Fricassê de frango','Filet Mignon ao molho madeira','Musseline de vegetais','Risoto de alho poró','Strogonoff de palmito com cogumelo','Strogonoff de carne de jaca','Polenta ao sugo']]].concat(_PP(['Nhoque de batata','Raviolli de queijo','Capeletti de carne'],_MO),_CF(4,1,1),_EN(1),_BE('Heineken')),
+            florenca2:[['s','Coquetéis'],['h','1. Coquetel de Boas Vindas (Antes da Cerimônia). Escolher três opções:'],['c',['Dadinho de tapioca com peperoni','Dadinho de tapioca com mel','Crostini de pera e gorgonzola','Bruscheta de tomate, manjericão e muçarela','Caprese no palito']],['h','2. Coquetel (Após a Cerimônia)'],['p','Escolher duas opções:'],['c',['Arancini','Quiche de alho poró','Rolinho de berinjela','Mini batata com queijo e bacon']],['p','Escolher duas opções no copo americano (Caldo verde OU Caldo de feijão / Creme de mandioquinha OU Creme de alho poró):'],['c',['Caldo verde','Caldo de feijão','Creme de mandioquinha','Creme de alho poró','Ceviche']],['h','3. Coquetel de pista (Escolher 4 opções):'],['c',['Croquete de bacalhau','Croquete de gorgonzola','Croquete de cupim','Bolinho de tapioca','Esfiha de carne e frango','Pão de batata com requeijão','Mini pastéis de carne, muçarela e frango com requeijão','Churros de chocolate com doce de leite']],['s','Jantar'],['h','1. Saladas (Escolher 1 opção):'],['c',_SAL,1],['h','2. Prato Principal:'],['c',['Finger food','Franco-americano'],1],['h2','Escolher 5 opções (uma hora e meia):'],['c',['Filet de Saint Peter com Aligot','Bobó de camarão','Moqueca de peixe','Fricassê de frango','Filet Mignon ao molho madeira batatas coradas','Medalhão Zucchini','Risoto de alho poró','Strogonoff de palmito com cogumelo','Fricasseê de cogumelo','Polenta ao sugo']]].concat(_PP(['Nhoque de batata','Raviolli de queijo','Capeletti de carne'],_MO),_CF(4,0,1),_EN(1),_BE('Heineken'))
+        };
 
-            docNomeMenu.textContent = "MENU: " + menuChave.toUpperCase().replace('NAPOLES', 'NÁPOLES').replace('FLORENCA', 'FLORENÇA');
+        function _renderMenu(bl,k) {
+            const L=(nm,v,tp)=>`<label class="item-opcao"><input type="${tp}" name="${nm}" value="${v}"><span class="box-check"></span><span class="texto-opcao">${v}</span></label>`;
+            let h='',aberto=false;
+            bl.forEach((b,i)=>{
+                const t=b[0], nm=k+'_'+i;
+                if(t==='s'){ h+=(aberto?'</div>':'')+'<div class="secao-bloco"><div class="secao-titulo-doc">'+b[1]+'</div>'; aberto=true; }
+                else if(t==='h') h+='<div class="subsecao-titulo">'+b[1]+'</div>';
+                else if(t==='h2') h+='<div class="dep-titulo">'+b[1]+'</div>';
+                else if(t==='p') h+='<div style="font-size: 11px; margin-bottom: 6px;"><b>'+b[1]+'</b></div>';
+                else if(t==='n') h+='<div class="alerta-amarelo">'+b[1]+'</div>';
+                else if(t==='u') h+='<ul class="lista-bullets">'+b[1].map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+                else if(t==='t') h+='<div style="font-size: 11px; margin: 6px 0;"><b>'+b[1]+'</b> <input type="text" id="'+nm+'" class="campo-linha-texto" style="width: 70%;"></div>';
+                else if(t==='c') h+='<div class="grid-opcoes-2col">'+b[1].map(v=>L(nm,v,b[2]?'radio':'checkbox')).join('')+'</div>';
+            });
+            return h+(aberto?'</div>':'');
+        }
 
-            if (menuChave === 'napoles' || menuChave === 'napoles2') {
-                container.innerHTML = `
-                    <div class="secao-bloco">
-                        <div class="secao-titulo-doc">Coquetéis</div>
-                        <div class="subsecao-titulo">1. Coquetel de Boas Vindas (Antes da Cerimônia)</div>
-                        <div style="font-size: 11px; margin-bottom: 6px;">Canapés à francesa <b>(Escolher 3 opções de patês que serão servidos em mini torradas)</b></div>
-                        <div class="grid-opcoes-2col">
-                            <label class="item-opcao"><input type="checkbox" name="pates" value="Atum"><span class="box-check"></span><span class="texto-opcao">Atum</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pates" value="Tomate Seco"><span class="box-check"></span><span class="texto-opcao">Tomate Seco</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pates" value="Frango"><span class="box-check"></span><span class="texto-opcao">Frango</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pates" value="Azeitona Preta"><span class="box-check"></span><span class="texto-opcao">Azeitona Preta</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pates" value="Berinjela"><span class="box-check"></span><span class="texto-opcao">Berinjela</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pates" value="Queijo"><span class="box-check"></span><span class="texto-opcao">Queijo</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pates" value="Ervas Finas"><span class="box-check"></span><span class="texto-opcao">Ervas Finas</span></label>
-                        </div>
-
-                        <div class="subsecao-titulo">2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher 3 opções):</div>
-                        <div class="grid-opcoes-2col">
-                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Croquetas de cupim"><span class="box-check"></span><span class="texto-opcao">Croquetas de cupim</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Bolinho de queijo"><span class="box-check"></span><span class="texto-opcao">Bolinho de queijo</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Croquetas de feijoada"><span class="box-check"></span><span class="texto-opcao">Croquetas de feijoada</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Coxinha de frango"><span class="box-check"></span><span class="texto-opcao">Coxinha de frango</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Bolinho de tapioca"><span class="box-check"></span><span class="texto-opcao">Bolinho de tapioca</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="coquetel_quente" value="Kibe tradicional"><span class="box-check"></span><span class="texto-opcao">Kibe tradicional</span></label>
-                        </div>
-
-                        <div class="subsecao-titulo">3. Coquetel de pista (última hora de festa)</div>
-                        <ul class="lista-bullets">
-                            <li>Minipastéis de carne, muçarela e frango requeijão</li>
-                            <li>Minichurros de chocolate com doce de leite</li>
-                        </ul>
-                    </div>
-
-                    <div class="secao-bloco">
-                        <div class="secao-titulo-doc">Jantar</div>
-                        <div class="subsecao-titulo">1. Pizza Salgada (Escolher 5 opções):</div>
-                        <div class="grid-opcoes-2col">
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Atum"><span class="box-check"></span><span class="texto-opcao">Atum</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Calabresa"><span class="box-check"></span><span class="texto-opcao">Calabresa</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Bauru"><span class="box-check"></span><span class="texto-opcao">Bauru</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Muçarela"><span class="box-check"></span><span class="texto-opcao">Muçarela</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Berinjela"><span class="box-check"></span><span class="texto-opcao">Berinjela</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Portuguesa"><span class="box-check"></span><span class="texto-opcao">Portuguesa</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Frango com Catupiry"><span class="box-check"></span><span class="texto-opcao">Frango com Catupiry</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Marguerita"><span class="box-check"></span><span class="texto-opcao">Marguerita</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Rúcula"><span class="box-check"></span><span class="texto-opcao">Rúcula</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="pizzas_salgadas" value="Carne - iscas de carne com queijo"><span class="box-check"></span><span class="texto-opcao">Carne - iscas de carne com queijo</span></label>
-                        </div>
-                    </div>
-                `;
-            } else if (menuChave === 'veneza') {
-                container.innerHTML = `
-                    <div class="secao-bloco">
-                        <div class="secao-titulo-doc">Coquetéis & Entradas</div>
-                        <div class="subsecao-titulo">1. Coquetel de Boas Vindas (Escolher 3 opções):</div>
-                        <div class="grid-opcoes-2col">
-                            <label class="item-opcao"><input type="checkbox" name="veneza_pates" value="Atum"><span class="box-check"></span><span class="texto-opcao">Atum</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="veneza_pates" value="Frango"><span class="box-check"></span><span class="texto-opcao">Frango</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="veneza_pates" value="Berinjela"><span class="box-check"></span><span class="texto-opcao">Berinjela</span></label>
-                            <label class="item-opcao"><input type="checkbox" name="veneza_pates" value="Tomate Seco"><span class="box-check"></span><span class="texto-opcao">Tomate Seco</span></label>
-                        </div>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="secao-bloco">
-                        <div class="secao-titulo-doc">Opções do Menu ${menuChave.toUpperCase()}</div>
-                        <p style="font-size: 11px; color: #555;">Conteúdo do cardápio selecionado.</p>
-                    </div>
-                `;
-            }
+        function trocarMenuExibidoBase() {
+            const sel = document.getElementById('selectCardapio');
+            document.getElementById('docNomeMenu').textContent = sel.options[sel.selectedIndex].text;
+            document.getElementById('corpoCardapioDinamico').innerHTML = _renderMenu(_MENUS[sel.value] || [], 'cd_' + sel.value);
         }
 
         /* BANCO DE DADOS SUPABASE */
@@ -2136,38 +2222,91 @@
 
             let checksArr = [];
             document.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(el => {
-                if (el.name && el.value) {
-                    checksArr.push({ name: el.name, val: el.value });
+                const chave = el.name || el.id;
+                if (chave && el.value) {
+                    checksArr.push({ name: chave, val: el.value });
                 }
+            });
+
+            const convidadosArr = [];
+            document.querySelectorAll('#corpoTabelaConvidados tr').forEach(tr => {
+                const c = {
+                    nome: (tr.querySelector('.conv_nome') || {}).value || '',
+                    classificacao: (tr.querySelector('.conv_class') || {}).value || '',
+                    pagantes: (tr.querySelector('.conv_pag') || {}).value || '',
+                    nao_pagantes: (tr.querySelector('.conv_npag') || {}).value || '',
+                    mesa: (tr.querySelector('.conv_mesa') || {}).value || ''
+                };
+                if (Object.values(c).some(v => v.trim())) convidadosArr.push(c);
             });
 
             return {
                 menu: document.getElementById('selectCardapio').value,
                 texto: textoObj,
-                selecoes: checksArr
+                selecoes: checksArr,
+                convidados: convidadosArr,
+                faixas: _coletarFaixas()
             };
         }
 
-        async function salvarRespostasSupabase() {
-            const dados = coletarRespostasDOM();
-
-            const { error } = await _supabase
-                .from('formulario_casal_respostas')
-                .upsert({
-                    casal_nome: casalNome,
-                    local_espaco: 'vezzane',
-                    respostas: dados,
-                    atualizado_em: new Date().toISOString()
-                }, { onConflict: 'casal_nome' });
-
-            if (error) {
-                alert("Erro ao salvar: " + error.message);
-            } else {
-                alert("Suas seleções foram salvas com sucesso!");
-            }
+        /* FAIXAS AMARELAS EDITÁVEIS */
+        function _listaFaixas() {
+            const dyn = document.getElementById('corpoCardapioDinamico');
+            const base = Array.from(document.querySelectorAll('.alerta-amarelo, .brunch-destaque'));
+            const up = Array.from(document.querySelectorAll('div, span, p')).filter(e => !e.children.length && /^UPGRADE DE DECORA/i.test(e.textContent.trim()));
+            return base.concat(up).filter(e => !dyn.contains(e));
+        }
+        function _ativarFaixas() {
+            _listaFaixas().forEach(e => { e.contentEditable = 'true'; e.classList.add('faixa-edit'); e.spellcheck = false; });
+        }
+        function _coletarFaixas() {
+            const o = {}; _listaFaixas().forEach((e, i) => { o[i] = e.textContent.trim(); }); return o;
+        }
+        function _restaurarFaixas(f) {
+            if (!f) return;
+            _listaFaixas().forEach((e, i) => { if (typeof f[i] === 'string' && f[i]) e.textContent = f[i]; });
         }
 
-        async function carregarFormularioSupabase() {
+        /* Envia os convidados salvos para a tabela usada pela página Lista de Convidados */
+        async function _sincronizarConvidadosTabela(arr) {
+            const casalLista = localStorage.getItem('casal_ativo') || casalNome;
+            const { data: ex } = await _supabase.from('convidados').select('*').eq('casal_nome', casalLista);
+            const mapa = {};
+            (ex || []).forEach(g => { mapa[((g.first_name || '') + ' ' + (g.last_name || '')).trim().toLowerCase()] = g; });
+            const novos = [];
+            for (const c of arr) {
+                const nome = (c.nome || '').trim();
+                if (!nome) continue;
+                const g = mapa[nome.toLowerCase()];
+                if (g) {
+                    if (g.connection !== c.classificacao || String(g.table_number) !== String(c.mesa)) {
+                        await _supabase.from('convidados').update({ connection: c.classificacao || g.connection, table_number: c.mesa || g.table_number }).eq('id', g.id);
+                    }
+                } else {
+                    novos.push({ first_name: nome, last_name: '', connection: c.classificacao || 'Convidado', phone: '-', table_number: c.mesa || 'Geral', present: false, casal_nome: casalLista });
+                }
+            }
+            if (novos.length) await _supabase.from('convidados').insert(novos);
+        }
+
+        async function salvarRespostasSupabase(silencioso) {
+            const dados = coletarRespostasDOM();
+            try {
+                const { data: ex } = await _supabase.from('formulario_casal_respostas').select('respostas').eq('casal_nome', casalNome).maybeSingle();
+                const m = {};
+                ((ex && ex.respostas && ex.respostas.convidados) || []).forEach(c => { m[(c.nome || '').trim().toLowerCase()] = c; });
+                dados.convidados.forEach(c => { const o = m[(c.nome || '').trim().toLowerCase()]; if (o && o.chegou) c.chegou = true; });
+            } catch (e) {}
+            const { error } = await _supabase.from('formulario_casal_respostas').upsert({
+                casal_nome: casalNome, local_espaco: 'vezzane', respostas: dados, atualizado_em: new Date().toISOString()
+            }, { onConflict: 'casal_nome' });
+            if (error) { if (!silencioso) alert("Erro ao salvar: " + error.message); return false; }
+            try { await _sincronizarConvidadosTabela(dados.convidados); } catch (e) { console.error('Sync convidados:', e); }
+            if (!silencioso) alert("Todas as abas foram salvas no banco de dados com sucesso! A lista de convidados já está disponível na página Lista de Convidados.");
+            return true;
+        }
+
+        async function carregarFormularioSupabaseBase() {
             const { data, error } = await _supabase
                 .from('formulario_casal_respostas')
                 .select('*')
@@ -2175,7 +2314,7 @@
                 .maybeSingle();
 
             if (!error && data && data.respostas) {
-                const r = data.respostas;
+                const r = data.respostas; window._rCarregado = r;
                 if (r.menu) {
                     document.getElementById('selectCardapio').value = r.menu;
                     trocarMenuExibido();
@@ -2192,26 +2331,549 @@
                     r.selecoes.forEach(s => {
                         const input = document.querySelector(`input[name="${CSS.escape(s.name)}"][value="${CSS.escape(s.val)}"]`);
                         if (input) input.checked = true;
+                        else {
+                            const porId = document.getElementById(s.name);
+                            if (porId && porId.type === 'checkbox') porId.checked = true;
+                        }
                     });
+                }
+                if (Array.isArray(r.convidados) && r.convidados.length) {
+                    const corpo = document.getElementById('corpoTabelaConvidados');
+                    corpo.innerHTML = '';
+                    r.convidados.forEach(c => {
+                        adicionarLinhaConvidado();
+                        const tr = corpo.lastElementChild;
+                        tr.querySelector('.conv_nome').value = c.nome || '';
+                        tr.querySelector('.conv_class').value = c.classificacao || '';
+                        tr.querySelector('.conv_pag').value = c.pagantes || '';
+                        tr.querySelector('.conv_npag').value = c.nao_pagantes || '';
+                        tr.querySelector('.conv_mesa').value = c.mesa || '';
+                    });
+                    while (corpo.children.length < 15) adicionarLinhaConvidado();
                 }
             }
         }
 
-        /* GERADOR DE PDF */
-        function gerarPDFModeloOficial() {
-            const docDefinition = {
-                pageSize: 'A4',
-                pageMargins: [35, 30, 35, 35],
-                content: [
-                    { text: 'Villa Vezzane', fontStyle: 'serif', fontSize: 18, alignment: 'center', margin: [0, 0, 0, 1] },
-                    { text: 'EVENTOS', fontSize: 7, alignment: 'center', color: '#725a4d', margin: [0, 0, 0, 10] },
-                    { text: 'FICHA DE ESCOLHAS COMPLETA DO CASAL', fontSize: 12, bold: true, alignment: 'center', margin: [0, 0, 0, 10] },
-                    { text: 'Casal: ' + casalNome, fontSize: 10, bold: true, margin: [0, 0, 0, 5] },
-                    { text: 'Documento impresso diretamente da aplicação Ally.', fontSize: 9, italics: true }
-                ]
+        async function carregarFormularioSupabase() {
+            await carregarFormularioSupabaseBase();
+            sincronizarListas();
+            _restaurarFaixas((window._rCarregado || {}).faixas);
+        }
+
+        function trocarMenuExibido() {
+            trocarMenuExibidoBase();
+            aprimorarListas(document.getElementById('corpoCardapioDinamico'));
+        }
+
+        /* =====================================================================
+           LISTAS DE ESCOLHA
+           Troca os "quadradinhos" por listas (o que o casal escolhe fica
+           guardado nos mesmos campos de antes, então salvar/carregar continua igual).
+           - Escolha única (Sim/Não, cores, estilos...) -> lista suspensa
+           - Várias escolhas (itens, cardápio...)      -> lista suspensa com múltipla seleção
+           ===================================================================== */
+        const _gruposLista = [];
+
+        function _txt(n) { return (n.textContent || '').replace(/\s+/g, ' ').trim(); }
+
+        function _infoOpcao(label) {
+            const span = label.querySelector('.texto-opcao') || label;
+            const campos = Array.from(span.querySelectorAll('input[type="text"]'));
+            const clone = span.cloneNode(true);
+            clone.querySelectorAll('input').forEach(i => i.remove());
+            let texto = _txt(clone);
+            let rotulo = '';
+            if (campos.length) {
+                const m = texto.match(/^(.*?)[.\s]*([^.:?]+[:?])$/);
+                if (m && m[1]) { texto = m[1].trim(); rotulo = m[2].trim(); }
+            }
+            texto = texto.replace(/\s*:\s*$/, '');
+            /* versão sem os avisos destacados em amarelo, como "(Sugerimos)" (usada no PDF) */
+            const limpo = span.cloneNode(true);
+            limpo.querySelectorAll('input').forEach(i => i.remove());
+            limpo.querySelectorAll('span[style*="ffff00"]').forEach(i => i.remove());
+            let textoPDF = _txt(limpo);
+            if (campos.length) { const m2 = textoPDF.match(/^(.*?)[.\s]*([^.:?]+[:?])$/); if (m2 && m2[1]) textoPDF = m2[1].trim(); }
+            textoPDF = textoPDF.replace(/\s*:\s*$/, '');
+            return { texto, textoPDF, rotulo, campos };
+        }
+
+        function _temCampoTexto(n) {
+            return n.nodeType === 1 && (n.matches('input[type="text"]') || !!n.querySelector('input[type="text"]'));
+        }
+
+        /* Campos que "pertencem" a uma opção (ex.: "Quantos: ___" logo abaixo dela) */
+        function _dependentes(label, inputsDoGrupo) {
+            const deps = [];
+            let n = label.nextSibling;
+            while (n) {
+                if (n.nodeType === 3) { if (n.textContent.trim()) break; n = n.nextSibling; continue; }
+                if (n.nodeType !== 1) { n = n.nextSibling; continue; }
+                if (n.tagName === 'BR') { n = n.nextSibling; continue; }
+                if (n.matches('label.item-opcao')) break;
+                if (inputsDoGrupo.some(i => n.contains(i))) break;
+                if (!_temCampoTexto(n)) break;
+                if (n.querySelector('label.item-opcao')) break;
+                deps.push(n);
+                n = n.nextSibling;
+            }
+            return deps;
+        }
+
+        function aprimorarListas(raiz) {
+            raiz = raiz || document;
+            for (let i = _gruposLista.length - 1; i >= 0; i--) {
+                if (!_gruposLista[i].wrap.isConnected) _gruposLista.splice(i, 1);
+            }
+            const mapa = new Map();
+            let anon = 0;
+            raiz.querySelectorAll('label.item-opcao').forEach(l => {
+                if (l.dataset.lista) return;
+                const inp = l.querySelector('input[type="radio"], input[type="checkbox"]');
+                if (!inp) return;
+                const chave = inp.type + '|' + (inp.name || inp.id || ('anon' + (anon++)));
+                if (!mapa.has(chave)) mapa.set(chave, []);
+                mapa.get(chave).push({ label: l, input: inp });
+            });
+            mapa.forEach(itens => _criarGrupo(itens));
+        }
+
+        function _criarGrupo(itens) {
+            const inputs = itens.map(x => x.input);
+            const tipo = inputs[0].type;
+            const multi = tipo === 'checkbox' && inputs.length > 1;
+
+            const opcoes = itens.map(x => {
+                const info = _infoOpcao(x.label);
+                return { label: x.label, input: x.input, texto: info.texto, textoPDF: info.textoPDF, rotulo: info.rotulo, campos: info.campos, deps: [], container: null };
+            });
+
+            opcoes.forEach(o => {
+                const pai = o.label.parentElement;
+                const caixaPropria = tipo === 'checkbox' && pai && pai.classList.contains('box-destaque-borda')
+                    && !inputs.some(i => i !== o.input && pai.contains(i));
+
+                if (caixaPropria) {
+                    o.container = pai;
+                    o.deps = Array.from(pai.children).filter(c => c !== o.label);
+                } else {
+                    o.deps = _dependentes(o.label, inputs);
+                    if (o.campos.length) {
+                        const bloco = document.createElement('div');
+                        bloco.className = 'dep-opcao';
+                        if (o.rotulo) {
+                            const s = document.createElement('span');
+                            s.textContent = o.rotulo + ' ';
+                            bloco.appendChild(s);
+                        }
+                        o.campos.forEach(c => { c.dataset.rotulo = o.rotulo.replace(/[:?]\s*$/, ''); bloco.appendChild(c); });
+                        o.label.parentNode.insertBefore(bloco, o.label.nextSibling);
+                        o.deps.unshift(bloco);
+                    }
+                }
+
+                o.deps.forEach(d => { d.dataset.depCaption = o.texto; });
+
+                if (tipo === 'checkbox' && o.deps.length) {
+                    const cap = document.createElement('div');
+                    cap.className = 'dep-titulo';
+                    cap.textContent = o.texto;
+                    if (o.container) o.container.insertBefore(cap, o.container.firstChild);
+                    else o.deps[0].parentNode.insertBefore(cap, o.deps[0]);
+                    o.deps.unshift(cap);
+                    delete cap.dataset.depCaption;
+                }
+                o.label.dataset.lista = '1';
+                o.label.classList.add('lista-oculta');
+            });
+
+            const wrap = document.createElement('span');
+            wrap.className = 'lista-escolha-wrap';
+            const primeira = opcoes[0].label;
+            primeira.parentNode.insertBefore(wrap, primeira);
+
+            const grupo = { tipo, multi, inputs, opcoes, wrap, atualizar: null };
+            wrap._grupo = grupo;
+
+            const atualizarDeps = () => {
+                opcoes.forEach(o => {
+                    const on = o.input.checked;
+                    o.deps.forEach(d => d.classList.toggle('dep-oculto', !on));
+                    if (o.container) o.container.classList.toggle('dep-oculto', !on);
+                });
             };
 
-            pdfMake.createPdf(docDefinition).download('Ficha_Escolhas_' + casalNome.replace(/\s+/g, '_') + '.pdf');
+            if (!multi) {
+                const sel = document.createElement('select');
+                sel.className = 'lista-escolha';
+                sel.add(new Option('Selecione uma opção…', ''));
+                opcoes.forEach((o, i) => sel.add(new Option(o.texto, String(i))));
+                sel.addEventListener('change', () => {
+                    inputs.forEach((inp, k) => { inp.checked = (String(k) === sel.value); });
+                    grupo.atualizar();
+                    inputs[0].dispatchEvent(new Event('change', { bubbles: true }));
+                });
+                wrap.appendChild(sel);
+                grupo.atualizar = () => {
+                    const k = inputs.findIndex(i => i.checked);
+                    sel.value = k >= 0 ? String(k) : '';
+                    atualizarDeps();
+                };
+            } else {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'ms-btn';
+                const btnTxt = document.createElement('span');
+                const seta = document.createElement('span');
+                seta.className = 'ms-seta';
+                seta.textContent = '▾';
+                btn.appendChild(btnTxt);
+                btn.appendChild(seta);
+
+                const painel = document.createElement('div');
+                painel.className = 'ms-painel';
+                const itensEl = opcoes.map((o, i) => {
+                    const d = document.createElement('div');
+                    d.className = 'ms-item';
+                    d.textContent = o.texto;
+                    d.addEventListener('click', () => {
+                        o.input.checked = !o.input.checked;
+                        grupo.atualizar();
+                        o.input.dispatchEvent(new Event('change', { bubbles: true }));
+                    });
+                    painel.appendChild(d);
+                    return d;
+                });
+
+                const resumo = document.createElement('ul');
+                resumo.className = 'ms-resumo';
+
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const abrir = !painel.classList.contains('aberto');
+                    document.querySelectorAll('.ms-painel.aberto').forEach(p => p.classList.remove('aberto'));
+                    if (abrir) painel.classList.add('aberto');
+                });
+                painel.addEventListener('click', e => e.stopPropagation());
+
+                const caixa = document.createElement('div');
+                caixa.style.position = 'relative';
+                caixa.appendChild(btn);
+                caixa.appendChild(painel);
+                wrap.appendChild(caixa);
+                wrap.appendChild(resumo);
+
+                grupo.atualizar = () => {
+                    const marcados = opcoes.filter(o => o.input.checked);
+                    itensEl.forEach((el, i) => el.classList.toggle('sel', opcoes[i].input.checked));
+                    btnTxt.textContent = marcados.length === 0
+                        ? 'Selecione uma ou mais opções…'
+                        : marcados.length + (marcados.length === 1 ? ' opção selecionada' : ' opções selecionadas');
+                    resumo.innerHTML = '';
+                    marcados.forEach(o => {
+                        const li = document.createElement('li');
+                        li.textContent = o.texto;
+                        resumo.appendChild(li);
+                    });
+                    atualizarDeps();
+                };
+            }
+
+            _gruposLista.push(grupo);
+            grupo.atualizar();
+        }
+
+        function sincronizarListas() {
+            _gruposLista.forEach(g => { if (g.wrap.isConnected) g.atualizar(); });
+        }
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.ms-painel.aberto').forEach(p => p.classList.remove('aberto'));
+        });
+
+        /* =====================================================================
+           PDF - mostra SOMENTE o que o casal escolheu / preencheu
+           ===================================================================== */
+        const TITULOS_ABAS = {
+            abaInfoGerais: 'Informações Gerais',
+            abaCardapio: 'Cardápio',
+            abaDecorPerm: 'Decoração Permanente',
+            abaDecorNat: 'Decoração Natural',
+            abaItensExtras: 'Itens & Extras',
+            abaSom: 'Som',
+            abaCerimonia: 'Cerimônia',
+            abaServicosExternos: 'Serviços Externos',
+            abaSuites: 'Suítes',
+            abaCronogramaEvento: 'Cronograma do Evento',
+            abaListaConvidados: 'Lista de Convidados'
+        };
+
+        const _TAGS_INLINE = ['B', 'STRONG', 'SPAN', 'I', 'EM', 'A', 'SMALL', 'LABEL', 'U'];
+
+        function _limparRotulo(t) {
+            let r = (t || '').replace(/\s+/g, ' ')
+                .replace(/^[\s|►•\-–—(:)]+/, '')
+                .replace(/[\s|►\-–—(:]+$/, '')
+                .trim();
+            if (r.endsWith(')') && !r.includes('(')) r = r.replace(/[\s)]+$/, '');
+            return r;
+        }
+
+        function _norm(t) { return (t || '').toLowerCase().replace(/[^a-z0-9à-ú]/gi, ''); }
+
+        /* texto que vem logo antes de um elemento, na mesma linha */
+        function _textoAntes(el, incluirOpcao) {
+            const partes = [];
+            let n = el.previousSibling;
+            while (n) {
+                if (n.nodeType === 3) {
+                    partes.unshift(n.textContent);
+                } else if (n.nodeType === 1) {
+                    if (n.tagName === 'BR' || n.tagName === 'INPUT' || n.classList.contains('lista-escolha-wrap') || n.classList.contains('dep-titulo')) break;
+                    if (!_TAGS_INLINE.includes(n.tagName)) break;
+                    if (n.matches('label.item-opcao')) {
+                        const jaTemTexto = partes.join('').trim().length > 0;
+                        if (!incluirOpcao || jaTemTexto) break;
+                    }
+                    partes.unshift(n.textContent);
+                }
+                n = n.previousSibling;
+            }
+            return partes.join(' ');
+        }
+
+        function _primeiroNegrito(el) {
+            const b = el.parentElement && el.parentElement.querySelector('b');
+            return b ? _limparRotulo(b.textContent) : '';
+        }
+
+        function _rotuloTexto(inp) {
+            if (inp.dataset.rotulo) return inp.dataset.rotulo;
+            const conectores = ['com', 'e', 'de', 'ou', 'a'];
+            let t = _limparRotulo(_textoAntes(inp, true));
+            if (t.includes('|')) t = _limparRotulo(t.split('|').pop());
+            if (!t || t.length < 3 || conectores.includes(t.toLowerCase())) {
+                const ph = (inp.placeholder || '').trim();
+                if (ph && !/^[\d(]/.test(ph)) t = _limparRotulo(ph);
+                else t = _primeiroNegrito(inp) || t;
+            }
+            if (/^música$/i.test(t)) {
+                const b = _primeiroNegrito(inp);
+                if (b && _norm(b) !== _norm(t)) t = b + ' — Música';
+            }
+            return t || 'Campo';
+        }
+
+        function _perguntaGrupo(wrap, ctx) {
+            const dep = wrap.closest('[data-dep-caption]');
+            if (dep) return dep.dataset.depCaption;
+            if (wrap._grupo && wrap._grupo.inputs[0].dataset.pergunta) return wrap._grupo.inputs[0].dataset.pergunta;
+
+            let q = _limparRotulo(_textoAntes(wrap, false));
+            if (q.includes('|')) q = _limparRotulo(q.split('|').pop());
+            let el = wrap;
+            for (let nivel = 0; nivel < 3 && !q && el; nivel++) {
+                let p = el.previousElementSibling;
+                while (p && (p.matches('label.item-opcao') || p.classList.contains('lista-escolha-wrap') || p.classList.contains('dep-oculto') && !_txt(p))) {
+                    p = p.previousElementSibling;
+                }
+                if (p && (p.tagName === 'UL' || p.tagName === 'OL') && p.lastElementChild) p = p.lastElementChild;
+                while (p && (p.classList.contains('nota-cinza') || p.classList.contains('alerta-amarelo') || /^(obs|nota)\b/i.test(_txt(p)))) p = p.previousElementSibling;
+                if (p && !p.querySelector('input, table, select')) {
+                    const t = _limparRotulo(_txt(p));
+                    const parecePergunta = p.classList.contains('subsecao-titulo') || p.tagName === 'LI'
+                        || !!p.querySelector('b, strong') || /[:?]\s*$/.test(_txt(p))
+                        || /font-weight:\s*bold/i.test(p.getAttribute('style') || '');
+                    if (t && t.length <= 180 && parecePergunta) { q = t; break; }
+                }
+                el = el.parentElement;
+            }
+            if (!q) {
+                for (let a = wrap.parentElement; a && a !== ctx.aba && !q; a = a.parentElement) {
+                    const b = Array.from(a.children).find(c => c.tagName === 'B');
+                    if (b) q = _limparRotulo(b.textContent);
+                }
+            }
+            if (!q) q = _limparRotulo(ctx.sub) || _limparRotulo(ctx.secao) || 'Escolha';
+            return q.replace(/^\d+\.\s*/, '');
+        }
+
+        function _oculto(el, aba) {
+            for (let n = el; n && n !== aba; n = n.parentElement) {
+                if (n.classList && n.classList.contains('dep-oculto')) return true;
+            }
+            return false;
+        }
+
+        function _inputsTexto(no) {
+            if (no.matches && no.matches('input[type="text"]')) return [no];
+            return Array.from(no.querySelectorAll('input[type="text"]'));
+        }
+
+        function _tratarGrupo(wrap, ctx) {
+            const g = wrap._grupo;
+            if (!g || _oculto(wrap, ctx.aba)) return;
+            const marcados = g.opcoes.filter(o => o.input.checked);
+            if (!marcados.length) return;
+
+            const itens = marcados.map(o => {
+                const extras = [];
+                o.deps.forEach(d => {
+                    _inputsTexto(d).forEach(inp => {
+                        ctx.consumidos.add(inp);
+                        const v = inp.value.trim();
+                        if (!v) return;
+                        const r = _rotuloTexto(inp);
+                        extras.push((!r || _norm(r) === _norm(o.textoPDF || o.texto)) ? v : r + ': ' + v);
+                    });
+                });
+                const nome = o.textoPDF || o.texto;
+                return extras.length ? nome + ' (' + extras.join(' | ') + ')' : nome;
+            });
+
+            const q = _perguntaGrupo(wrap, ctx);
+            if (g.multi || itens.length > 1) {
+                ctx.unidades.push({ secao: ctx.secao, tipo: 'lista', q, itens });
+            } else {
+                ctx.unidades.push({ secao: ctx.secao, tipo: 'kv', r: q, v: itens[0] });
+            }
+        }
+
+        function _tratarTexto(inp, ctx) {
+            if (ctx.consumidos.has(inp)) return;
+            if (inp.readOnly) return;
+            if (_oculto(inp, ctx.aba)) return;
+            if (ctx.aba.id !== 'abaInfoGerais' && /(^|\s)form_/.test(inp.className)) return;
+            if (inp.closest('.lista-escolha-wrap')) return;
+            const v = inp.value.trim();
+            if (!v) return;
+            let r = _rotuloTexto(inp);
+            const dep = inp.closest('[data-dep-caption]');
+            if (dep && _norm(dep.dataset.depCaption) !== _norm(r)) r = dep.dataset.depCaption + ' — ' + r;
+            ctx.unidades.push({ secao: ctx.secao, tipo: 'kv', r, v });
+        }
+
+        function _tratarTabela(tb, ctx) {
+            if (_oculto(tb, ctx.aba)) return;
+            const cab = Array.from(tb.querySelectorAll('thead th')).map(th => _txt(th));
+            const linhas = [];
+            const colComValor = [];
+            tb.querySelectorAll('tbody tr').forEach(tr => {
+                let algum = false;
+                const vals = Array.from(tr.children).map((td, ci) => {
+                    const ins = Array.from(td.querySelectorAll('input[type="text"]'));
+                    if (!ins.length) return _txt(td);
+                    ins.forEach(i => ctx.consumidos.add(i));
+                    const clone = td.cloneNode(true);
+                    clone.querySelectorAll('input').forEach(i => i.remove());
+                    const vs = ins.map(i => i.value.trim()).filter(Boolean);
+                    if (vs.length) { algum = true; colComValor[ci] = true; }
+                    return [_txt(clone)].concat(vs).filter(Boolean).join(' ');
+                });
+                if (algum) linhas.push(vals);
+            });
+            if (!linhas.length) return;
+            const manter = cab.map((_, ci) => ci === 0 || colComValor[ci]);
+            let legenda = '';
+            const prev = tb.previousElementSibling;
+            if (prev && !prev.querySelector('input, table, .secao-titulo-doc')) {
+                const t = _limparRotulo(_txt(prev));
+                if (t && t.length <= 120 && _norm(t) !== _norm(ctx.secao)) legenda = t;
+            }
+            ctx.unidades.push({
+                secao: ctx.secao, tipo: 'tabela', legenda,
+                cab: cab.filter((_, ci) => manter[ci]),
+                linhas: linhas.map(l => l.filter((_, ci) => manter[ci]))
+            });
+        }
+
+        function _percorrer(no, ctx) {
+            Array.from(no.children).forEach(el => {
+                if (el.classList.contains('secao-titulo-doc')) {
+                    ctx.secao = _limparRotulo(_txt(el)); ctx.sub = ''; return;
+                }
+                if (el.classList.contains('subsecao-titulo')) { ctx.sub = _txt(el); return; }
+                if (el.tagName === 'TABLE') { _tratarTabela(el, ctx); return; }
+                if (el.classList.contains('lista-escolha-wrap')) { _tratarGrupo(el, ctx); return; }
+                if (el.tagName === 'INPUT') { if (el.type === 'text') _tratarTexto(el, ctx); return; }
+                if (el.tagName === 'LABEL' && el.classList.contains('item-opcao')) return;
+                if (['BUTTON', 'SELECT', 'SCRIPT', 'STYLE'].includes(el.tagName)) return;
+                _percorrer(el, ctx);
+            });
+        }
+
+        function coletarEscolhasParaPDF() {
+            const resultado = [];
+            document.querySelectorAll('.conteudo-aba').forEach(aba => {
+                const ctx = { aba, secao: '', sub: '', unidades: [], consumidos: new Set() };
+                _percorrer(aba, ctx);
+                if (!ctx.unidades.length) return;
+                if (aba.id === 'abaCardapio') {
+                    const op = document.getElementById('selectCardapio');
+                    const nome = op ? op.options[op.selectedIndex].text.replace(/^MENU:\s*/i, '') : '';
+                    if (nome) ctx.unidades.unshift({ secao: 'Menu escolhido', tipo: 'kv', r: 'Menu', v: nome });
+                }
+                const notas = []; aba.querySelectorAll('.alerta-amarelo, .brunch-destaque, .faixa-edit').forEach(e => { const t = _txt(e); if (t && !_oculto(e, aba) && !notas.includes(t)) notas.push(t); });
+                resultado.push({ titulo: TITULOS_ABAS[aba.id] || aba.id, unidades: ctx.unidades, notas });
+            });
+            return resultado;
+        }
+
+        function _fmtRotulo(r) { return /[?:]$/.test(r) ? r : r + ':'; }
+
+        function montarDocumentoPDF() {
+            const MAR = '#3b2a22', AZ = '#2b5797', SEC = '#725a4d';
+            const abas = coletarEscolhasParaPDF();
+            const v = c => { const e = document.querySelector('.' + c); return e ? e.value.trim() : ''; };
+            const info = (r, val) => ({ text: [{ text: r + ' ', bold: true, color: '#111111' }, { text: val || '—', bold: true, color: AZ }], fontSize: 10 });
+            const linha = (w, cor) => ({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 525, y2: 0, lineWidth: w, lineColor: cor }], margin: [0, 2, 0, 4] });
+            const content = [
+                { text: 'VILLA VEZZANE', fontSize: 22, alignment: 'center', color: '#382a23', characterSpacing: 2 },
+                { text: 'EVENTOS', fontSize: 7, alignment: 'center', color: SEC, characterSpacing: 3, margin: [0, 0, 0, 10] },
+                { text: 'ESCOLHAS DO CASAL', fontSize: 13, bold: true, alignment: 'center', margin: [0, 0, 0, 8] },
+                { columns: [info('Casal:', casalNome), info('Data:', v('form_data_casamento')), info('Hora:', v('form_horario_convite'))], margin: [0, 0, 0, 4] },
+                { columns: [info('Quantidade de convidados:', v('form_qtd_convidados')), info('Tempo de evento:', v('form_tempo_evento'))], margin: [0, 0, 0, 4] },
+                linha(1, MAR)
+            ];
+            if (!abas.length) content.push({ text: 'Nenhuma escolha foi registrada até o momento.', italics: true, color: '#888888', margin: [0, 20, 0, 0] });
+            abas.forEach((aba, ai) => {
+                content.push({ text: aba.titulo.toUpperCase(), fontSize: 12, bold: true, alignment: 'center', color: '#111111', margin: [0, 14, 0, 6], pageBreak: ai ? 'before' : undefined });
+                (aba.notas || []).forEach(n => content.push({
+                    table: { widths: ['*'], body: [[{ text: n, bold: true, fontSize: 9, alignment: 'center', color: /brunch|kids/i.test(n) ? AZ : (/upgrade/i.test(n) ? '#cc0000' : '#111111'), fillColor: '#ffff00', margin: [0, 3, 0, 3] }]] },
+                    layout: 'noBorders', margin: [0, 2, 0, 4]
+                }));
+                let sec = null;
+                aba.unidades.forEach(u => {
+                    if (u.secao && u.secao !== sec && _norm(u.secao) !== _norm(aba.titulo)) {
+                        sec = u.secao;
+                        content.push({ text: u.secao, fontSize: 11, bold: true, color: '#111111', margin: [0, 8, 0, 0] }, linha(0.5, '#cccccc'));
+                    }
+                    if (u.tipo === 'kv') {
+                        content.push({ text: [{ text: _fmtRotulo(u.r) + ' ', bold: true, color: '#111111' }, { text: u.v, bold: true, color: AZ }], margin: [0, 0, 0, 3] });
+                    } else if (u.tipo === 'lista') {
+                        content.push({ text: _fmtRotulo(u.q), bold: true, color: '#111111', margin: [0, 2, 0, 1] });
+                        content.push({ ul: u.itens.map(t => ({ text: t, bold: true, color: AZ })), margin: [10, 0, 0, 4] });
+                    } else if (u.tipo === 'tabela') {
+                        if (u.legenda) content.push({ text: _fmtRotulo(u.legenda), bold: true, margin: [0, 2, 0, 2] });
+                        const cab = u.cab.map(c => ({ text: c, bold: true, italics: true, fontSize: 9, color: AZ, fillColor: '#f0f0f0' }));
+                        content.push({
+                            table: { headerRows: 1, widths: u.cab.map(() => '*'), body: [cab].concat(u.linhas.map(l => l.map(c => ({ text: c, fontSize: 9 })))) },
+                            layout: { hLineColor: () => '#111111', vLineColor: () => '#111111', hLineWidth: () => 0.7, vLineWidth: () => 0.7 },
+                            margin: [0, 0, 0, 6]
+                        });
+                    }
+                });
+            });
+            return {
+                pageSize: 'A4', pageMargins: [35, 30, 35, 40], content,
+                defaultStyle: { fontSize: 10, color: '#333333' },
+                footer: (atual, total) => ({ text: casalNome + '  —  página ' + atual + ' de ' + total, alignment: 'center', fontSize: 8, color: '#999999', margin: [0, 12, 0, 0] })
+            };
+        }
+
+        async function gerarPDFModeloOficial() {
+            if (!(await salvarRespostasSupabase(true)) && !confirm('Não foi possível salvar agora. Gerar o PDF mesmo assim?')) return;
+            pdfMake.createPdf(montarDocumentoPDF()).download('Ficha_Escolhas_' + casalNome.replace(/\s+/g, '_') + '.pdf');
         }
     </script>
 </body>
