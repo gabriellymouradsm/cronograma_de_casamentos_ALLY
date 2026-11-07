@@ -297,8 +297,10 @@
         <div id="view-list" class="card-container text-white p-6 sm:p-8 hidden transition-all duration-300">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
                 <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center sm:text-left text-[#faf7f2]">Lista de Convidados</h2>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-end">
                     <span id="guest-count-badge" class="bg-[#523d34] text-[#f7f4ef] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246]">0 convidados</span>
+                    <!-- NOVO BADGE DE PRESENTES ADICIONADO AQUI -->
+                    <span id="guest-present-badge" class="bg-emerald-950 text-emerald-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-700">0 presentes</span>
                     <button id="btn-clear-all" onclick="clearAllGuests()" title="Apagar toda a lista" class="bg-[#523d34] hover:bg-red-900/60 text-red-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246] transition"><i class="fa-solid fa-trash-can mr-1"></i> Limpar Lista</button>
                 </div>
             </div>
@@ -567,6 +569,7 @@
             const emptyState = document.getElementById('empty-state');
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
             const countBadge = document.getElementById('guest-count-badge');
+            const presentBadge = document.getElementById('guest-present-badge');
 
             container.innerHTML = '';
             const filteredGuests = guests.filter(g => {
@@ -574,7 +577,10 @@
                 return fullName.includes(searchVal) || (g.connection || '').toLowerCase().includes(searchVal) || (g.table_number || '').toString().toLowerCase().includes(searchVal);
             });
 
+            // ATUALIZAÇÃO DOS CONTADORES (TOTAL E PRESENTES)
+            const presentCount = guests.filter(g => g.present).length;
             countBadge.innerText = `${guests.length} ${guests.length === 1 ? 'convidado' : 'convidados'}`;
+            presentBadge.innerText = `${presentCount} ${presentCount === 1 ? 'presente' : 'presentes'}`;
 
             if (filteredGuests.length === 0) {
                 emptyState.classList.remove('hidden');
