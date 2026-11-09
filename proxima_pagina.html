@@ -549,7 +549,7 @@
                 const { data } = await _supabase
                     .from('casal_config')
                     .select('local_casamento')
-                    .eq('nome', casalAtivo)
+                    .ilike('nome', casalAtivo) // Usando ilike por segurança
                     .maybeSingle();
 
                 if (data && data.local_casamento) {
@@ -585,13 +585,20 @@
             }
         }
 
+        // TORNANDO A BUSCA RESILIENTE A MAIÚSCULAS/MINÚSCULAS COM ILIKE
         async function carregarDadosCasal() {
             const casalAtivo = localStorage.getItem('casal_ativo');
+
+            if (!casalAtivo) {
+                alert("Nenhum casal selecionado. Voltando ao início.");
+                window.location.href = "index.html";
+                return;
+            }
 
             const { data, error } = await _supabase
                 .from('casal_config')
                 .select('*')
-                .eq('nome', casalAtivo)
+                .ilike('nome', casalAtivo) // O ILIKE não liga se tiver diferente (VINICIUS, vinicius, Vinicius)
                 .maybeSingle();
 
             if (!error && data) {
@@ -607,7 +614,7 @@
                 atualizarCronometro();
                 setInterval(atualizarCronometro, 60000);
             } else {
-                alert("Nenhum dado encontrado para este casal. Voltando ao início.");
+                alert("Nenhum dado encontrado para este casal. Verifique se o nome foi digitado corretamente. Voltando ao login.");
                 window.location.href = "index.html";
             }
         }
@@ -660,68 +667,58 @@
             document.getElementById('modalPDF').style.display = 'none';
         }
 
-        // Função inteligente: Monta o link do WhatsApp apontando corretamente para o formulário do Juruá ou Vezzane
-async function enviarFormularioWhatsApp() {
-    const casalAtivo = localStorage.getItem('casal_ativo') || 'Casal';
-    
-    // CORREÇÃO 1: Buscar a informação do local no localStorage primeiro!
-    // (Ajuste 'local_casamento' se você usou outro nome para salvar no seu código de registro)
-    const localSalvo = localStorage.getItem('local_casamento') || localStorage.getItem('local_ativo'); 
-    
-    let localCode = 'vezzane';
-    let nomeFormulario = 'formulario_casal.html'; // Padrão Vezzane
+        async function enviarFormularioWhatsApp() {
+            const casalAtivo = localStorage.getItem('casal_ativo') || 'Casal';
+            const localDoCache = localStorage.getItem('local_casamento'); 
+            
+            let localCode = 'vezzane';
+            let nomeFormulario = 'formulario_casal.html'; 
 
-    try {
-        let locText = "";
+            try {
+                let locText = "";
 
-        // Verifica primeiro no localStorage (mais rápido)
-        if (localSalvo) {
-            locText = localSalvo.toLowerCase();
-        } else {
-            // Se não encontrar no localStorage, faz a busca no Supabase
-            const { data, error } = await _supabase
-                .from('casal_config')
-                .select('local_casamento')
-                .eq('nome', casalAtivo)
-                .maybeSingle();
+                if (localDoCache) {
+                    locText = localDoCache.toLowerCase();
+                } else {
+                    const { data, error } = await _supabase
+                        .from('casal_config')
+                        .select('local_casamento')
+                        .ilike('nome', casalAtivo)
+                        .maybeSingle();
 
-            if (!error && data && data.local_casamento) {
-                locText = data.local_casamento.toLowerCase();
+                    if (!error && data && data.local_casamento) {
+                        locText = data.local_casamento.toLowerCase();
+                    }
+                }
+
+                if (locText.includes('jurua') || locText.includes('juruá') || locText.includes('mirante')) {
+                    localCode = 'jurua';
+                    nomeFormulario = 'formulario_jurua.html'; 
+                }
+                
+                const textoEspaco = localCode === 'jurua' ? 'Mirante Juruá' : 'Villa Vezzane';
+                
+                const LINK_HOSPEDAGEM = "https://gabriellymouradsm.github.io/cronograma_de_casamentos_ALLY"; 
+                let linkForm = "";
+
+                if (window.location.protocol === 'file:') {
+                    linkForm = `${LINK_HOSPEDAGEM}/${nomeFormulario}?casal=${encodeURIComponent(casalAtivo)}&local=${localCode}`;
+                } else {
+                    const origin = window.location.origin;
+                    const pathName = window.location.pathname;
+                    const directory = pathName.substring(0, pathName.lastIndexOf('/'));
+                    linkForm = `${origin}${directory}/${nomeFormulario}?casal=${encodeURIComponent(casalAtivo)}&local=${localCode}`;
+                }
+                
+                const msg = `Olá, ${casalAtivo}! ✨\n\nSegue o link do seu Formulário de Detalhes do Casamento (${textoEspaco}):\n\n${linkForm}\n\nPor favor, preencham com carinho!`;
+                
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+                
+            } catch (error) {
+                console.error("Erro ao gerar o link do formulário:", error);
+                alert("Ocorreu um erro ao tentar gerar o link do WhatsApp. Tente novamente.");
             }
         }
-
-        // CORREÇÃO 2: Verificação centralizada do texto encontrado
-        if (locText.includes('jurua') || locText.includes('juruá') || locText.includes('mirante')) {
-            localCode = 'jurua';
-            // ATENÇÃO: Verifique se o nome do arquivo na sua pasta é esse mesmo! 
-            // Se for formulario_jurua_3.html, troque aqui embaixo:
-            nomeFormulario = 'formulario_jurua.html'; 
-        }
-        
-        const textoEspaco = localCode === 'jurua' ? 'Mirante Juruá' : 'Villa Vezzane';
-        
-        // Removi a barra final "/" do link para evitar barras duplas na URL
-        const LINK_HOSPEDAGEM = "https://gabriellymouradsm.github.io/cronograma_de_casamentos_ALLY"; 
-        let linkForm = "";
-
-        if (window.location.protocol === 'file:') {
-            linkForm = `${LINK_HOSPEDAGEM}/${nomeFormulario}?casal=${encodeURIComponent(casalAtivo)}&local=${localCode}`;
-        } else {
-            const origin = window.location.origin;
-            const pathName = window.location.pathname;
-            const directory = pathName.substring(0, pathName.lastIndexOf('/'));
-            linkForm = `${origin}${directory}/${nomeFormulario}?casal=${encodeURIComponent(casalAtivo)}&local=${localCode}`;
-        }
-        
-        const msg = `Olá, ${casalAtivo}! ✨\n\nSegue o link do seu Formulário de Detalhes do Casamento (${textoEspaco}):\n\n${linkForm}\n\nPor favor, preencham com carinho!`;
-        
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
-        
-    } catch (error) {
-        console.error("Erro ao gerar o link do formulário:", error);
-        alert("Ocorreu um erro ao tentar gerar o link do WhatsApp. Tente novamente.");
-    }
-}
 
         async function gerarPDFPersonalizado() {
             fecharModalPDF();
