@@ -238,7 +238,7 @@
 
     <main class="w-full max-w-md md:max-w-xl flex-1 flex flex-col justify-center">
 
-        <!-- VIEW 1 -->
+        <!-- VIEW 1: Formulário de Adição (Oculto para Equipe de Salão) -->
         <div id="view-form" class="card-container text-white p-6 sm:p-8 transition-all duration-300">
             <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center mb-6 tracking-wide text-[#faf7f2]">
                 Formulário de Convidados
@@ -289,17 +289,16 @@
             </form>
             
             <div class="mt-4 text-center">
-                <a href="proxima_pagina.html" class="text-xs text-[#d1c4bc] underline hover:text-white">← Voltar ao Painel</a>
+                <button type="button" onclick="voltarAoPainelCorreto()" class="text-xs text-[#d1c4bc] underline hover:text-white bg-transparent border-none cursor-pointer">← Voltar ao Painel</button>
             </div>
         </div>
 
-        <!-- VIEW 2 -->
+        <!-- VIEW 2: Lista de Convidados -->
         <div id="view-list" class="card-container text-white p-6 sm:p-8 hidden transition-all duration-300">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
                 <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-center sm:text-left text-[#faf7f2]">Lista de Convidados</h2>
                 <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-end">
                     <span id="guest-count-badge" class="bg-[#523d34] text-[#f7f4ef] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246]">0 convidados</span>
-                    <!-- NOVO BADGE DE PRESENTES ADICIONADO AQUI -->
                     <span id="guest-present-badge" class="bg-emerald-950 text-emerald-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-700">0 presentes</span>
                     <button id="btn-clear-all" onclick="clearAllGuests()" title="Apagar toda a lista" class="bg-[#523d34] hover:bg-red-900/60 text-red-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-[#6d5246] transition"><i class="fa-solid fa-trash-can mr-1"></i> Limpar Lista</button>
                 </div>
@@ -324,7 +323,7 @@
                 <button type="button" id="btn-goto-form" onclick="switchView('form')" class="w-full bg-[#f7f4ef] hover:bg-white text-[#382a24] font-bold py-3 px-4 rounded-xl transition shadow-md uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2">
                     <i class="fa-solid fa-plus text-xs"></i> Adicionar / Importar Mais
                 </button>
-                <a href="proxima_pagina.html" class="text-center text-xs text-[#d1c4bc] underline hover:text-white mt-2">← Voltar ao Painel</a>
+                <button type="button" onclick="voltarAoPainelCorreto()" class="text-center text-xs text-[#d1c4bc] underline hover:text-white mt-2 bg-transparent border-none cursor-pointer mx-auto">← Voltar ao Painel</button>
             </div>
         </div>
 
@@ -373,24 +372,26 @@
 
     <script>
         let guests = [];
-        let extras = {}; // pagantes / não pagantes vindos do formulário do casal
+        let extras = {}; 
         const userRole = localStorage.getItem('user_role');
         const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
         const nomeDe = g => `${g.first_name} ${g.last_name || ''}`.trim();
         const chaveNome = n => (n || '').trim().toLowerCase();
+        
+        const isSalaoTeam = (userRole === 'maitre' || userRole === 'sub_maitre' || userRole === 'garcom');
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Lista já aberta; a assessoria só marca presença
             document.getElementById('view-form').classList.add('hidden');
             document.getElementById('view-list').classList.remove('hidden');
-            if (userRole === 'assistant') {
+
+            if (isSalaoTeam || userRole === 'assistant') {
                 document.getElementById('btn-clear-all').style.display = 'none';
                 document.getElementById('btn-goto-form').style.display = 'none';
+                document.getElementById('btn-export').style.display = 'none';
             }
             loadGuestsFromSupabase();
         });
 
-        /* ---- Ponte com o formulário do casal (formulario_casal_respostas) ---- */
         async function mutarFormRow(fn) {
             const { data } = await _supabase.from('formulario_casal_respostas').select('respostas').eq('casal_nome', casalAtivo).maybeSingle();
             if (!data || !data.respostas) return;
@@ -435,11 +436,12 @@
         }
 
         function triggerExcelClick() {
+            if (isSalaoTeam) return;
             document.getElementById('excel-input').click();
         }
 
-        /* ---- Exportar Excel ---- */
         function exportarExcel() {
+            if (isSalaoTeam) return;
             if (!guests.length) { showToast('Não há convidados para exportar.'); return; }
             const linhas = guests.map(g => {
                 const e = extras[chaveNome(nomeDe(g))] || {};
@@ -461,7 +463,7 @@
         }
 
         function switchView(viewName) {
-            if (userRole === 'assistant' && viewName === 'form') return;
+            if (isSalaoTeam || userRole === 'assistant') return;
             const formView = document.getElementById('view-form');
             const listView = document.getElementById('view-list');
 
@@ -477,6 +479,7 @@
 
         async function handleAddGuest(e) {
             e.preventDefault();
+            if (isSalaoTeam) return;
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const connection = document.getElementById('connection').value.trim();
@@ -512,6 +515,7 @@
         }
 
         function handleExcelUpload(event) {
+            if (isSalaoTeam) return;
             const file = event.target.files[0];
             if (!file) return;
 
@@ -577,7 +581,6 @@
                 return fullName.includes(searchVal) || (g.connection || '').toLowerCase().includes(searchVal) || (g.table_number || '').toString().toLowerCase().includes(searchVal);
             });
 
-            // ATUALIZAÇÃO DOS CONTADORES (TOTAL E PRESENTES)
             const presentCount = guests.filter(g => g.present).length;
             countBadge.innerText = `${guests.length} ${guests.length === 1 ? 'convidado' : 'convidados'}`;
             presentBadge.innerText = `${presentCount} ${presentCount === 1 ? 'presente' : 'presentes'}`;
@@ -596,13 +599,29 @@
                 const nomeCompleto = nomeDe(guest);
                 const ex = extras[chaveNome(nomeCompleto)];
                 const nomeJS = nomeCompleto.replace(/'/g, "\\'");
-                let actionButtonsHTML = `
-                    <button onclick="togglePresence(${guest.id}, ${guest.present})" class="${guest.present ? 'bg-emerald-600 text-white' : 'bg-[#382a24] text-[#d1c4bc] hover:bg-[#523d34]'} p-2 rounded-lg border border-[#6d5246] transition text-xs font-semibold px-3 flex items-center gap-1.5">
-                        <i class="fa-solid ${guest.present ? 'fa-check-to-slot' : 'fa-square'}"></i> ${guest.present ? 'Presente' : 'Marcar'}
-                    </button>
-                `;
+                
+                let actionButtonsHTML = '';
 
-                if (userRole !== 'assistant') {
+                // Se NÃO for equipe de salão, mostra o botão de marcar/desmarcar
+                if (!isSalaoTeam) {
+                    actionButtonsHTML += `
+                        <button onclick="togglePresence(${guest.id}, ${guest.present})" class="${guest.present ? 'bg-emerald-600 text-white' : 'bg-[#382a24] text-[#d1c4bc] hover:bg-[#523d34]'} p-2 rounded-lg border border-[#6d5246] transition text-xs font-semibold px-3 flex items-center gap-1.5">
+                            <i class="fa-solid ${guest.present ? 'fa-check-to-slot' : 'fa-square'}"></i> ${guest.present ? 'Presente' : 'Marcar'}
+                        </button>
+                    `;
+                } else {
+                    // Para a equipe de salão, se estiver presente exibe o selo verde estático (sem botão/clique)
+                    if (guest.present) {
+                        actionButtonsHTML += `
+                            <span class="bg-emerald-950 text-emerald-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-700 flex items-center gap-1.5">
+                                <i class="fa-solid fa-check"></i> Presente
+                            </span>
+                        `;
+                    }
+                }
+
+                // Botões de editar e excluir (Ocultos se for equipe de salão ou assistente)
+                if (!isSalaoTeam && userRole !== 'assistant') {
                     actionButtonsHTML += `
                         <button onclick="openEditModal(${guest.id})" title="Editar" class="text-[#d1c4bc] hover:text-white p-2 rounded-lg hover:bg-[#382a24] transition"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button onclick="confirmDeleteGuest(${guest.id}, '${nomeJS}')" title="Remover" class="text-[#c28d88] hover:text-red-400 p-2 rounded-lg hover:bg-[#382a24] transition"><i class="fa-regular fa-trash-can"></i></button>
@@ -614,7 +633,7 @@
                         <div class="flex items-center gap-2 flex-wrap">
                             <h3 class="font-serif-title font-bold text-lg text-[#faf7f2]">${nomeCompleto}</h3>
                             <span class="bg-[#382a24] text-[#d4af37] text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-[#6d5246]">Mesa ${guest.table_number}</span>
-                            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full border ${guest.present ? 'bg-emerald-950 text-emerald-300 border-emerald-700' : 'bg-[#382a24] text-[#a0958e] border-[#5d463b]'}">${guest.present ? '✓ Presente' : 'Ausente'}</span>
+                            ${!isSalaoTeam ? `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full border ${guest.present ? 'bg-emerald-950 text-emerald-300 border-emerald-700' : 'bg-[#382a24] text-[#a0958e] border-[#5d463b]'}">${guest.present ? '✓ Presente' : 'Ausente'}</span>` : ''}
                         </div>
                         <p class="text-xs text-[#d1c4bc] mt-1"><i class="fa-solid fa-heart text-[10px] mr-1 text-[#caa28b]"></i> ${guest.connection}</p>
                         ${ex ? `<p class="text-[11px] text-[#a0958e] mt-0.5">Pagantes: ${ex.pagantes || 0} · Não pagantes: ${ex.nao_pagantes || 0}</p>` : ''}
@@ -627,7 +646,6 @@
 
         async function togglePresence(id, currentStatus) {
             if (currentStatus) {
-                // Se já está presente e o usuário quer desmarcar, pede confirmação
                 const guest = guests.find(g => g.id === id);
                 const nome = guest ? nomeDe(guest) : 'convidado';
                 showConfirmModal(`Deseja realmente desmarcar a presença de "${nome}"?`, "Desmarcar Presença", async () => {
@@ -636,7 +654,6 @@
                     showToast('Presença desmarcada.');
                 });
             } else {
-                // Se está ausente, marca presença diretamente sem confirmação
                 await _supabase.from('convidados').update({ present: true }).eq('id', id);
                 loadGuestsFromSupabase();
                 showToast('Presença marcada!');
@@ -644,7 +661,7 @@
         }
 
         function openEditModal(id) {
-            if (userRole === 'assistant') return;
+            if (isSalaoTeam || userRole === 'assistant') return;
             const guest = guests.find(g => g.id === id);
             if (!guest) return;
             const ex = extras[chaveNome(nomeDe(guest))] || {};
@@ -661,7 +678,7 @@
 
         async function saveEditedGuest(e) {
             e.preventDefault();
-            if (userRole === 'assistant') return;
+            if (isSalaoTeam || userRole === 'assistant') return;
             const id = Number(document.getElementById('edit-id').value);
             const antigo = guests.find(g => g.id === id);
             const nomeAntigo = chaveNome(antigo ? nomeDe(antigo) : '');
@@ -678,7 +695,6 @@
                 connection: novo.classificacao,
                 table_number: novo.mesa
             }).eq('id', id);
-            // espelha a edição no formulário do casal (mantém tudo igual nos dois lugares)
             await mutarFormRow(arr => {
                 let c = arr.find(x => chaveNome(x.nome) === nomeAntigo);
                 if (!c) { c = {}; arr.push(c); }
@@ -715,7 +731,7 @@
         }
 
         async function confirmDeleteGuest(id, nome) {
-            if (userRole === 'assistant') return;
+            if (isSalaoTeam || userRole === 'assistant') return;
             showConfirmModal(`Deseja realmente remover "${nome}"?`, "Remover Convidado", async () => {
                 await _supabase.from('convidados').delete().eq('id', id);
                 await mutarFormRow(arr => arr.splice(0, arr.length, ...arr.filter(x => chaveNome(x.nome) !== chaveNome(nome))));
@@ -725,13 +741,21 @@
         }
 
         async function clearAllGuests() {
-            if (userRole === 'assistant') return;
+            if (isSalaoTeam || userRole === 'assistant') return;
             showConfirmModal("Deseja realmente apagar toda a lista deste casal?", "Limpar Lista", async () => {
                 await _supabase.from('convidados').delete().eq('casal_nome', casalAtivo);
                 await mutarFormRow(arr => arr.splice(0));
                 loadGuestsFromSupabase();
                 showToast('Lista limpa.');
             });
+        }
+
+        function voltarAoPainelCorreto() {
+            if (isSalaoTeam) {
+                window.location.href = "proxima_pagina_garcom.html";
+            } else {
+                window.location.href = "proxima_pagina.html";
+            }
         }
 
         function showToast(msg) {
@@ -741,16 +765,5 @@
             setTimeout(() => toast.classList.add('hidden'), 3000);
         }
     </script>
-
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then(reg => console.log('Service Worker registado com sucesso:', reg.scope))
-                .catch(err => console.log('Falha ao registar o Service Worker:', err));
-        });
-    }
-</script>
-
 </body>
 </html>
