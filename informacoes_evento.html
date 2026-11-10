@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ally - Informações do Evento</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#382a24">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-cream: #fbf8f3;
+            --card-brown: #382a24;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #2c221e;
+        }
+
+        .card-container {
+            background-color: var(--card-brown);
+            box-shadow: 0 20px 40px rgba(56, 42, 36, 0.18);
+            border-radius: 28px;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .info-section-card {
+            background-color: #47362e;
+            border: 1px solid #5d463b;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+
+        .info-section-card:hover {
+            transform: translateY(-2px);
+            border-color: #d4af37;
+        }
+
+        /* =========================================
+           DESIGN IDÊNTICO AO PDF
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(82, 73, 68, 0.95);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 10px;
+        }
+
+        .modal-pdf {
+            background-color: #ffffff;
+            color: #000000;
+            border-radius: 4px; 
+            width: 100%;
+            max-width: 850px;
+            height: 95vh;
+            overflow-y: auto;
+            padding: 50px 60px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            font-family: Georgia, 'Times New Roman', Times, serif; 
+            position: relative;
+        }
+
+        .modal-pdf::-webkit-scrollbar { width: 10px; }
+        .modal-pdf::-webkit-scrollbar-track { background: #f1f1f1; }
+        .modal-pdf::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .pdf-header h1 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #382a24;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .pdf-header p {
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 2px 0;
+        }
+
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            font-size: 0.95rem;
+            row-gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .pdf-grid strong {
+            font-weight: bold;
+        }
+
+        .dado-azul {
+            color: #0055a4;
+            font-weight: bold;
+        }
+
+        .checklist-title {
+            color: #0055a4;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .faixa-amarela {
+            background-color: #ffff00;
+            color: #000;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 6px;
+            margin-bottom: 20px;
+        }
+
+        .pdf-section {
+            margin-bottom: 20px;
+        }
+
+        .pdf-section h3 {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .pdf-section h4 {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-style: italic;
+            text-decoration: underline;
+        }
+
+        .pdf-list {
+            list-style-type: disc;
+            padding-left: 25px;
+            font-size: 0.95rem;
+        }
+
+        .pdf-list li {
+            margin-bottom: 4px;
+        }
+
+        .pdf-list-dinamica li {
+            color: #0055a4;
+            font-weight: bold;
+        }
+
+        .btn-fechar-pdf {
+            display: block;
+            margin: 40px auto 0;
+            background-color: #382a24;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 20px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-10">
+
+    <header class="brand-header">
+        <svg style="width:48px;height:48px;margin:0 auto 6px;display:block;" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
+        <h1 style="font-family: Georgia, serif; font-size: 2.2rem; font-weight: bold; color: #382a23; margin: 0;">Ally</h1>
+        <p style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: #725a4d; margin-top: 6px;">PLANEJAMENTO DE CASAMENTO</p>
+    </header>
+
+    <main class="w-full max-w-md md:max-w-xl flex-1 flex flex-col justify-center">
+        <div class="card-container text-white p-6 sm:p-8">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-2">
+                <h2 class="text-2xl font-serif-title font-bold text-[#faf7f2]">Informações do Evento</h2>
+                <span id="badge-casal" class="bg-[#5d463b] text-[#d4af37] text-xs font-bold px-3 py-1 rounded-full border border-[#6d5246]">Carregando...</span>
+            </div>
+
+            <div id="conteudo-informacoes" class="max-h-[380px] overflow-y-auto pr-1 space-y-3">
+                <div class="text-center py-10 text-[#d1c4bc]">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
+                    <p class="text-sm">Buscando informações no banco de dados...</p>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-[#5d463b] text-center">
+                <button type="button" onclick="voltarAoPainel()" class="text-xs text-[#d1c4bc] underline hover:text-white bg-transparent border-none cursor-pointer">← Voltar ao Painel</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- O MODAL COM O DESIGN EXATO DO PDF -->
+    <div class="modal-overlay" id="modalRelatorio">
+        <div class="modal-pdf">
+            
+            <div class="pdf-header">
+                <h1 id="pdf-buffet-nome">MIRANTE JURUÁ <span style="font-size: 0.6rem; vertical-align: middle;">EVENTOS</span></h1>
+                <p>MENU: <span id="pdf-menu-nome" class="dado-azul">VENEZA</span></p>
+                <p>INFORMAÇÕES GERAIS</p>
+            </div>
+
+            <!-- CABEÇALHO MAPEADO DINAMICAMENTE -->
+            <div class="pdf-grid">
+                <div><strong>Casal:</strong> <span id="pdf-casal" class="dado-azul"></span></div>
+                <div><strong>Data:</strong> <span id="pdf-data" class="dado-azul"></span></div>
+                <div><strong>Hora:</strong> <span id="pdf-hora" class="dado-azul"></span></div>
+                <div><strong>Quantidade de<br>convidados:</strong> <span id="pdf-convidados" class="dado-azul"></span></div>
+                <div><strong>Tempo de<br>evento:</strong> <span id="pdf-tempo" class="dado-azul"></span></div>
+                <div></div>
+            </div>
+
+            <div class="checklist-title">CheckList (Preencher as informações em Azul)</div>
+
+            <div class="faixa-amarela">
+                Brunch para até 14 acompanhantes - duração de 1h30 (enquanto houver disponibilidade)
+            </div>
+
+            <!-- SESSÕES DE ESCOLHAS DISTRIBUÍDAS NO LAYOUT DO PDF -->
+            <div class="pdf-section">
+                <h3>Coquetéis</h3>
+                <h4>1. Coquetel de Boas Vindas (Antes da Cerimônia)</h4>
+                <ul class="pdf-list">
+                    <li>Caprese no palito</li>
+                    <li>Quiche de alho poró</li>
+                    <li>Crostini de pera e gorgonzola</li>
+                    <li>Bruschetta de tomate, manjericão e muçarela</li>
+                </ul>
+
+                <h4>2. Coquetel (Após a Cerimônia / 30 Minutos) – (Escolher 3 opções):</h4>
+                <ul class="pdf-list pdf-list-dinamica" id="pdf-coquetel-pos"></ul>
+                <ul class="pdf-list">
+                    <li>Esfiha de carne, de frango e pão de batata com requeijão</li>
+                </ul>
+
+                <h4>3. Coquetel de pista (última hora de festa)</h4>
+                <ul class="pdf-list">
+                    <li>Minipastéis de carne, muçarela e frango requeijão</li>
+                    <li>Minichurros de chocolate com doce de leite</li>
+                </ul>
+            </div>
+
+            <div class="pdf-section">
+                <h3>Jantar</h3>
+                <h4>1. Prato Principal (Escolher 2 opções):</h4>
+                <ul class="pdf-list pdf-list-dinamica" id="pdf-prato-principal"></ul>
+                
+                <p class="mt-2"><strong>Obs Prato Principal:</strong> <span class="dado-azul">________________________________________________</span></p>
+
+                <h4>2. Acompanhamentos: (Inclusos)</h4>
+                <ul class="pdf-list">
+                    <li>Arroz com alho poró e amêndoas laminadas</li>
+                    <li>Arroz Branco</li>
+                    <li>Batata sautê</li>
+                </ul>
+
+                <h4>3. Massas:</h4>
+                <p><strong>Opção 1 (Escolher 1 opção):</strong> <span id="pdf-massa-1" class="dado-azul ml-1"></span></p>
+                <p><strong>Molho para opção selecionada acima:</strong> <span id="pdf-molho-1" class="dado-azul ml-1"></span></p>
+                
+                <p class="mt-3"><strong>Opção 2 (Escolher 1 opção):</strong> <span id="pdf-massa-2" class="dado-azul ml-1"></span></p>
+                <p><strong>Molho para opção selecionada acima:</strong> <span id="pdf-molho-2" class="dado-azul ml-1"></span></p>
+
+                <h4>4. Saladas (Inclusas):</h4>
+                <ul class="pdf-list">
+                    <li>Ratatouille</li>
+                    <li>Cobb</li>
+                    <li>Tropical</li>
+                </ul>
+            </div>
+
+            <div class="pdf-section">
+                <h3>Confeitaria</h3>
+                <h4>1. Bolo (Escolher 1 opção):</h4>
+                <p><span id="pdf-bolo" class="dado-azul"></span></p>
+
+                <h4>2. Doces (Escolher 4 opções):</h4>
+                <ul class="pdf-list pdf-list-dinamica" id="pdf-doces"></ul>
+
+                <h4>3. Mimo de Despedida:</h4>
+                <div class="faixa-amarela">
+                    Mini Donuts recheados de Doce de Leite (1x por convidado) — Conferir no contrato
+                </div>
+            </div>
+
+            <div class="pdf-section">
+                <h3>Encerramento</h3>
+                <ul class="pdf-list">
+                    <li>Café</li>
+                    <li>Chá-verde</li>
+                    <li>Petit four</li>
+                </ul>
+                <div class="faixa-amarela">
+                    Marshmallow coberto com chocolate — Conferir no contrato
+                </div>
+            </div>
+
+            <div class="pdf-section">
+                <h3>Bebidas</h3>
+                <h4>1. Bebidas (Inclusas):</h4>
+                <ul class="pdf-list">
+                    <li>Refrigerantes (1ª linha)</li>
+                    <li>Água sem gás</li>
+                    <li>Cerveja Brahma Duplo Malte à vontade. Poderá ser servida? <span id="pdf-cerveja" class="dado-azul ml-1"></span></li>
+                </ul>
+
+                <h4>2. Suco Natural de Fruta (Escolher 2 opções):</h4>
+                <ul class="pdf-list pdf-list-dinamica" id="pdf-sucos"></ul>
+            </div>
+
+            <p style="font-size: 0.85rem; font-weight: bold; text-align: justify; margin-top: 30px;">
+                OBSERVAÇÃO IMPORTANTE: Conforme contrato, caso haja sobra de alimentos ou bebidas, nem os convidados, nem mesmo o CONTRATANTE, poderão levá-los. Os arranjos específicos da cerimônia, da mesa do bolo dos noivos, mesa do buffet, mesa do café de encerramento, bem como os arranjos das mesas dos convidados, também não poderão ser levados.
+            </p>
+            <p style="font-size: 0.85rem; margin-top: 15px;">
+                Em caráter de confirmação e concordância, por parte dos noivos, com todos os itens acima e combinados nesse documento, assinam:
+            </p>
+
+            <button type="button" onclick="fecharModalRelatorio()" class="btn-fechar-pdf">FECHAR DOCUMENTO</button>
+        </div>
+    </div>
+
+    <script>
+        let dadosCompletosEvento = null;
+        const casalAtivo = localStorage.getItem('casal_ativo') || 'Vinicius e Camila';
+        const userRole = localStorage.getItem('user_role');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('badge-casal').innerText = casalAtivo;
+            carregarInformacoesDoEvento();
+        });
+
+        async function carregarInformacoesDoEvento() {
+            const container = document.getElementById('conteudo-informacoes');
+
+            try {
+                const { data: formData, error } = await _supabase
+                    .from('formulario_casal_respostas')
+                    .select('*')
+                    .ilike('casal_nome', `%${casalAtivo}%`)
+                    .maybeSingle();
+
+                if (error || !formData) {
+                    container.innerHTML = `
+                        <div class="text-center py-8 text-[#d1c4bc]">
+                            <i class="fa-regular fa-folder-open text-3xl mb-2 opacity-60"></i>
+                            <p class="text-sm">Nenhum formulário salvo encontrado para "${casalAtivo}".</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                dadosCompletosEvento = formData.respostas || formData;
+
+                container.innerHTML = `
+                    <div class="info-section-card" onclick="abrirModalRelatorio()">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-serif-title font-bold text-base text-[#d4af37] mb-1"><i class="fa-solid fa-file-pdf mr-2"></i> Relatório PDF do Evento</h3>
+                                <p class="text-xs text-[#f0e8e0] leading-relaxed">Visualizar formulário preenchido nos moldes do contrato</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[#d4af37] text-sm"></i>
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                console.error("Erro:", err);
+                container.innerHTML = `<div class="text-center py-8 text-red-300 text-xs">Erro ao conectar com o banco.</div>`;
+            }
+        }
+
+        // Função para encontrar valores no JSON independentemente do nome exato da propriedade
+        function buscarValorFlexivel(obj, palavrasChave) {
+            let valorEncontrado = null;
+            function varrer(o) {
+                if (typeof o === 'object' && o !== null) {
+                    for (const key in o) {
+                        const chaveLimpa = key.toLowerCase().replace(/_/g, ' ');
+                        if (palavrasChave.some(pk => chaveLimpa.includes(pk))) {
+                            valorEncontrado = o[key];
+                            return;
+                        }
+                        if (typeof o[key] === 'object') varrer(o[key]);
+                    }
+                }
+            }
+            varrer(obj);
+            return valorEncontrado;
+        }
+
+        // Função INTELIGENTE para classificar as seleções pelo número do ID (independente do nome do cardápio)
+        function classificarSelecoes(objSelecoes) {
+            const rotas = { coquetel: [], prato: [], massa1: [], molho1: [], massa2: [], molho2: [], bolo: [], doces: [], cerveja: [], suco: [] };
+            
+            if (!objSelecoes) return rotas;
+
+            function analisar(o) {
+                if (Array.isArray(o)) {
+                    o.forEach(analisar);
+                } else if (typeof o === 'object' && o !== null) {
+                    let keyStr = String(o.name || Object.keys(o)[0] || '');
+                    let valStr = String(o.value || Object.values(o)[0] || '');
+                    
+                    // Verifica qual variável contém o ID técnico (ex: cd_veneza_4, cd_paris_10, cd_algumacoisa_16)
+                    let idStr = keyStr.startsWith('cd_') ? keyStr : (valStr.startsWith('cd_') ? valStr : '');
+                    let nomePrato = keyStr.startsWith('cd_') ? valStr : keyStr;
+                    
+                    let strJunta = (keyStr + " " + valStr).toLowerCase();
+
+                    if (idStr) {
+                        // Extrai apenas o número final da string (ex: 'cd_qualquer_4' -> '4')
+                        let partes = idStr.split('_');
+                        let num = partes[partes.length - 1]; 
+
+                        if (num === '4') rotas.coquetel.push(nomePrato);
+                        else if (num === '10') rotas.prato.push(nomePrato);
+                        else if (num === '16') rotas.massa1.push(nomePrato);
+                        else if (num === '18') rotas.molho1.push(nomePrato);
+                        else if (num === '20') rotas.massa2.push(nomePrato);
+                        else if (num === '22') rotas.molho2.push(nomePrato);
+                        else if (num === '27') rotas.bolo.push(nomePrato);
+                        else if (num === '29') rotas.doces.push(nomePrato);
+                        else if (num === '38') rotas.cerveja.push(nomePrato);
+                        else if (num === '40') rotas.suco.push(nomePrato);
+                    } else {
+                        // Se não tiver 'cd_', busca por palavras-chave comuns de bebidas
+                        if (strJunta.includes('suco') || strJunta.includes('abacaxi') || strJunta.includes('limão') || strJunta.includes('acerola')) {
+                            rotas.suco.push(nomePrato);
+                        } else if (strJunta.includes('cerveja')) {
+                            rotas.cerveja.push(nomePrato);
+                        }
+                    }
+
+                    // Aprofunda a busca caso existam sub-objetos
+                    for(let k in o) { 
+                        if(typeof o[k] === 'object' && k !== 'name' && k !== 'value') {
+                            analisar(o[k]); 
+                        }
+                    }
+                }
+            }
+            analisar(objSelecoes);
+            return rotas;
+        }
+
+        function abrirModalRelatorio() {
+            if (!dadosCompletosEvento) return;
+
+            // 1. ATUALIZA NOME DO MENU E DO BUFFET (Dinâmico)
+            const nomeMenu = buscarValorFlexivel(dadosCompletosEvento, ['menu nome', 'cardapio', 'menu']) || 'VENEZA';
+            document.getElementById('pdf-menu-nome').innerText = String(nomeMenu).toUpperCase();
+
+            // 2. PREENCHE O CABEÇALHO DO CASAL
+            const nomeCasal = buscarValorFlexivel(dadosCompletosEvento, ['casal nome', 'nome do casal']) || casalAtivo;
+            const dataEvento = buscarValorFlexivel(dadosCompletosEvento, ['data casamento', 'data evento', 'data']) || '-';
+            const horaEvento = buscarValorFlexivel(dadosCompletosEvento, ['horario convite', 'hora evento', 'horario']) || '-';
+            const qtdConvidados = buscarValorFlexivel(dadosCompletosEvento, ['qtd convidados', 'quantidade']) || '-';
+            const tempoEvento = buscarValorFlexivel(dadosCompletosEvento, ['tempo evento', 'duracao']) || '-';
+
+            document.getElementById('pdf-casal').innerText = nomeCasal;
+            document.getElementById('pdf-data').innerText = dataEvento;
+            document.getElementById('pdf-hora').innerText = horaEvento;
+            document.getElementById('pdf-convidados').innerText = qtdConvidados;
+            document.getElementById('pdf-tempo').innerText = tempoEvento;
+
+            // 3. CLASSIFICA AS COMIDAS/BEBIDAS
+            const mapeamento = classificarSelecoes(dadosCompletosEvento.selecoes || dadosCompletosEvento);
+
+            // Coquetel
+            document.getElementById('pdf-coquetel-pos').innerHTML = mapeamento.coquetel.length > 0 
+                ? mapeamento.coquetel.map(item => `<li>${item}</li>`).join('') 
+                : '<li>(Nenhuma opção selecionada)</li>';
+
+            // Prato Principal
+            document.getElementById('pdf-prato-principal').innerHTML = mapeamento.prato.length > 0 
+                ? mapeamento.prato.map(item => `<li>${item}</li>`).join('') 
+                : '<li>(Nenhuma opção selecionada)</li>';
+
+            // Massas (Cria a bordinha azul simulando o preenchimento)
+            const styleCaixa = 'border border-[#0055a4] px-2 py-0.5 rounded ml-1';
+            
+            document.getElementById('pdf-massa-1').innerHTML = mapeamento.massa1[0] ? `<span class="${styleCaixa}">${mapeamento.massa1[0]}</span>` : '_____________';
+            document.getElementById('pdf-molho-1').innerHTML = mapeamento.molho1[0] ? `<span class="${styleCaixa}">${mapeamento.molho1[0]}</span>` : '_____________';
+            document.getElementById('pdf-massa-2').innerHTML = mapeamento.massa2[0] ? `<span class="${styleCaixa}">${mapeamento.massa2[0]}</span>` : '_____________';
+            document.getElementById('pdf-molho-2').innerHTML = mapeamento.molho2[0] ? `<span class="${styleCaixa}">${mapeamento.molho2[0]}</span>` : '_____________';
+
+            // Bolo
+            document.getElementById('pdf-bolo').innerHTML = mapeamento.bolo[0] ? `<span class="${styleCaixa}">${mapeamento.bolo[0]}</span>` : '_____________';
+
+            // Doces
+            document.getElementById('pdf-doces').innerHTML = mapeamento.doces.length > 0 
+                ? mapeamento.doces.map(item => `<li>${item}</li>`).join('') 
+                : '<li>(Nenhuma opção selecionada)</li>';
+
+            // Cerveja
+            document.getElementById('pdf-cerveja').innerHTML = mapeamento.cerveja[0] ? `<span class="${styleCaixa}">${mapeamento.cerveja[0]}</span>` : `<span class="${styleCaixa}">Não</span>`;
+
+            // Sucos
+            document.getElementById('pdf-sucos').innerHTML = mapeamento.suco.length > 0 
+                ? mapeamento.suco.map(item => `<li>${item}</li>`).join('') 
+                : '<li>(Nenhuma opção selecionada)</li>';
+
+            document.getElementById('modalRelatorio').style.display = 'flex';
+        }
+
+        function fecharModalRelatorio() {
+            document.getElementById('modalRelatorio').style.display = 'none';
+        }
+
+        function voltarAoPainel() {
+            if (userRole === 'maitre' || userRole === 'sub_maitre' || userRole === 'garcom') {
+                window.location.href = "proxima_pagina_garcom.html";
+            } else {
+                window.location.href = "proxima_pagina.html";
+            }
+        }
+    </script>
+</body>
+</html>
