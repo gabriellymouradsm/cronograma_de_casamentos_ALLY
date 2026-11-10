@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ally - Degustação</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b2a22">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #f7f5f2;
+            color: #2c221e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 15px;
+        }
+
+        .header-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .btn-voltar {
+            background-color: #3b2a22;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar:hover {
+            background-color: #4a352b;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem;
+            color: #382a23;
+        }
+
+        .btn-adicionar {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .btn-adicionar:hover {
+            transform: scale(1.05);
+        }
+
+        /* AGENDA / CRONOGRAMA */
+        .agenda-wrapper {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .agenda-item {
+            display: grid;
+            grid-template-columns: 85px 1fr;
+            align-items: stretch;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .agenda-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .agenda-horario {
+            background-color: #f0ece6;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #5d463b;
+            border-right: 1px solid #e4ddd3;
+        }
+
+        .agenda-conteudo {
+            padding: 16px 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* CORES DOS CARDS */
+        .bg-purple { background-color: #8b5cf6; }
+        .bg-red { background-color: #ef4444; }
+        .bg-blue { background-color: #3b82f6; }
+        .bg-orange { background-color: #f97316; }
+        .bg-dark { background-color: #27272a; }
+
+        .card-titulo {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-obs {
+            font-size: 12px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            word-break: break-word;
+        }
+
+        /* MODAIS */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background-color: #3b2a22;
+            border-radius: 24px;
+            padding: 25px;
+            width: 100%;
+            max-width: 450px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-card h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .campo-grupo {
+            margin-bottom: 15px;
+        }
+
+        .campo-label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #d1c4bc;
+            margin-bottom: 6px;
+        }
+
+        .custom-input {
+            width: 100%;
+            height: 44px;
+            background: #f7f4ef;
+            border: none;
+            border-radius: 10px;
+            padding: 0 14px;
+            color: #382a24;
+            font-weight: 500;
+            font-size: 14px;
+            outline: none;
+        }
+
+        textarea.custom-input {
+            height: 90px;
+            padding: 10px 14px;
+            resize: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-salvar {
+            flex: 1;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-cancelar {
+            flex: 1;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-editar-acao {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .btn-excluir {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .detalhe-info {
+            background: rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 15px;
+        }
+
+        .detalhe-info p {
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .detalhe-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        .sem-registros {
+            text-align: center;
+            color: #725a4d;
+            font-style: italic;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <a href="proxima_pagina_garcom.html" class="btn-voltar">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+        </a>
+        <h1>Degustação</h1>
+        <button type="button" class="btn-adicionar" onclick="abrirModalAdicionar()">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    </div>
+
+    <div class="agenda-wrapper" id="listaDegustacao">
+        <div class="sem-registros">Carregando horários de degustação...</div>
+    </div>
+
+    <!-- MODAL ADICIONAR / EDITAR -->
+    <div class="modal-overlay" id="modalAdicionar">
+        <div class="modal-card">
+            <h2 id="modalTituloForm">Novo Horário de Degustação</h2>
+            
+            <form onsubmit="salvarOuAtualizarDegustacao(event)">
+                <div class="campo-grupo">
+                    <label class="campo-label">Horário (Início)</label>
+                    <input type="text" id="inputHorario" required placeholder="Ex: 20:00" class="custom-input">
+                </div>
+
+                <div class="campo-grupo">
+                    <label class="campo-label">Nome do Casal / Título</label>
+                    <input type="text" id="inputTitulo" required placeholder="Ex: 1º Deg (V) Kauanny e Luiz" class="custom-input">
+                </div>
+
+                <div class="campo-grupo">
+                    <label class="campo-label">Cor do Cartão</label>
+                    <select id="inputCor" class="custom-input">
+                        <option value="bg-purple">Roxo (Destaque)</option>
+                        <option value="bg-blue">Azul (Padrão)</option>
+                        <option value="bg-red">Vermelho (Urgente/Especial)</option>
+                        <option value="bg-orange">Laranja (Alerta)</option>
+                        <option value="bg-dark">Chumbo / Preto (Geral)</option>
+                    </select>
+                </div>
+
+                <div class="campo-grupo">
+                    <label class="campo-label">Observações / Menu a Degustar</label>
+                    <textarea id="inputObs" class="custom-input" placeholder="Ex: Adicionar filé saint Peter e Vol-Au-Vent..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModalAdicionar()">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DETALHES AO CLICAR NO CARD -->
+    <div class="modal-overlay" id="modalDetalhes">
+        <div class="modal-card">
+            <h2>Detalhes da Degustação</h2>
+            
+            <div class="detalhe-info">
+                <p><strong>Horário:</strong> <span id="detalheHorario">--:--</span></p>
+                <p><strong>Casal / Título:</strong> <span id="detalheTitulo">--</span></p>
+                <p><strong>Observações / Menu:</strong></p>
+                <p id="detalheObs" style="color: #eadecc; font-style: italic;">--</p>
+            </div>
+
+            <button type="button" class="btn-editar-acao" onclick="prepararEdicao()">Editar Informações</button>
+            <button type="button" class="btn-excluir" onclick="excluirDegustacao()">Excluir Registro</button>
+            <button type="button" class="btn-cancelar" onclick="fecharModalDetalhes()" style="width: 100%; margin-top: 10px;">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        let idItemSelecionado = null;
+        let itemEmEdicao = null;
+
+        window.addEventListener("DOMContentLoaded", () => {
+            carregarDegustacoes();
+        });
+
+        async function carregarDegustacoes() {
+            const { data, error } = await _supabase
+                .from('degustacao')
+                .select('*')
+                .order('horario', { ascending: true });
+
+            const container = document.getElementById('listaDegustacao');
+
+            if (error || !data || data.length === 0) {
+                container.innerHTML = `<div class="sem-registros">Nenhum horário de degustação cadastrado ainda. Clique em + para adicionar.</div>`;
+                return;
+            }
+
+            let html = '';
+            data.forEach(item => {
+                const itemJson = encodeURIComponent(JSON.stringify(item));
+                html += `
+                    <div class="agenda-item" onclick='abrirDetalhes("${itemJson}")'>
+                        <div class="agenda-horario">
+                            <span>${item.horario}</span>
+                        </div>
+                        <div class="agenda-conteudo ${item.cor || 'bg-blue'}">
+                            <div class="card-titulo">${item.titulo}</div>
+                            ${item.observacoes ? `<div class="card-obs"><i class="fa-solid fa-note-sticky"></i> ${item.observacoes}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function abrirModalAdicionar() {
+            idItemSelecionado = null;
+            itemEmEdicao = null;
+            document.getElementById('modalTituloForm').textContent = "Novo Horário de Degustação";
+            document.getElementById('inputHorario').value = '';
+            document.getElementById('inputTitulo').value = '';
+            document.getElementById('inputCor').value = 'bg-blue';
+            document.getElementById('inputObs').value = '';
+            document.getElementById('modalAdicionar').style.display = 'flex';
+        }
+
+        function fecharModalAdicionar() {
+            document.getElementById('modalAdicionar').style.display = 'none';
+        }
+
+        function abrirDetalhes(itemJson) {
+            const item = JSON.parse(decodeURIComponent(itemJson));
+            idItemSelecionado = item.id;
+            itemEmEdicao = item;
+
+            document.getElementById('detalheHorario').textContent = item.horario;
+            document.getElementById('detalheTitulo').textContent = item.titulo;
+            document.getElementById('detalheObs').textContent = item.observacoes || 'Nenhuma observação registrada.';
+
+            document.getElementById('modalDetalhes').style.display = 'flex';
+        }
+
+        function fecharModalDetalhes() {
+            document.getElementById('modalDetalhes').style.display = 'none';
+        }
+
+        function prepararEdicao() {
+            if (!itemEmEdicao) return;
+
+            fecharModalDetalhes();
+
+            document.getElementById('modalTituloForm').textContent = "Editar Degustação";
+            document.getElementById('inputHorario').value = itemEmEdicao.horario || '';
+            document.getElementById('inputTitulo').value = itemEmEdicao.titulo || '';
+            document.getElementById('inputCor').value = itemEmEdicao.cor || 'bg-blue';
+            document.getElementById('inputObs').value = itemEmEdicao.observacoes || '';
+
+            document.getElementById('modalAdicionar').style.display = 'flex';
+        }
+
+        async function salvarOuAtualizarDegustacao(e) {
+            e.preventDefault();
+            const casalAtivo = localStorage.getItem('casal_ativo') || 'Geral';
+
+            const horario = document.getElementById('inputHorario').value.trim();
+            const titulo = document.getElementById('inputTitulo').value.trim();
+            const cor = document.getElementById('inputCor').value;
+            const obs = document.getElementById('inputObs').value.trim();
+
+            if (idItemSelecionado) {
+                // Atualizar registro existente
+                const { error } = await _supabase
+                    .from('degustacao')
+                    .update({
+                        horario: horario,
+                        titulo: titulo,
+                        cor: cor,
+                        observacoes: obs
+                    })
+                    .eq('id', idItemSelecionado);
+
+                if (error) {
+                    alert("Erro ao atualizar no Supabase: " + error.message);
+                    return;
+                }
+            } else {
+                // Inserir novo registro
+                const { error } = await _supabase.from('degustacao').insert([{
+                    casal_nome: casalAtivo,
+                    horario: horario,
+                    titulo: titulo,
+                    cor: cor,
+                    observacoes: obs
+                }]);
+
+                if (error) {
+                    alert("Erro ao salvar no Supabase: " + error.message);
+                    return;
+                }
+            }
+
+            fecharModalAdicionar();
+            carregarDegustacoes();
+        }
+
+        async function excluirDegustacao() {
+            if (!idItemSelecionado) return;
+
+            if (!confirm("Tem certeza que deseja excluir este horário de degustação?")) return;
+
+            const { error } = await _supabase
+                .from('degustacao')
+                .delete()
+                .eq('id', idItemSelecionado);
+
+            if (error) {
+                alert("Erro ao excluir: " + error.message);
+                return;
+            }
+
+            fecharModalDetalhes();
+            carregarDegustacoes();
+        }
+    </script>
+</body>
+</html>
