@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ally - Painel de Salão & Equipe</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b2a22">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ally">
+    <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #f7f5f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 15px;
+            color: #2c221e;
+        }
+
+        /* CABEÇALHO ELEGANTE DA MARCA */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
+            display: block;
+        }
+
+        .brand-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* PAINEL ESQUERDO DO PERFIL */
+        .card-resultado {
+            background-color: #3b2a22;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(59, 42, 34, 0.2);
+            color: #ffffff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-resultado h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 4px;
+            word-break: break-word;
+            color: #ffffff;
+        }
+
+        .subtitulo {
+            font-size: 12px;
+            color: #d1c4bc;
+            margin-bottom: 22px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .dados-container {
+            background-color: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .dado-bloco { margin-bottom: 16px; }
+        .dado-bloco:last-child { margin-bottom: 0; }
+
+        .rotulo {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .valor {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            word-break: break-word;
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        /* GRID DE BOTÕES DE ATALHO */
+        .grid-atalhos {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-quadrado {
+            background-color: #f7f4ef;
+            color: #382a24;
+            border-radius: 16px;
+            padding: 16px 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            border: 1px solid rgba(139, 107, 85, 0.15);
+            cursor: pointer;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .btn-quadrado:hover {
+            background-color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .btn-quadrado i {
+            font-size: 18px;
+            color: #725a4d;
+        }
+
+        /* COLUNAS DE MÓDULOS COM DESIGN SOFISTICADO E ÍCONES */
+        .coluna-modulos {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-bloco {
+            background-color: #3b2a22;
+            border-radius: 24px;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer;
+            flex: 1;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-bloco:hover {
+            transform: translateY(-3px);
+            background-color: #4a352b;
+        }
+
+        .menu-bloco h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px;
+            margin: 12px 0 0 0;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: #faf7f2;
+        }
+
+        .menu-bloco i {
+            font-size: 38px;
+            color: #eadecc;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CABEÇALHO COM ANÉIS E LOGO -->
+    <header class="brand-header">
+        <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
+        <h1 class="brand-title">Ally</h1>
+        <p class="brand-tagline">PLANEJAMENTO DE CASAMENTO</p>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <!-- COLUNA 1: PERFIL DO COLABORADOR E DADOS DO CASAL -->
+        <div class="card-resultado">
+            <div>
+                <h1 id="tituloNomeUsuario">Nome Registrado</h1>
+                <div class="subtitulo" id="subtituloPerfil">Maître</div>
+
+                <div class="dados-container">
+                    <div class="dado-bloco">
+                        <span class="rotulo">Casal</span>
+                        <span class="valor" id="exibirNome">Carregando...</span>
+                    </div>
+
+                    <div class="dado-bloco">
+                        <span class="rotulo">Data do Casamento</span>
+                        <span class="valor" id="exibirData">--/--/----</span>
+                    </div>
+
+                    <div class="dado-bloco">
+                        <span class="rotulo">Horário</span>
+                        <span class="valor" id="exibirHorario">--:--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTÕES DE ATALHO RÁPIDO -->
+            <div class="grid-atalhos" id="gridAtalhosSalao">
+                <a href="relatorios.html" class="btn-quadrado" id="btnRelatorios">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Relatórios</span>
+                </a>
+                <button type="button" class="btn-quadrado" onclick="abrirModalPDF()">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Criar PDF</span>
+                </button>
+                <a href="perfil.html" class="btn-quadrado">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Meu perfil</span>
+                </a>
+                <button type="button" class="btn-quadrado" onclick="editarInformacoes()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Trocar / Voltar</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- COLUNA 2: MÓDULOS CENTRAIS (Degustação e Informações) -->
+        <div class="coluna-modulos">
+            <a href="degustação_visitas.html" class="menu-bloco">
+                <i class="fa-solid fa-utensils"></i>
+                <h2>Degustação/Visitas</h2>
+            </a>
+
+            <a href="informacoes_evento.html" class="menu-bloco">
+                <i class="fa-solid fa-circle-info"></i>
+                <h2>Informações do Evento</h2>
+            </a>
+        </div>
+
+        <!-- COLUNA 3: MÓDULOS DA DIREITA (Escalas/Folgas, Convidados e Arquivo) -->
+        <div class="coluna-modulos">
+            <a href="escalas.html" class="menu-bloco" id="linkEscalasFolgas">
+                <i class="fa-solid fa-calendar-days" id="iconeEscalaFolga"></i>
+                <h2 id="textoEscalaFolga">Escalas</h2>
+            </a>
+
+            <a href="lista_de_convidados.html" class="menu-bloco" style="border: 2px solid #8B5CF6;">
+                <i class="fa-solid fa-users"></i>
+                <h2>Lista de Convidados</h2>
+            </a>
+
+            <a href="arquivo.html" class="menu-bloco">
+                <i class="fa-solid fa-folder-open"></i>
+                <h2>Arquivo</h2>
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        let nomeSalvo = "";
+        let dataSalva = "";
+        let horarioSalvo = "";
+
+        window.addEventListener("DOMContentLoaded", async function () {
+            carregarDadosUsuarioSalao();
+            carregarDadosCasal();
+        });
+
+        function carregarDadosUsuarioSalao() {
+            const userRole = localStorage.getItem('user_role') || 'maitre';
+            const nomeUsuario = localStorage.getItem('nome_usuario') || "Membro da Equipe";
+
+            document.getElementById("tituloNomeUsuario").textContent = nomeUsuario;
+
+            const titulos = {
+                'maitre': 'Maître',
+                'sub_maitre': 'Sub Maître',
+                'garcom': 'Garçom / Garçonete'
+            };
+
+            document.getElementById("subtituloPerfil").textContent = titulos[userRole] || 'Maître';
+
+            // Se for Garçom, removemos o botão de Relatórios para limpar o espaço (igual ao seu design anterior)
+            if (userRole === 'garcom') {
+                const btnRelat = document.getElementById('btnRelatorios');
+                if (btnRelat) btnRelat.parentElement.remove(); // Remove o botão do grid
+            }
+
+            // Se for Sub Maître ou Garçom, ajustamos o bloco superior direito para "Folgas do Mês"
+            if (userRole === 'sub_maitre' || userRole === 'garcom') {
+                document.getElementById('textoEscalaFolga').textContent = "Folgas do Mês";
+                document.getElementById('linkEscalasFolgas').href = "folgas.html";
+                document.getElementById('iconeEscalaFolga').className = "fa-solid fa-calendar-minus";
+            }
+        }
+
+        async function carregarDadosCasal() {
+            const casalAtivo = localStorage.getItem('casal_ativo');
+
+            if (!casalAtivo) {
+                document.getElementById("exibirNome").textContent = "Nenhum selecionado";
+                return;
+            }
+
+            const { data, error } = await _supabase
+                .from('casal_config')
+                .select('*')
+                .ilike('nome', casalAtivo)
+                .maybeSingle();
+
+            if (!error && data) {
+                nomeSalvo = data.nome;
+                dataSalva = data.data_casamento;
+                horarioSalvo = data.horario;
+
+                document.getElementById("exibirNome").textContent = nomeSalvo;
+                document.getElementById("exibirData").textContent = dataSalva || '--/--/----';
+                document.getElementById("exibirHorario").textContent = horarioSalvo || '--:--';
+            } else {
+                document.getElementById("exibirNome").textContent = casalAtivo;
+            }
+        }
+
+        function editarInformacoes() {
+            window.location.href = "index.html";
+        }
+
+        function abrirModalPDF() {
+            alert("Gerador de PDF de Salão em desenvolvimento.");
+        }
+    </script>
+</body>
+</html>
