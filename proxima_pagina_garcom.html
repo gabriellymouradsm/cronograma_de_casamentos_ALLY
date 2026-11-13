@@ -21,6 +21,10 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
+    <!-- PDFMake para geração de relatórios em PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,7 +47,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 30px 15px;
+            padding: 20px 15px 30px 15px;
             color: #2c221e;
         }
 
@@ -148,12 +152,38 @@
             font-family: 'Playfair Display', Georgia, serif;
         }
 
+        /* BOTÃO DE TROCAR EVENTO DENTRO DO CARD */
+        .btn-selecionar-evento {
+            background-color: #241914; 
+            color: #c5a059;
+            border: 1px solid rgba(197, 160, 89, 0.3); 
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-selecionar-evento:hover {
+            background-color: #1a110e;
+            transform: translateY(-2px);
+            border-color: #c5a059;
+        }
+
         /* GRID DE BOTÕES DE ATALHO */
         .grid-atalhos {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-top: 10px;
         }
 
         .btn-quadrado {
@@ -189,7 +219,13 @@
             color: #725a4d;
         }
 
-        /* COLUNAS DE MÓDULOS COM DESIGN SOFISTICADO E ÍCONES */
+        .btn-quadrado.bloqueado {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #e5e0d8;
+        }
+
+        /* COLUNAS DE MÓDULOS */
         .coluna-modulos {
             display: flex;
             flex-direction: column;
@@ -212,9 +248,10 @@
             cursor: pointer;
             flex: 1;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
         }
 
-        .menu-bloco:hover {
+        .menu-bloco:hover:not(.bloqueado) {
             transform: translateY(-3px);
             background-color: #4a352b;
         }
@@ -234,6 +271,145 @@
             margin-bottom: 5px;
         }
 
+        .menu-bloco.bloqueado {
+            opacity: 0.6;
+            cursor: pointer;
+            background-color: #2c221e;
+        }
+
+        .icone-cadeado {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 18px;
+            color: #9e8d83;
+            opacity: 0;
+        }
+        
+        .menu-bloco.bloqueado .icone-cadeado {
+            opacity: 1;
+        }
+
+        /* MODAIS */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background-color: #382a24;
+            border-radius: 24px;
+            padding: 35px 25px;
+            width: 100%;
+            max-width: 400px;
+            color: #ffffff;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            text-align: left;
+        }
+
+        .modal-card h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .modal-card p {
+            font-size: 13px;
+            color: #d1c4bc;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #eadecc;
+            user-select: none;
+        }
+
+        .checkbox-label input {
+            accent-color: #3b2a22;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .modal-select {
+            width: 100%;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0 16px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 20px;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        .modal-select option {
+            background-color: #382a24;
+            color: #ffffff;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-cancelar {
+            flex: 1;
+            padding: 14px;
+            background-color: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .btn-confirmar {
+            flex: 1;
+            padding: 14px;
+            background-color: #c5a059;
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
         @media (max-width: 900px) {
             .dashboard-container { grid-template-columns: 1fr; }
         }
@@ -242,7 +418,7 @@
 
 <body>
 
-    <!-- CABEÇALHO COM ANÉIS E LOGO -->
+    <!-- CABEÇALHO -->
     <header class="brand-header">
         <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
@@ -255,7 +431,7 @@
 
     <div class="dashboard-container">
         
-        <!-- COLUNA 1: PERFIL DO COLABORADOR E DADOS DO CASAL -->
+        <!-- COLUNA 1: PERFIL E DADOS -->
         <div class="card-resultado">
             <div>
                 <h1 id="tituloNomeUsuario">Nome Registrado</h1>
@@ -263,8 +439,8 @@
 
                 <div class="dados-container">
                     <div class="dado-bloco">
-                        <span class="rotulo">Casal</span>
-                        <span class="valor" id="exibirNome">Carregando...</span>
+                        <span class="rotulo">Evento / Casal</span>
+                        <span class="valor" id="exibirNome" style="color: #c5a059;">Modo Standby</span>
                     </div>
 
                     <div class="dado-bloco">
@@ -277,14 +453,21 @@
                         <span class="valor" id="exibirHorario">--:--</span>
                     </div>
                 </div>
+
+                <!-- BOTÃO DE TROCAR EVENTO -->
+                <button type="button" class="btn-selecionar-evento" onclick="abrirModalEventos()">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span id="btnTopoTexto">Acessar Evento Atual</span>
+                </button>
             </div>
 
-            <!-- BOTÕES DE ATALHO RÁPIDO -->
+            <!-- BOTÕES DE ATALHO (CRIAR PDF AGORA SEMPRE LIVRE) -->
             <div class="grid-atalhos" id="gridAtalhosSalao">
-                <a href="relatorios.html" class="btn-quadrado" id="btnRelatorios">
+                <a href="relatorios.html" class="btn-quadrado modulo-evento" id="btnRelatorios" onclick="tratarCliqueEvento(event, this.href)">
                     <i class="fa-solid fa-chart-column"></i>
                     <span>Relatórios</span>
                 </a>
+                <!-- CRIAR PDF SEMPRE DISPONÍVEL, ADAPTANDO O CONTEÚDO -->
                 <button type="button" class="btn-quadrado" onclick="abrirModalPDF()">
                     <i class="fa-solid fa-file-pdf"></i>
                     <span>Criar PDF</span>
@@ -293,38 +476,45 @@
                     <i class="fa-solid fa-user-gear"></i>
                     <span>Meu perfil</span>
                 </a>
-                <button type="button" class="btn-quadrado" onclick="editarInformacoes()">
+                <button type="button" class="btn-quadrado" onclick="sairDoSistema()">
                     <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Trocar / Voltar</span>
+                    <span>Sair</span>
                 </button>
             </div>
         </div>
 
-        <!-- COLUNA 2: MÓDULOS CENTRAIS (Degustação e Informações) -->
+        <!-- COLUNA 2: MÓDULOS CENTRAIS -->
         <div class="coluna-modulos">
-            <a href="degustação_visitas.html" class="menu-bloco">
+            <!-- LIBERADO -->
+            <a href="degustacao_visitas.html" class="menu-bloco">
                 <i class="fa-solid fa-utensils"></i>
                 <h2>Degustação/Visitas</h2>
             </a>
 
-            <a href="informacoes_evento.html" class="menu-bloco">
+            <!-- BLOQUEADO EM STANDBY -->
+            <a href="informacoes_evento.html" class="menu-bloco modulo-evento" onclick="tratarCliqueEvento(event, this.href)">
+                <i class="fa-solid fa-lock icone-cadeado"></i>
                 <i class="fa-solid fa-circle-info"></i>
                 <h2>Informações do Evento</h2>
             </a>
         </div>
 
-        <!-- COLUNA 3: MÓDULOS DA DIREITA (Escalas/Folgas, Convidados e Arquivo) -->
+        <!-- COLUNA 3: MÓDULOS DA DIREITA -->
         <div class="coluna-modulos">
+            <!-- LIBERADO -->
             <a href="escalas.html" class="menu-bloco" id="linkEscalasFolgas">
                 <i class="fa-solid fa-calendar-days" id="iconeEscalaFolga"></i>
                 <h2 id="textoEscalaFolga">Escalas</h2>
             </a>
 
-            <a href="lista_de_convidados.html" class="menu-bloco" style="border: 2px solid #8B5CF6;">
+            <!-- BLOQUEADO EM STANDBY -->
+            <a href="lista_de_convidados.html" class="menu-bloco modulo-evento" style="border: 2px solid #8B5CF6;" onclick="tratarCliqueEvento(event, this.href)">
+                <i class="fa-solid fa-lock icone-cadeado"></i>
                 <i class="fa-solid fa-users"></i>
                 <h2>Lista de Convidados</h2>
             </a>
 
+            <!-- LIBERADO -->
             <a href="arquivo.html" class="menu-bloco">
                 <i class="fa-solid fa-folder-open"></i>
                 <h2>Arquivo</h2>
@@ -333,14 +523,49 @@
 
     </div>
 
+    <!-- MODAL DE SELEÇÃO DE EVENTO -->
+    <div class="modal-overlay" id="modalEventos">
+        <div class="modal-card">
+            <h3>Selecione o Evento</h3>
+            <p>Para desbloquear as ferramentas, informe qual casamento você está acompanhando hoje.</p>
+            
+            <select id="selectModalCasais" class="modal-select">
+                <option value="">Carregando casais...</option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancelar" onclick="fecharModalEventos()">Cancelar</button>
+                <button type="button" class="btn-confirmar" onclick="salvarEventoSelecionado()">Acessar Evento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INTELIGENTE DE CRIAR PDF -->
+    <div class="modal-overlay" id="modalPDF">
+        <div class="modal-card">
+            <h3>Criar Relatório em PDF</h3>
+            <p>Selecione o que deseja incluir no documento:</p>
+            
+            <div class="checkbox-group" id="pdfCheckboxGroup">
+                <!-- Preenchido automaticamente pelo JavaScript -->
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancelar" onclick="fecharModalPDF()">Cancelar</button>
+                <button type="button" class="btn-confirmar" onclick="gerarPDFSalao()">Gerar PDF</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let nomeSalvo = "";
-        let dataSalva = "";
-        let horarioSalvo = "";
+        let temCasalSelecionado = false;
+        let proximaAcaoPendente = null; 
 
         window.addEventListener("DOMContentLoaded", async function () {
             carregarDadosUsuarioSalao();
-            carregarDadosCasal();
+            await carregarDadosCasal();
+            verificarBloqueios();
         });
 
         function carregarDadosUsuarioSalao() {
@@ -355,15 +580,13 @@
                 'garcom': 'Garçom / Garçonete'
             };
 
-            document.getElementById("subtituloPerfil").textContent = titulos[userRole] || 'Maître';
+            document.getElementById("subtituloPerfil").textContent = titulos[userRole] || 'Equipe';
 
-            // Se for Garçom, removemos o botão de Relatórios para limpar o espaço (igual ao seu design anterior)
             if (userRole === 'garcom') {
                 const btnRelat = document.getElementById('btnRelatorios');
-                if (btnRelat) btnRelat.parentElement.remove(); // Remove o botão do grid
+                if (btnRelat) btnRelat.parentElement.removeChild(btnRelat);
             }
 
-            // Se for Sub Maître ou Garçom, ajustamos o bloco superior direito para "Folgas do Mês"
             if (userRole === 'sub_maitre' || userRole === 'garcom') {
                 document.getElementById('textoEscalaFolga').textContent = "Folgas do Mês";
                 document.getElementById('linkEscalasFolgas').href = "folgas.html";
@@ -375,7 +598,9 @@
             const casalAtivo = localStorage.getItem('casal_ativo');
 
             if (!casalAtivo) {
-                document.getElementById("exibirNome").textContent = "Nenhum selecionado";
+                temCasalSelecionado = false;
+                document.getElementById("exibirNome").textContent = "Modo Standby";
+                document.getElementById("btnTopoTexto").textContent = "Acessar Evento Atual";
                 return;
             }
 
@@ -386,24 +611,244 @@
                 .maybeSingle();
 
             if (!error && data) {
+                temCasalSelecionado = true;
                 nomeSalvo = data.nome;
-                dataSalva = data.data_casamento;
-                horarioSalvo = data.horario;
-
-                document.getElementById("exibirNome").textContent = nomeSalvo;
-                document.getElementById("exibirData").textContent = dataSalva || '--/--/----';
-                document.getElementById("exibirHorario").textContent = horarioSalvo || '--:--';
-            } else {
-                document.getElementById("exibirNome").textContent = casalAtivo;
+                document.getElementById("exibirNome").textContent = data.nome;
+                document.getElementById("exibirNome").style.color = "#ffffff";
+                document.getElementById("exibirData").textContent = data.data_casamento || '--/--/----';
+                document.getElementById("exibirHorario").textContent = data.horario || '--:--';
+                document.getElementById("btnTopoTexto").textContent = "Trocar Evento (" + data.nome + ")";
             }
         }
 
-        function editarInformacoes() {
-            window.location.href = "index.html";
+        function verificarBloqueios() {
+            const modulos = document.querySelectorAll('.modulo-evento');
+            modulos.forEach(modulo => {
+                if (temCasalSelecionado) {
+                    modulo.classList.remove('bloqueado');
+                } else {
+                    modulo.classList.add('bloqueado');
+                }
+            });
         }
 
+        function tratarCliqueEvento(event, acaoDestino) {
+            if (!temCasalSelecionado) {
+                event.preventDefault(); 
+                proximaAcaoPendente = acaoDestino; 
+                abrirModalEventos();
+            } else {
+                if (acaoDestino === 'modal_pdf') {
+                    event.preventDefault();
+                    abrirModalPDF();
+                }
+            }
+        }
+
+        async function abrirModalEventos() {
+            document.getElementById('modalEventos').style.display = 'flex';
+            
+            const { data, error } = await _supabase.from('casal_config').select('nome, data_casamento');
+            const select = document.getElementById('selectModalCasais');
+            
+            if (!error && data && data.length > 0) {
+                let opcoes = '<option value="" disabled selected>Escolha um casamento...</option>';
+                data.forEach(c => {
+                    opcoes += `<option value="${c.nome}">${c.nome} ${c.data_casamento ? ' - ' + c.data_casamento : ''}</option>`;
+                });
+                select.innerHTML = opcoes;
+            } else {
+                select.innerHTML = '<option value="">Nenhum casal registrado</option>';
+            }
+        }
+
+        function fecharModalEventos() {
+            document.getElementById('modalEventos').style.display = 'none';
+            proximaAcaoPendente = null; 
+        }
+
+        async function salvarEventoSelecionado() {
+            const select = document.getElementById('selectModalCasais');
+            const casalEscolhido = select.value;
+
+            if (!casalEscolhido) {
+                alert("Por favor, selecione um casal da lista.");
+                return;
+            }
+
+            localStorage.setItem('casal_ativo', casalEscolhido);
+            
+            await carregarDadosCasal();
+            verificarBloqueios();
+            fecharModalEventos();
+
+            if (proximaAcaoPendente) {
+                if (proximaAcaoPendente === 'modal_pdf') {
+                    abrirModalPDF();
+                } else {
+                    window.location.href = proximaAcaoPendente;
+                }
+            }
+        }
+
+        // --- LÓGICA INTELIGENTE DO MODAL DE PDF ---
         function abrirModalPDF() {
-            alert("Gerador de PDF de Salão em desenvolvimento.");
+            const grupo = document.getElementById('pdfCheckboxGroup');
+            let html = '';
+
+            if (!temCasalSelecionado) {
+                // Se estiver em Modo Standby: exibe apenas o que está liberado no geral
+                html = `
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="chk-escalas" checked> Escalas / Folgas Gerais
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="chk-degustacao" checked> Degustação e Visitas
+                    </label>
+                    <p style="font-size: 11px; color: #c5a059; margin-top: 12px; text-align: center;">
+                        <i class="fa-solid fa-lock"></i> Para baixar dados de Convidados e Evento, selecione um casal no botão acima.
+                    </p>
+                `;
+            } else {
+                // Se houver um evento selecionado: libera tudo (geral + dados do casal)
+                html = `
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="chk-escalas" checked> Escalas / Folgas
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="chk-degustacao" checked> Degustação e Visitas
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="chk-convidados" checked> Lista de Convidados (${nomeSalvo})
+                    </label>
+                `;
+            }
+            grupo.innerHTML = html;
+            document.getElementById('modalPDF').style.display = 'flex';
+        }
+
+        function fecharModalPDF() {
+            document.getElementById('modalPDF').style.display = 'none';
+        }
+
+        async function gerarPDFSalao() {
+            fecharModalPDF();
+
+            const chkEscalas = document.getElementById('chk-escalas')?.checked;
+            const chkDegustacao = document.getElementById('chk-degustacao')?.checked;
+            const chkConvidados = document.getElementById('chk-convidados')?.checked;
+
+            let escalasData = [], degustacaoData = [], convidadosData = [];
+
+            // Busca dados do Supabase com base nas escolhas
+            if (chkEscalas) {
+                const { data } = await _supabase.from('escalas').select('*');
+                escalasData = data || [];
+            }
+            if (chkDegustacao) {
+                const { data } = await _supabase.from('degustacao_visitas').select('*');
+                degustacaoData = data || [];
+            }
+            if (chkConvidados && temCasalSelecionado) {
+                const { data } = await _supabase.from('convidados').select('*').eq('casal_nome', nomeSalvo);
+                convidadosData = data || [];
+            }
+
+            // Monta a estrutura do PDF
+            let contentArray = [
+                { text: 'ALLY', style: 'brandTitle' },
+                { text: 'RELATÓRIO DE SALÃO & EQUIPE', style: 'brandSubtitle' },
+                { canvas: [{ type: 'line', x1: 0, y1: 10, x2: 515, y2: 10, lineWidth: 1.5, lineColor: '#3b2a22' }] },
+                { text: '', margin: [0, 5] },
+                { 
+                    text: temCasalSelecionado ? `Evento Selecionado: ${nomeSalvo}` : 'Modo Geral / Standby', 
+                    style: 'infoBoxText', margin: [0, 0, 0, 15] 
+                }
+            ];
+
+            let secaoIndex = 1;
+
+            if (chkEscalas) {
+                contentArray.push({ text: `${secaoIndex++}. Escalas de Trabalho`, style: 'sectionTitle' });
+                contentArray.push(criarTabelaPDFSimples(escalasData, ['Colaborador', 'Função / Detalhes'], item => [
+                    { text: item.nome || '-', style: 'cellBold' },
+                    { text: item.funcao || item.detalhes || '-', style: 'cellNormal' }
+                ], [200, 315]));
+            }
+
+            if (chkDegustacao) {
+                contentArray.push({ text: `${secaoIndex++}. Degustação e Visitas`, style: 'sectionTitle' });
+                contentArray.push(criarTabelaPDFSimples(degustacaoData, ['Cliente / Detalhes', 'Data / Horário'], item => [
+                    { text: item.titulo || item.descricao || '-', style: 'cellBold' },
+                    { text: `${item.data || ''} ${item.horario || ''}`.trim() || '-', style: 'cellNormal' }
+                ], [300, 215]));
+            }
+
+            if (chkConvidados && temCasalSelecionado) {
+                contentArray.push({ text: `${secaoIndex++}. Lista de Convidados (${nomeSalvo})`, style: 'sectionTitle' });
+                contentArray.push(criarTabelaPDFSimples(convidadosData, ['Nome do Convidado', 'Categoria', 'Mesa / Presença'], item => [
+                    { text: `${item.first_name || ''} ${item.last_name || ''}`.trim(), style: 'cellBold' },
+                    { text: item.connection || '-', style: 'cellNormal' },
+                    { text: `Mesa ${item.table_number || '-'} | Presença: ${item.present ? 'Sim' : 'Não'}`, style: 'cellNormal' }
+                ], [180, 150, 185]));
+            }
+
+            const docDefinition = {
+                pageSize: 'A4',
+                pageMargins: [36, 40, 36, 40],
+                content: contentArray,
+                styles: {
+                    brandTitle: { fontStyle: 'serif', fontSize: 24, bold: true, alignment: 'center', color: '#3b2a22' },
+                    brandSubtitle: { fontSize: 8, bold: true, alignment: 'center', color: '#725a4d', margin: [0, 2, 0, 0] },
+                    sectionTitle: { fontSize: 12, bold: true, color: '#3b2a22', margin: [0, 12, 0, 6] },
+                    tableHeader: { bold: true, fontSize: 9, color: '#ffffff', fillColor: '#3b2a22' },
+                    infoBoxText: { fontSize: 10, color: '#725a4d', bold: true, alignment: 'center' },
+                    cellBold: { fontSize: 9, bold: true, color: '#2c221e' },
+                    cellNormal: { fontSize: 9, color: '#333333' },
+                    noData: { italic: true, color: '#888888', margin: [0, 0, 0, 10], fontSize: 9 }
+                },
+                defaultStyle: { fontSize: 9, color: '#333333' }
+            };
+
+            pdfMake.createPdf(docDefinition).download('Relatorio_Salao_' + (temCasalSelecionado ? nomeSalvo : 'Geral') + '.pdf');
+        }
+
+        function criarTabelaPDFSimples(dados, cabecalhos, mapearLinha, colWidthsArray) {
+            if (!dados || dados.length === 0) {
+                return { text: 'Nenhum registro encontrado nesta categoria.', style: 'noData' };
+            }
+
+            const bodyTable = [cabecalhos.map(h => ({ text: h, style: 'tableHeader' }))];
+            dados.forEach(item => { bodyTable.push(mapearLinha(item)); });
+
+            return {
+                table: {
+                    headerRows: 1,
+                    widths: colWidthsArray || cabecalhos.map(() => '*'),
+                    body: bodyTable
+                },
+                layout: {
+                    fillColor: function (rowIndex) {
+                        if (rowIndex === 0) return '#3b2a22';
+                        return (rowIndex % 2 === 0) ? '#f2eee9' : '#ffffff';
+                    },
+                    hLineWidth: function () { return 0.5; },
+                    vLineWidth: function () { return 0.5; },
+                    hLineColor: function () { return '#eadecc'; },
+                    vLineColor: function () { return '#eadecc'; },
+                    paddingTop: function () { return 6; },
+                    paddingBottom: function () { return 6; },
+                    paddingLeft: function () { return 8; },
+                    paddingRight: function () { return 8; }
+                },
+                margin: [0, 0, 0, 12]
+            };
+        }
+
+        function sairDoSistema() {
+            localStorage.removeItem('casal_ativo');
+            localStorage.removeItem('local_casamento');
+            window.location.href = "index.html";
         }
     </script>
 </body>
