@@ -113,6 +113,7 @@
 
         .campo-grupo {
             margin-bottom: 16px;
+            transition: opacity 0.3s ease, height 0.3s ease;
         }
 
         .campo-label {
@@ -292,12 +293,7 @@
             <h2 class="card-titulo">Entrar no Sistema</h2>
 
             <form onsubmit="fazerLogin(event)">
-                <div class="campo-grupo">
-                    <label class="campo-label">Digite o Casal</label>
-                    <input type="text" id="loginCasalInput" list="listaCasaisLogin" required placeholder="Digite o nome do casal..." class="custom-input"/>
-                    <datalist id="listaCasaisLogin"></datalist>
-                </div>
-
+                
                 <div class="campo-grupo">
                     <label class="campo-label">Perfil de Acesso</label>
                     <select id="loginRole" onchange="mudarLabelLogin()" class="custom-input">
@@ -307,6 +303,13 @@
                         <option value="sub_maitre">Sub Maître</option>
                         <option value="garcom">Garçom / Garçonete</option>
                     </select>
+                </div>
+
+                <!-- ESCONDE DINAMICAMENTE SE FOR DA EQUIPE DE SALÃO -->
+                <div class="campo-grupo" id="divLoginCasal">
+                    <label class="campo-label">Digite o Casal</label>
+                    <input type="text" id="loginCasalInput" list="listaCasaisLogin" placeholder="Digite o nome do casal..." class="custom-input"/>
+                    <datalist id="listaCasaisLogin"></datalist>
                 </div>
 
                 <div class="campo-grupo">
@@ -483,6 +486,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             carregarCasaisDropdown();
+            // Já roda a mudança visual no primeiro carregamento
+            mudarLabelLogin();
         });
 
         function aplicarMascaraData(input) {
@@ -550,9 +555,22 @@
             }
         }
 
+        // LÓGICA DE OCULTAR O CASAL PARA EQUIPE DE SALÃO
         function mudarLabelLogin() {
             const role = document.getElementById('loginRole').value;
             document.getElementById('loginLabelNome').textContent = obterLabelNomePorRole(role);
+
+            const divLoginCasal = document.getElementById('divLoginCasal');
+            const inputCasal = document.getElementById('loginCasalInput');
+
+            if (role === 'maitre' || role === 'sub_maitre' || role === 'garcom') {
+                divLoginCasal.classList.add('escondido');
+                inputCasal.removeAttribute('required'); 
+                inputCasal.value = ""; // Limpa caso já tivesse algo
+            } else {
+                divLoginCasal.classList.remove('escondido');
+                inputCasal.setAttribute('required', 'true');
+            }
         }
 
         function mudarLabelRegistarColab() {
@@ -583,55 +601,65 @@
             const role = document.getElementById('loginRole').value;
             const nomeResponsavel = document.getElementById('loginNome').value.trim();
             const senhaDigitada = document.getElementById('loginSenha').value;
+            
+            const precisaCasal = (role === 'admin' || role === 'assistant');
 
-            if (!casalNomeDigitado) {
+            if (precisaCasal && !casalNomeDigitado) {
                 showToast("Por favor, selecione ou digite o nome do casal.");
                 return;
             }
 
-            const { data: casalData, error: casalError } = await _supabase
-                .from('casal_config')
-                .select('nome, local_casamento')
-                .ilike('nome', casalNomeDigitado)
-                .maybeSingle();
-
-            if (casalError || !casalData) {
-                showToast("Casal não encontrado. Verifique se o nome está correto na lista.");
-                return;
-            }
-
+            // Verificação de senha no banco
             const senhaHash = await hashPassword(senhaDigitada);
-
-            const { data, error } = await _supabase
+            const { data: usuario, error: usuarioError } = await _supabase
                 .from('colaboradores')
                 .select('*')
                 .ilike('nome', nomeResponsavel)
                 .eq('role', role)
                 .maybeSingle();
 
-            if (error || !data) {
+            if (usuarioError || !usuario) {
                 showToast("Colaborador não encontrado na base de dados.");
                 return;
             }
 
-            if (data.senha_hash !== senhaHash && data.senha_hash !== senhaDigitada) {
+            if (usuario.senha_hash !== senhaHash && usuario.senha_hash !== senhaDigitada) {
                 showToast("Senha incorreta. Tente novamente.");
                 return;
             }
 
-            localStorage.setItem('user_role', role);
-            localStorage.setItem('casal_ativo', casalData.nome);
-            localStorage.setItem('local_casamento', casalData.local_casamento || ''); 
+            // Se for Admin ou Assistente, carrega os dados do casal
+            if (precisaCasal) {
+                const { data: casalData, error: casalError } = await _supabase
+                    .from('casal_config')
+                    .select('nome, local_casamento')
+                    .ilike('nome', casalNomeDigitado)
+                    .maybeSingle();
 
-            if (role === 'admin') {
-                localStorage.setItem('admin_nome', nomeResponsavel || data.nome);
-            } else if (role === 'assistant') {
-                localStorage.setItem('assistente_nome', nomeResponsavel || data.nome);
+                if (casalError || !casalData) {
+                    showToast("Casal não encontrado. Verifique se o nome está correto na lista.");
+                    return;
+                }
+                
+                localStorage.setItem('casal_ativo', casalData.nome);
+                localStorage.setItem('local_casamento', casalData.local_casamento || ''); 
             } else {
-                localStorage.setItem('nome_usuario', nomeResponsavel || data.nome);
+                // Se for equipe de salão, entra no modo "Standby" sem casal
+                localStorage.removeItem('casal_ativo');
+                localStorage.removeItem('local_casamento');
             }
 
-            // REDIRECIONAMENTO INTELIGENTE SOLICITADO
+            localStorage.setItem('user_role', role);
+
+            if (role === 'admin') {
+                localStorage.setItem('admin_nome', nomeResponsavel || usuario.nome);
+            } else if (role === 'assistant') {
+                localStorage.setItem('assistente_nome', nomeResponsavel || usuario.nome);
+            } else {
+                localStorage.setItem('nome_usuario', nomeResponsavel || usuario.nome);
+            }
+
+            // REDIRECIONAMENTO INTELIGENTE
             if (role === 'maitre' || role === 'sub_maitre' || role === 'garcom') {
                 window.location.href = "proxima_pagina_garcom.html";
             } else {
