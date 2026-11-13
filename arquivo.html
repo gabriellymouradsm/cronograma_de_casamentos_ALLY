@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ally - Arquivo & Registros de Salão</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b2a22">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ally">
+    <link rel="apple-touch-icon" sizes="180x180" href="Logotipo Monograma Elegante Preto.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logotipo Monograma Elegante Preto.png">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yatnbvnnyxivquovpepe.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_j8G631CbvAGHN9yGsW6SSA_2x1inYVQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #f7f5f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 15px 40px 15px;
+            color: #2c221e;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .brand-logo-rings {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
+            display: block;
+        }
+
+        .brand-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #382a23;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #725a4d;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .container-principal {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .topo-navegacao {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #3b2a22;
+            padding: 15px 25px;
+            border-radius: 18px;
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(59, 42, 34, 0.15);
+        }
+
+        .btn-voltar {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .evento-ativo-info {
+            font-size: 13px;
+            color: #c5a059;
+            font-weight: 600;
+        }
+
+        /* ABAS DE CATEGORIA */
+        .abas-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .btn-aba {
+            background-color: #eadecc;
+            border: none;
+            padding: 12px 10px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 12px;
+            color: #3b2a22;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-aba.ativo {
+            background-color: #3b2a22;
+            color: #c5a059;
+            box-shadow: 0 4px 12px rgba(59, 42, 34, 0.2);
+        }
+
+        .btn-aba i {
+            font-size: 16px;
+        }
+
+        /* FORMULÁRIO DE REGISTRO */
+        .card-formulario {
+            background-color: #3b2a22;
+            padding: 25px;
+            border-radius: 22px;
+            color: #ffffff;
+            box-shadow: 0 8px 24px rgba(59, 42, 34, 0.2);
+        }
+
+        .card-formulario h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #faf7f2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .campo-grupo {
+            margin-bottom: 15px;
+        }
+
+        .campo-label {
+            display: block;
+            font-size: 12px;
+            color: #d1c4bc;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .custom-input, .custom-textarea {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .custom-input:focus, .custom-textarea:focus {
+            border-color: #c5a059;
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .custom-textarea {
+            resize: vertical;
+            height: 90px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .file-upload-box {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.03);
+            transition: background 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+        }
+
+        .file-upload-box:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .file-upload-box input {
+            display: none;
+        }
+
+        .btn-salvar {
+            background-color: #c5a059;
+            color: #3b2a22;
+            border: none;
+            width: 100%;
+            height: 48px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(197, 160, 89, 0.3);
+            transition: background 0.2s;
+        }
+
+        .btn-salvar:hover {
+            background-color: #d4b06a;
+        }
+
+        /* LISTA DE REGISTROS ANTERIORES */
+        .lista-registros {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .registro-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 18px;
+            color: #382a24;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border-left: 5px solid #c5a059;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .registro-info h4 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: #3b2a22;
+        }
+
+        .registro-meta {
+            font-size: 11px;
+            color: #725a4d;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .registro-texto {
+            font-size: 13px;
+            color: #555555;
+            line-height: 1.4;
+        }
+
+        .badge-categoria {
+            background-color: #f7f4ef;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #725a4d;
+            border: 1px solid #eadecc;
+        }
+
+        @media (max-width: 768px) {
+            .abas-container { grid-template-columns: repeat(2, 1fr); }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="brand-header">
+        <svg class="brand-logo-rings" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M35 50C46.0457 50 55 41.0457 55 30C55 18.9543 46.0457 10 35 10C23.9543 10 15 18.9543 15 30C15 41.0457 23.9543 50 35 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M65 50C76.0457 50 85 41.0457 85 30C85 18.9543 76.0457 10 65 10C53.9543 10 45 18.9543 45 30C45 41.0457 53.9543 50 65 50Z" stroke="#382a23" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="50" cy="8" r="3" fill="#c5a059"/>
+        </svg>
+        <h1 class="brand-title">Ally</h1>
+        <p class="brand-tagline">ARQUIVO E REGISTROS DE SALÃO</p>
+    </header>
+
+    <div class="container-principal">
+        
+        <!-- BARRA SUPERIOR -->
+        <div class="topo-navegacao">
+            <a href="proxima_pagina_garcom.html" class="btn-voltar">
+                <i class="fa-solid fa-arrow-left"></i> Voltar ao Painel
+            </a>
+            <span class="evento-ativo-info" id="spanEventoAtivo">Carregando evento...</span>
+        </div>
+
+        <!-- ABAS DE NAVEGAÇÃO DO ARQUIVO -->
+        <div class="abas-container">
+            <button class="btn-aba ativo" onclick="mudarAba('quebra', this)">
+                <i class="fa-solid fa-wine-glass-empty"></i> Quebra de Taças
+            </button>
+            <button class="btn-aba" onclick="mudarAba('brunch', this)">
+                <i class="fa-solid fa-utensils"></i> Registro do Brunch
+            </button>
+            <button class="btn-aba" onclick="mudarAba('achados', this)">
+                <i class="fa-solid fa-box-archive"></i> Achados e Perdidos
+            </button>
+            <button class="btn-aba" onclick="mudarAba('ocorrencias', this)">
+                <i class="fa-solid fa-triangle-exclamation"></i> Ocorrências
+            </button>
+        </div>
+
+        <!-- FORMULÁRIO DE REGISTRO -->
+        <div class="card-formulario">
+            <h3 id="tituloFormulario"><i class="fa-solid fa-plus-circle"></i> Registar Quebra de Taça</h3>
+            
+            <form onsubmit="salvarRegistro(event)">
+                <input type="hidden" id="inputCategoria" value="quebra">
+
+                <div class="grid-3">
+                    <div class="campo-grupo">
+                        <label class="campo-label">Título / Item</label>
+                        <input type="text" id="regTitulo" required placeholder="Ex: Taça de Vinho Cristal / Brunch Casal X" class="custom-input">
+                    </div>
+                    <div class="campo-grupo">
+                        <label class="campo-label">Data da Ocorrência</label>
+                        <input type="date" id="regDataOcorrencia" required class="custom-input">
+                    </div>
+                    <div class="campo-grupo">
+                        <label class="campo-label">Hora</label>
+                        <input type="time" id="regHoraOcorrencia" required class="custom-input">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="campo-grupo">
+                        <label class="campo-label">Responsável / Colaborador</label>
+                        <input type="text" id="regResponsavel" required placeholder="Seu nome" class="custom-input">
+                    </div>
+                    <div class="campo-grupo">
+                        <label class="campo-label">Anexar Mídia (Foto / Vídeo opcional)</label>
+                        <label class="file-upload-box">
+                            <span id="txtArquivo" style="font-size: 12px; color: #d1c4bc; display: block;"><i class="fa-solid fa-cloud-arrow-up"></i> Carregar arquivo</span>
+                            <input type="file" id="regArquivo" accept="image/*,video/*" onchange="mostrarNomeArquivo(this)">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="campo-grupo">
+                    <label class="campo-label">Descrição / Observações</label>
+                    <textarea id="regDescricao" required placeholder="Detalhes do ocorrido ou quantidade..." class="custom-textarea"></textarea>
+                </div>
+
+                <button type="submit" class="btn-salvar">Salvar no Arquivo</button>
+            </form>
+        </div>
+
+        <!-- HISTÓRICO DE REGISTROS -->
+        <div>
+            <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 18px; color: #3b2a22; margin-bottom: 12px;">Histórico de Registros</h3>
+            <div id="listaRegistrosContainer" class="lista-registros">
+                <p style="color: #725a4d; font-size: 13px; text-align: center; padding: 20px;">Carregando registros...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let categoriaAtual = 'quebra';
+        let casalAtivo = localStorage.getItem('casal_ativo') || 'Geral / Sem Casal';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('spanEventoAtivo').textContent = `Evento: ${casalAtivo}`;
+            document.getElementById('regResponsavel').value = localStorage.getItem('nome_usuario') || '';
+            
+            // Preenche data e hora atuais por padrão
+            const hoje = new Date();
+            const dataIso = hoje.toISOString().split('T')[0];
+            const horaAtual = String(hoje.getHours()).padStart(2, '0') + ':' + String(hoje.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('regDataOcorrencia').value = dataIso;
+            document.getElementById('regHoraOcorrencia').value = horaAtual;
+
+            carregarRegistros();
+        });
+
+        function mudarAba(categoria, elementoBtn) {
+            categoriaAtual = categoria;
+            document.getElementById('inputCategoria').value = categoria;
+
+            document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('ativo'));
+            elementoBtn.classList.add('ativo');
+
+            const titulos = {
+                'quebra': 'Registar Quebra de Taça / Material',
+                'brunch': 'Registar no Registro do Brunch',
+                'achados': 'Registar em Achados e Perdidos',
+                'ocorrencias': 'Registar Ocorrência de Salão'
+            };
+            document.getElementById('tituloFormulario').innerHTML = `<i class="fa-solid fa-plus-circle"></i> ${titulos[categoria]}`;
+
+            carregarRegistros();
+        }
+
+        function mostrarNomeArquivo(input) {
+            const span = document.getElementById('txtArquivo');
+            if (input.files && input.files[0]) {
+                span.textContent = input.files[0].name;
+                span.style.color = "#c5a059";
+            } else {
+                span.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Carregar arquivo';
+                span.style.color = "#d1c4bc";
+            }
+        }
+
+        async function salvarRegistro(e) {
+            e.preventDefault();
+
+            const titulo = document.getElementById('regTitulo').value.trim();
+            const responsavel = document.getElementById('regResponsavel').value.trim();
+            const descricao = document.getElementById('regDescricao').value.trim();
+            const dataOcorrencia = document.getElementById('regDataOcorrencia').value;
+            const horaOcorrencia = document.getElementById('regHoraOcorrencia').value;
+
+            const { error } = await _supabase.from('arquivo_registros').insert([{
+                casal_nome: casalAtivo,
+                categoria: categoriaAtual,
+                titulo: titulo,
+                responsavel: responsavel,
+                descricao: descricao,
+                data_ocorrencia: dataOcorrencia,
+                hora_ocorrencia: horaOcorrencia
+            }]);
+
+            if (error) {
+                alert("Erro ao salvar registro: " + error.message);
+                return;
+            }
+
+            alert("Registro salvo com sucesso no arquivo!");
+            document.getElementById('regTitulo').value = '';
+            document.getElementById('regDescricao').value = '';
+            document.getElementById('regArquivo').value = '';
+            document.getElementById('txtArquivo').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Carregar arquivo';
+
+            carregarRegistros();
+        }
+
+        async function carregarRegistros() {
+            const container = document.getElementById('listaRegistrosContainer');
+            container.innerHTML = '<p style="color: #725a4d; font-size: 13px; text-align: center; padding: 20px;">A carregar registros...</p>';
+
+            const { data, error } = await _supabase
+                .from('arquivo_registros')
+                .select('*')
+                .eq('categoria', categoriaAtual)
+                .order('data_ocorrencia', { ascending: false });
+
+            if (error) {
+                container.innerHTML = '<p style="color: #a83232; font-size: 13px; text-align: center;">Erro ao carregar os dados do arquivo.</p>';
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="color: #725a4d; font-size: 13px; text-align: center; padding: 20px; background: #fff; border-radius: 12px;">Nenhum registro encontrado nesta categoria.</p>';
+                return;
+            }
+
+            let html = '';
+            data.forEach(item => {
+                // Formata a data de AAAA-MM-DD para DD/MM/AAAA
+                let dataFormatada = item.data_ocorrencia;
+                if(dataFormatada && dataFormatada.includes('-')) {
+                    const partes = dataFormatada.split('-');
+                    dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                }
+
+                html += `
+                    <div class="registro-card">
+                        <div class="registro-info">
+                            <h4>${item.titulo}</h4>
+                            <div class="registro-meta">Ocorrência em: ${dataFormatada || '--/--/----'} às ${item.hora_ocorrencia || '--:--'} | Por: ${item.responsavel} | Evento: ${item.casal_nome}</div>
+                            <div class="registro-texto">${item.descricao}</div>
+                        </div>
+                        <span class="badge-categoria">${item.categoria}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
