@@ -170,6 +170,33 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
+        /* NOVO ESTILO DO BOTÃO DE TROCAR EVENTO DENTRO DO CARD */
+        .btn-selecionar-evento {
+            background-color: #241914; /* Fundo mais escuro para destacar dentro do card marrom */
+            color: #c5a059;
+            border: 1px solid rgba(197, 160, 89, 0.3); /* Borda dourada bem suave */
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-selecionar-evento:hover {
+            background-color: #1a110e;
+            transform: translateY(-2px);
+            border-color: #c5a059;
+        }
+
         .grid-atalhos {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -256,11 +283,12 @@
             stroke-linejoin: round;
         }
 
+        /* MODAIS */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -345,6 +373,37 @@
             font-size: 14px;
         }
 
+        /* SELECT DO MODAL DE TROCA DE CASAL */
+        .modal-select {
+            width: 100%;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0 16px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 20px;
+            cursor: pointer;
+            appearance: none;
+        }
+        .modal-select option {
+            background-color: #382a24;
+            color: #ffffff;
+        }
+        .btn-confirmar {
+            flex: 1;
+            padding: 12px;
+            background-color: #c5a059;
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
         @media (max-width: 900px) {
             .dashboard-container { grid-template-columns: 1fr; }
         }
@@ -403,6 +462,12 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- O BOTÃO FOI MOVIDO PARA CÁ: DENTRO DO CARD, LOGO APÓS OS DETALHES -->
+                <button type="button" class="btn-selecionar-evento" onclick="abrirModalEventos()">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span id="btnTopoTexto">Trocar Evento / Casal</span>
+                </button>
             </div>
 
             <!-- Grade de Quadrados de Atalhos -->
@@ -417,16 +482,14 @@
                     <span>Criar PDF</span>
                 </button>
 
-                <!-- Botão de Acesso do Administrador ao Formulário -->
                 <button type="button" class="btn-quadrado admin-only" onclick="abrirFormularioAdmin()">
                     <i class="fa-solid fa-clipboard-check"></i>
-                    <span>Acessar Form. Casal</span>
+                    <span>Acessar Form.</span>
                 </button>
 
-                <!-- Botão de Envio Direto ao WhatsApp do Casal -->
                 <button type="button" class="btn-quadrado admin-only" onclick="enviarFormularioWhatsApp()">
                     <i class="fa-solid fa-paper-plane"></i>
-                    <span>Enviar Form. Casal</span>
+                    <span>Enviar Form.</span>
                 </button>
 
                 <a href="perfil.html" class="btn-quadrado">
@@ -434,9 +497,9 @@
                     <span>Meu Perfil</span>
                 </a>
 
-                <button type="button" class="btn-quadrado" onclick="editarInformacoes()">
+                <button type="button" class="btn-quadrado" onclick="sairDoSistema()">
                     <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Trocar / Voltar</span>
+                    <span>Sair</span>
                 </button>
             </div>
         </div>
@@ -489,6 +552,23 @@
         </div>
     </div>
 
+    <!-- MODAL DE SELEÇÃO DE EVENTO (TROCA RÁPIDA) -->
+    <div class="modal-overlay" id="modalTrocarEvento">
+        <div class="modal-card" style="text-align: center;">
+            <h3>Trocar Evento</h3>
+            <p style="font-size: 13px; color: #d1c4bc; margin-bottom: 20px;">Selecione qual casamento você deseja administrar agora.</p>
+            
+            <select id="selectModalCasaisAdmin" class="modal-select">
+                <option value="">Carregando casais...</option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancelar" onclick="fecharModalEventos()">Cancelar</button>
+                <button type="button" class="btn-confirmar" onclick="salvarEventoSelecionado()">Acessar Evento</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL PERSONALIZAR PDF -->
     <div class="modal-overlay" id="modalPDF">
         <div class="modal-card">
@@ -526,18 +606,96 @@
         let horarioSalvo = "";
         let localSalvo = "";
         let diasFaltandoGlobal = 0;
+        let cronometroInterval;
 
         window.addEventListener("DOMContentLoaded", async function () {
             carregarDadosUsuario();
-            carregarDadosCasal();
+            await carregarDadosCasal();
         });
 
-        // Função inteligente: Lê o banco de dados e abre o formulário correto (Mirante Juruá ou Villa Vezzane)
+        async function carregarDadosCasal() {
+            const casalAtivo = localStorage.getItem('casal_ativo');
+
+            if (!casalAtivo) {
+                abrirModalEventos();
+                return;
+            }
+
+            const { data, error } = await _supabase
+                .from('casal_config')
+                .select('*')
+                .ilike('nome', casalAtivo)
+                .maybeSingle();
+
+            if (!error && data) {
+                nomeSalvo = data.nome;
+                dataSalva = data.data_casamento;
+                horarioSalvo = data.horario;
+                localSalvo = data.local_casamento || "";
+
+                document.getElementById("exibirNome").textContent = nomeSalvo;
+                document.getElementById("exibirData").textContent = dataSalva || "--/--/----";
+                document.getElementById("exibirHorario").textContent = horarioSalvo || "--:--";
+                document.getElementById("btnTopoTexto").textContent = "Trocar Evento (" + nomeSalvo + ")";
+
+                if(cronometroInterval) clearInterval(cronometroInterval);
+                
+                atualizarCronometro();
+                cronometroInterval = setInterval(atualizarCronometro, 60000);
+            } else {
+                alert("Nenhum dado encontrado para este casal. Por favor, selecione outro.");
+                abrirModalEventos();
+            }
+        }
+
+        async function abrirModalEventos() {
+            document.getElementById('modalTrocarEvento').style.display = 'flex';
+            
+            const { data, error } = await _supabase.from('casal_config').select('nome, data_casamento');
+            const select = document.getElementById('selectModalCasaisAdmin');
+            
+            if (!error && data && data.length > 0) {
+                let opcoes = '<option value="" disabled selected>Escolha um casamento...</option>';
+                data.forEach(c => {
+                    opcoes += `<option value="${c.nome}">${c.nome} ${c.data_casamento ? ' - ' + c.data_casamento : ''}</option>`;
+                });
+                select.innerHTML = opcoes;
+            } else {
+                select.innerHTML = '<option value="">Nenhum casal registrado</option>';
+            }
+        }
+
+        function fecharModalEventos() {
+            document.getElementById('modalTrocarEvento').style.display = 'none';
+        }
+
+        async function salvarEventoSelecionado() {
+            const select = document.getElementById('selectModalCasaisAdmin');
+            const casalEscolhido = select.value;
+
+            if (!casalEscolhido) {
+                alert("Por favor, selecione um casal da lista.");
+                return;
+            }
+
+            localStorage.setItem('casal_ativo', casalEscolhido);
+            localStorage.removeItem('local_casamento'); 
+            
+            fecharModalEventos();
+            await carregarDadosCasal();
+        }
+
+        function sairDoSistema() {
+            localStorage.removeItem('casal_ativo');
+            localStorage.removeItem('local_casamento');
+            window.location.href = "index.html";
+        }
+
         async function abrirFormularioAdmin() {
             const casalAtivo = localStorage.getItem('casal_ativo') || 'Casal';
             
             let localCode = 'vezzane';
-            let nomeFormulario = 'formulario_casal.html'; // Padrão Vezzane
+            let nomeFormulario = 'formulario_casal.html';
 
             if (localSalvo) {
                 const loc = localSalvo.toLowerCase();
@@ -549,7 +707,7 @@
                 const { data } = await _supabase
                     .from('casal_config')
                     .select('local_casamento')
-                    .ilike('nome', casalAtivo) // Usando ilike por segurança
+                    .ilike('nome', casalAtivo)
                     .maybeSingle();
 
                 if (data && data.local_casamento) {
@@ -582,40 +740,6 @@
                     btnRelatorios.style.display = 'none';
                 }
                 document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
-            }
-        }
-
-        // TORNANDO A BUSCA RESILIENTE A MAIÚSCULAS/MINÚSCULAS COM ILIKE
-        async function carregarDadosCasal() {
-            const casalAtivo = localStorage.getItem('casal_ativo');
-
-            if (!casalAtivo) {
-                alert("Nenhum casal selecionado. Voltando ao início.");
-                window.location.href = "index.html";
-                return;
-            }
-
-            const { data, error } = await _supabase
-                .from('casal_config')
-                .select('*')
-                .ilike('nome', casalAtivo) // O ILIKE não liga se tiver diferente (VINICIUS, vinicius, Vinicius)
-                .maybeSingle();
-
-            if (!error && data) {
-                nomeSalvo = data.nome;
-                dataSalva = data.data_casamento;
-                horarioSalvo = data.horario;
-                localSalvo = data.local_casamento || "";
-
-                document.getElementById("exibirNome").textContent = nomeSalvo;
-                document.getElementById("exibirData").textContent = dataSalva;
-                document.getElementById("exibirHorario").textContent = horarioSalvo;
-
-                atualizarCronometro();
-                setInterval(atualizarCronometro, 60000);
-            } else {
-                alert("Nenhum dado encontrado para este casal. Verifique se o nome foi digitado corretamente. Voltando ao login.");
-                window.location.href = "index.html";
             }
         }
 
@@ -653,10 +777,6 @@
             document.getElementById("contadorDias").textContent = String(dias).padStart(2, "0");
             document.getElementById("contadorHoras").textContent = String(horas).padStart(2, "0");
             document.getElementById("contadorMinutos").textContent = String(minutos).padStart(2, "0");
-        }
-
-        function editarInformacoes() {
-            window.location.href = "index.html";
         }
 
         function abrirModalPDF() {
